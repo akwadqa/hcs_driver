@@ -1,6 +1,6 @@
 {
-    "name": "hcs_driver_driver",
-    "short_name": "hcs_driver_driver",
+    "name": "hcs_driver",
+    "short_name": "hcs_driver",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
