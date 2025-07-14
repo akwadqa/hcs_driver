@@ -7,17 +7,20 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/order_status_screen.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/info_row.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/map_button.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whatsapp.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
+import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_button.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
+import 'package:hcs_driver/src/theme/app_sizes.dart';
 
 @RoutePage()
 class OrderDetailsScreen extends ConsumerStatefulWidget {
@@ -181,8 +184,29 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 17.h, horizontal: 26.w),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 18.h),
+            child: CustomButton(
+              title: tr(context: context, AppStrings.orderStatus),
+
+              style: ElevatedButton.styleFrom(
+                backgroundColor: AppColors.primary,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(28),
+                ),
+                fixedSize: Size(
+                  AppSizes.authButtonWidth.w,
+                  AppSizes.authButtonHeight.h,
+                ),
+                shadowColor: Colors.transparent,
+              ),
+              onPressed: () {
+                context.pushRoute(OrderStatusRoute());
+              },
+            ),
+          ),
           Center(
             child: Text(
               widget.serviceOrderID,

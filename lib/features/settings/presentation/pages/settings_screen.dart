@@ -9,6 +9,7 @@ import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_button.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
+import 'package:hcs_driver/src/theme/app_colors.dart';
 
 @RoutePage()
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -41,27 +42,40 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
           Expanded(
-            child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 26.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  30.verticalSpace,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                10.verticalSpace,
 
-                  Assets.images.goodbye.image(width: 100, height: 100),
-                  10.verticalSpace,
-                  Text(
-                    context.tr(AppStrings.settingsDesc),
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      decoration: TextDecoration.overline,
-                      decorationStyle: TextDecorationStyle.dotted,
-                      fontStyle: FontStyle.italic,
-                      fontSize: 15.sp,
+                Assets.images.byebye.image(
+                  fit: BoxFit.fitWidth,
+                  height: 0.5.sh,
+                ),
+                Container(
+                  height: 55.h,
+                  width: double.infinity,
+                  color: AppColors.white,
+                  alignment: Alignment.center,
+                  child: Text(
+                    tr(context: context, AppStrings.goodBye),
+                    style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 33.sp,
                     ),
                   ),
-                ],
-              ),
+                ),
+                // 10.verticalSpace,
+                // Text(
+                //   context.tr(AppStrings.settingsDesc),
+                //   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                //     decoration: TextDecoration.overline,
+                //     decorationStyle: TextDecorationStyle.dotted,
+                //     fontStyle: FontStyle.italic,
+                //     fontSize: 15.sp,
+                //   ),
+                // ),
+              ],
             ),
           ),
           Padding(

@@ -9,18 +9,24 @@ class CustomButton extends ElevatedButton {
     super.key,
     required String title,
     required super.onPressed,
+    ButtonStyle? style,
     double? textSize,
     WidgetStateProperty<Size?>? fixedSize,
     Color? buttonColor,
     Color? fontColor,
   }) : super(
-         style: ElevatedButton.styleFrom(
-           backgroundColor: buttonColor ?? AppColors.primary,
-           fixedSize:
-               fixedSize?.resolve({}) ??
-               Size(AppSizes.authButtonWidth.w, AppSizes.authButtonHeight.h),
-           shadowColor: Colors.transparent,
-         ),
+         style:
+             style ??
+             ElevatedButton.styleFrom(
+               backgroundColor: buttonColor ?? AppColors.primary,
+               fixedSize:
+                   fixedSize?.resolve({}) ??
+                   Size(
+                     AppSizes.authButtonWidth.w,
+                     AppSizes.authButtonHeight.h,
+                   ),
+               shadowColor: Colors.transparent,
+             ),
          child: Text(
            title,
            style: TextStyle(

@@ -36,6 +36,7 @@ abstract class AppColors {
   static const Color blackText = Color(0xFF363A46); // #363A46
   static const Color blueTitle = Color(0xFF1E7BE2); //#1E7BE2
   static const Color blueText = Color(0xFF1E71A3); //#1E71A3
+  static const Color lightBlueText = Color(0xFF85B2CD); //#85B2CD
   static const Color greenText = Color(0xFF0BA366); //#0BA366
 
   static const Color red = Color(0xFFF0453F);

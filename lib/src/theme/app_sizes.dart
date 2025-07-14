@@ -4,7 +4,7 @@ class AppSizes {
   static const double textFieldRadius = 8.0;
 
   //* Buttons
-  static const double buttonRadius = 8.0;
-  static const double authButtonWidth = 300.0;
+  static const double buttonRadius = 10.0;
+  static const double authButtonWidth = 216.0;
   static const double authButtonHeight = 48.0;
 }

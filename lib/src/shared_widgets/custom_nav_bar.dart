@@ -22,7 +22,6 @@ class CustomNavBar extends StatefulWidget {
 
 class _CustomNavBarState extends State<CustomNavBar> {
   final List<String> titles = [
-    AppStrings.home.tr(),
     AppStrings.myOrders.tr(),
     AppStrings.settings.tr(),
   ];
@@ -30,15 +29,14 @@ class _CustomNavBarState extends State<CustomNavBar> {
   @override
   Widget build(BuildContext context) {
     final List<String> icons = [
-      Assets.images.homeSelected.path,
       Assets.images.myordersSelected.path,
       Assets.images.settingsSelected.path,
     ];
     return SafeArea(
       bottom: true,
       child: Container(
-        padding: EdgeInsets.only(top: 20.h, bottom: 10.h),
-        height: 85.h,
+        padding: EdgeInsets.symmetric(vertical: 15.h),
+        height: 80.h,
         width: double.infinity,
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -48,33 +46,39 @@ class _CustomNavBarState extends State<CustomNavBar> {
           ),
         ),
         child: Row(
-          children: List.generate(3, (index) {
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: List.generate(2, (index) {
             final isSelected = widget.currentIndex == index;
-            return Expanded(
-              child: InkWell(
-                onTap: () => widget.onTap(index),
+            return InkWell(
+              onTap: () => widget.onTap(index),
 
-                child: Column(
+              child: Container(
+                // height: 40.h,
+                alignment: Alignment.center,
+                padding: EdgeInsets.symmetric(horizontal: 39.w, vertical: 8.h),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(28),
+                  color: isSelected ? AppColors.primary : Colors.transparent,
+                ),
+                child: Row(
                   children: [
                     SvgPicture.asset(
                       icons[index],
-                      height: 24.h,
-                      width: 24.h,
+                      height: 24,
+                      width: 24,
                       colorFilter: ColorFilter.mode(
-                        isSelected
-                            ? AppColors.blueText
-                            : AppColors.blueText.withValues(alpha: 0.5),
+                        isSelected ? AppColors.white : AppColors.lightBlueText,
                         BlendMode.srcIn,
                       ),
                     ),
-                    5.verticalSpace,
+                    10.horizontalSpace,
                     Text(
                       titles[index].tr(),
                       style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                        fontSize: 12.sp,
+                        fontSize: 14.sp,
                         color: isSelected
-                            ? AppColors.blueText
-                            : AppColors.blueText.withValues(alpha: 0.5),
+                            ? AppColors.white
+                            : AppColors.lightBlueText,
                       ),
                     ),
                   ],

@@ -32,11 +32,17 @@ class $AssetsImagesGen {
   AssetGenImage get background =>
       const AssetGenImage('assets/images/background.png');
 
+  /// File path: assets/images/byebye.png
+  AssetGenImage get byebye => const AssetGenImage('assets/images/byebye.png');
+
   /// File path: assets/images/calendar.svg
   SvgGenImage get calendar => const SvgGenImage('assets/images/calendar.svg');
 
   /// File path: assets/images/cash.svg
   SvgGenImage get cash => const SvgGenImage('assets/images/cash.svg');
+
+  /// File path: assets/images/check.svg
+  SvgGenImage get check => const SvgGenImage('assets/images/check.svg');
 
   /// File path: assets/images/credit_card.svg
   SvgGenImage get creditCard =>
@@ -46,15 +52,16 @@ class $AssetsImagesGen {
   AssetGenImage get dummycard =>
       const AssetGenImage('assets/images/dummycard.png');
 
+  /// File path: assets/images/empty_check.svg
+  SvgGenImage get emptyCheck =>
+      const SvgGenImage('assets/images/empty_check.svg');
+
   /// File path: assets/images/error404-min.png
   AssetGenImage get error404Min =>
       const AssetGenImage('assets/images/error404-min.png');
 
   /// File path: assets/images/error_x.svg
   SvgGenImage get errorX => const SvgGenImage('assets/images/error_x.svg');
-
-  /// File path: assets/images/goodbye.png
-  AssetGenImage get goodbye => const AssetGenImage('assets/images/goodbye.png');
 
   /// File path: assets/images/green_successful.svg
   SvgGenImage get greenSuccessful =>
@@ -70,6 +77,9 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/logo.png
   AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
+
+  /// File path: assets/images/luck_icon.svg
+  SvgGenImage get luckIcon => const SvgGenImage('assets/images/luck_icon.svg');
 
   /// File path: assets/images/myorders_selected.svg
   SvgGenImage get myordersSelected =>
@@ -105,20 +115,26 @@ class $AssetsImagesGen {
   SvgGenImage get successful =>
       const SvgGenImage('assets/images/successful.svg');
 
+  /// File path: assets/images/user_icon.svg
+  SvgGenImage get userIcon => const SvgGenImage('assets/images/user_icon.svg');
+
   /// List of all assets
   List<dynamic> get values => [
     background,
+    byebye,
     calendar,
     cash,
+    check,
     creditCard,
     dummycard,
+    emptyCheck,
     error404Min,
     errorX,
-    goodbye,
     greenSuccessful,
     homeSelected,
     homeUnselected,
     logo,
+    luckIcon,
     myordersSelected,
     noDataMin,
     pending,
@@ -128,6 +144,7 @@ class $AssetsImagesGen {
     settingsUnselected,
     splashLogo,
     successful,
+    userIcon,
   ];
 }
 

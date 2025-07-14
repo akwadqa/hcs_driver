@@ -72,11 +72,33 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 231.h,
                         ),
                       ),
+
+                      Align(
+                        alignment: Alignment.centerLeft,
+
+                        child: Text(
+                          tr(
+                            context: context,
+                            AppStrings.pleaseSignInToContinue,
+                          ),
+                          style: Theme.of(context).textTheme.displaySmall,
+                        ),
+                      ),
                       SizedBox(height: 30.h),
+
                       TextFormField(
                         controller: _emailController,
                         keyboardType: TextInputType.emailAddress,
-                        decoration: const InputDecoration(hintText: "Username"),
+                        decoration: InputDecoration(
+                          hintText: "Username",
+
+                          prefixIcon: Assets.images.userIcon.svg(
+                            width: 18,
+                            height: 18,
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ),
+
                         validator: (name) =>
                             Validator.validateUserName(name, context),
                       ),
@@ -84,7 +106,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       TextFormField(
                         controller: _passwordController,
                         obscureText: true,
-                        decoration: const InputDecoration(hintText: "Password"),
+                        obscuringCharacter: '*',
+                        decoration: InputDecoration(
+                          hintText: "Password",
+
+                          prefixIcon: Assets.images.luckIcon.svg(
+                            width: 18,
+                            height: 18,
+                            fit: BoxFit.scaleDown,
+                          ),
+                        ),
                         validator: (passord) =>
                             Validator.validatePassword(passord, context),
                       ),
@@ -111,7 +142,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                     },
                               child: Text(
                                 tr(context: context, AppStrings.forgotPassword),
-                                style: Theme.of(context).textTheme.displaySmall,
+                                style: Theme.of(context)
+                                    .inputDecorationTheme
+                                    .hintStyle!
+                                    .copyWith(
+                                      decoration: TextDecoration.underline,
+                                      decorationStyle:
+                                          TextDecorationStyle.solid,
+                                    ),
                               ),
                             );
                           },

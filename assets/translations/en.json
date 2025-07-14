@@ -30,7 +30,11 @@
   "pleaseEnterUserName":"Please Enter UserName",
   "enterValidUserName":"Enter Valid User Name",
   "settingsDesc":"“You’re all set here – tap the button below to securely log out. Don’t worry, you can come back anytime and pick up right where you left off!”",
-  
+  "pleaseSignInToContinue": "please sign in to continue.",
+  "goodBye":"Good Bye",
+  "backToHome":"Back To Home",
+  "orderStatus":"Order Status",
+
   "password": "Password",
   "login": "Login",
   "loggedInSuccesfully": "Logged in successfully",

@@ -10,7 +10,7 @@ class MainScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AutoTabsScaffold(
-      routes: const [HomeRoute(), MyOrdersRoute(), SettingsRoute()],
+      routes: const [MyOrdersRoute(), SettingsRoute()],
       bottomNavigationBuilder: (context, tabsRouter) => CustomNavBar(
         currentIndex: AutoTabsRouter.of(context).activeIndex,
         onTap: (index) => AutoTabsRouter.of(context).setActiveIndex(index),

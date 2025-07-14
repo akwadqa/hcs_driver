@@ -30,6 +30,7 @@ class AppStrings {
   static const String login = 'login';
   static const String forgotPassword = 'forgotPassword';
   static const String loggedInSuccesfully = 'loggedInSuccesfully';
+  static const String pleaseSignInToContinue = 'pleaseSignInToContinue';
 
   //Home
   static const String home = 'home';
@@ -54,6 +55,7 @@ class AppStrings {
   //My Orders
   static const String myOrders = 'myOrders';
   static const String orderDetails = 'Order Details';
+  static const String orderStatus = 'orderStatus';
 
   //Settings
   static const String settings = 'settings';
@@ -64,7 +66,8 @@ class AppStrings {
   static const String logOut = 'logOut';
   static const String settingsDesc = 'settingsDesc';
   static const String cancelOrder = 'Cancel Order';
-  
+  static const String goodBye = 'goodBye';
+  static const String backToHome = 'backToHome';
 
   //Language
   static const String english = 'English';
