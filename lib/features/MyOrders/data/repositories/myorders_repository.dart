@@ -3,6 +3,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
+import 'package:hcs_driver/features/MyOrders/data/models/updated_status_model.dart';
 import 'package:hcs_driver/src/constants/api_constance.dart';
 import 'package:hcs_driver/src/network/network_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -20,10 +21,10 @@ class MyOrdersRepository {
 
   Future<ServicesOrders> getServicesOrders({
     required int page,
-    required String status,
+    required String dateType,
   }) async {
     final response = await _networkService.get(
-      ApiConstance.myServicesOrders(page: page.toString(), status: status),
+      ApiConstance.myServicesOrders(page: page.toString(), dateType: dateType),
     );
 
     if (response.statusCode == 200) {
@@ -60,6 +61,23 @@ class MyOrdersRepository {
       return true;
     } else {
       throw Exception(response.message ?? 'Failed to cancel the orders');
+    }
+  }
+
+  Future<UpdatedStatus> updateStatusOrder({
+    required String serviceOrderId,
+  }) async {
+    var data = FormData.fromMap({'service_order_id': serviceOrderId});
+    final response = await _networkService.post(
+      ApiConstance.updateStatusOrder,
+      data,
+    );
+
+    if (response.statusCode == 200) {
+  
+      return updatedStatusFromJson(response.data);
+    } else {
+      throw Exception(response.message ?? 'Failed to update Status Order');
     }
   }
 }

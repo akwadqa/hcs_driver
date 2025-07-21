@@ -2,9 +2,9 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/pages/accepted_orders_section.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/pages/canceled_orders_section.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/pages/pending_orders_section.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/today_orders_section.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/tomorrow_orders_section.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/yesterday_orders_section.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
 
@@ -23,7 +23,7 @@ class _MyOrdersContentState extends State<MyOrdersContentScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 3, vsync: this, initialIndex: 1);
   }
 
   @override
@@ -39,14 +39,15 @@ class _MyOrdersContentState extends State<MyOrdersContentScreen>
         hasBackArrow: false,
         title: context.tr(AppStrings.myOrders),
         withTabs: true,
+
         tabController: _tabController,
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-          AcceptedOrdersScreen(),
-          PendingOrdersScreen(),
-          CanceledOrdersScreen(),
+          YesterdayOrdersScreen(),
+          TodayOrdersScreen(),
+          TomorrowOrdersScreen(),
         ],
       ),
     );

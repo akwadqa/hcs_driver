@@ -50,9 +50,9 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                   ).textTheme.displayMedium,
 
                   tabs: const [
-                    Tab(text: 'Accept'),
-                    Tab(text: 'Pending'),
-                    Tab(text: 'Cancelled'),
+                    Tab(text: 'Yesterday'),
+                    Tab(text: 'Today'),
+                    Tab(text: 'Tomorrow'),
                   ],
                 ),
               ),
@@ -62,19 +62,12 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       title: Consumer(
         builder: (context, ref, child) {
           return Text(
-            title!,
+            title,
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
               fontSize: 16.sp,
               fontWeight: FontWeight.w600,
             ),
           );
-          // : Text(
-          //     "$selectedServiceTypeState Service",
-          //     style: Theme.of(context).textTheme.displaySmall!.copyWith(
-          //       fontSize: 16.sp,
-          //       fontWeight: FontWeight.w600,
-          //     ),
-          //   );
         },
       ),
       actions: isHome ? null : actions,

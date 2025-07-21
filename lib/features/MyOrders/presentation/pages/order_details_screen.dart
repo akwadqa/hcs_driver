@@ -6,21 +6,16 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/pages/order_status_screen.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/info_row.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/map_button.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whatsapp.dart';
-import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
-import 'package:hcs_driver/src/shared_widgets/custom_button.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
-import 'package:hcs_driver/src/theme/app_sizes.dart';
 
 @RoutePage()
 class OrderDetailsScreen extends ConsumerStatefulWidget {
@@ -44,6 +39,14 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    List<String> days = [
+      "saturday",
+      "sunday",
+      "monday",
+      "TuesDay",
+      "wensday",
+      "tursday",
+    ];
     var details = ref.watch(
       myOrdersControllerProvider.select((value) => value.ordersDetails),
     );
@@ -52,7 +55,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     );
     return Scaffold(
       body: orderStatus == RequestStates.loaded
-          ? _buildContent(details)
+          ? _buildContent(details, days)
           : orderStatus == RequestStates.loading
           ? Center(child: const FadeCircleLoadingIndicator())
           : orderStatus == RequestStates.error
@@ -77,210 +80,215 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               ]
             : null,
       ),
-
-      bottomNavigationBar:
-          orderStatus == RequestStates.loaded && details?.status == 'Approved'
-          ? Consumer(
-              builder: (context, ref, child) {
-                var orderCancelltionStates = ref.watch(
-                  myOrdersControllerProvider.select(
-                    (value) => value.orderCancelltionStates,
-                  ),
-                );
-                ref.listen<MyOrdersState>(myOrdersControllerProvider, (
-                  previous,
-                  next,
-                ) {
-                  if (next.orderCancelltionStates == RequestStates.loaded) {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Assets.images.redSuccessful.svg(
-                          width: 100,
-                          height: 100,
-                        ),
-
-                        content: Text(
-                          'Service has been\ncancelled successfully.',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.displayMedium!.copyWith(fontSize: 20.sp),
-                        ),
-                      ),
-                    );
-                  }
-
-                  if (next.orderCancelltionStates == RequestStates.error) {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Assets.images.errorX.svg(),
-                        content: Text(
-                          next.orderCancelltionMessage ??
-                              "An unexpected error occurred.\nPlease try again.",
-                          textAlign: TextAlign.center,
-                          style: Theme.of(
-                            context,
-                          ).textTheme.displayMedium!.copyWith(fontSize: 20.sp),
-                        ),
-                      ),
-                    );
-                  }
-                });
-
-                return Padding(
-                  padding: EdgeInsets.symmetric(
-                    vertical: 17.h,
-                    horizontal: 26.w,
-                  ),
-                  child: CustomButton(
-                    title: AppStrings.cancelOrder.tr(context: context),
-                    buttonColor: AppColors.blueText,
-                    onPressed: orderCancelltionStates != RequestStates.loading
-                        ? () {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(
-                                  AppStrings.cancelOrder.tr(context: context),
-                                ),
-                                content: Text(
-                                  "Are you sure you want to cancel this order?",
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: Text("No"),
-                                  ),
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      ref
-                                          .read(
-                                            myOrdersControllerProvider.notifier,
-                                          )
-                                          .orderCancelltion(
-                                            serviceOrderID:
-                                                widget.serviceOrderID,
-                                          );
-                                    },
-                                    child: Text("Yes"),
-                                  ),
-                                ],
-                              ),
-                            );
-                          }
-                        : null,
-                  ),
-                );
-              },
-            )
-          : null,
     );
   }
 
-  Widget _buildContent(Details? details) {
+  Widget _wrapWithCard(Widget child) {
+    return Column(
+      children: [
+        Card(
+          color: Colors.white,
+          // elevation: 2,
+          shadowColor: Colors.transparent,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 17.w),
+            child: child,
+          ),
+        ),
+        18.verticalSpace,
+      ],
+    );
+  }
+
+  Widget _buildContent(Details? details, List<String> days) {
     return SingleChildScrollView(
-      padding: EdgeInsets.symmetric(vertical: 17.h, horizontal: 26.w),
+      padding: EdgeInsets.symmetric(vertical: 17.h, horizontal: 9.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.symmetric(vertical: 18.h),
-            child: CustomButton(
-              title: tr(context: context, AppStrings.orderStatus),
-
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(28),
+            child: Center(
+              child: Text(
+                widget.serviceOrderID,
+                style: Theme.of(context).textTheme.displayMedium!.copyWith(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.blueTitle,
                 ),
-                fixedSize: Size(
-                  AppSizes.authButtonWidth.w,
-                  AppSizes.authButtonHeight.h,
-                ),
-                shadowColor: Colors.transparent,
-              ),
-              onPressed: () {
-                context.pushRoute(OrderStatusRoute());
-              },
-            ),
-          ),
-          Center(
-            child: Text(
-              widget.serviceOrderID,
-              style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                fontSize: 20.sp,
-                fontWeight: FontWeight.w600,
-                color: AppColors.blueTitle,
               ),
             ),
           ),
-          16.verticalSpace,
+          18.verticalSpace,
+          _wrapWithCard(
+            Column(
+              children: [
+                Consumer(
+                  builder: (context, ref, child) {
+                    var currentDriverStatus = ref.watch(
+                      myOrdersControllerProvider.select(
+                        (value) => value.currentDriverStatus,
+                      ),
+                    );
+                    return InfoRow("Status", value: currentDriverStatus);
+                  },
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: TextButton(
+                        onPressed: () => context.pushRoute(
+                          OrderStatusRoute(
+                            statusOrderType: details!.status,
+                            serviceOrderID: widget.serviceOrderID,
+                          ),
+                        ),
+                        child: Text(
+                          "View status details",
+                          overflow: TextOverflow.visible,
+                          softWrap: true,
 
-          // --- Info Rows ---
-          InfoRow("Customer", value: details?.customer?.customerName),
-          InfoRow("Area", value: details?.customer?.location),
-          InfoRow("Zone", value: details?.customer?.zone),
-          InfoRow(
-            "Location",
-            widget: details?.customer?.locationUrl != null
-                ? MapPreviewCard(
-                    lcoationUrl: details!.customer!.locationUrl!,
-                    locationName: details.customer!.location!,
-                  )
-                : null,
+                          style: Theme.of(context).textTheme.displaySmall!
+                              .copyWith(
+                                fontStyle: FontStyle.italic,
+                                decoration: TextDecoration.underline,
+                                decorationStyle: TextDecorationStyle.dotted,
+                              ),
+                        ),
+                      ),
+                    ),
+                    10.horizontalSpace,
+                    Flexible(
+                      child: Consumer(
+                        builder: (context, ref, child) {
+                          var statusOrderStates = ref.watch(
+                            myOrdersControllerProvider.select(
+                              (value) => value.statusOrderStates,
+                            ),
+                          );
+
+                          var statusOrders = ref.watch(
+                            myOrdersControllerProvider.select(
+                              (value) => value.statusOrders,
+                            ),
+                          );
+                          var currentDriverStatus = ref.watch(
+                            myOrdersControllerProvider.select(
+                              (value) => value.currentDriverStatus,
+                            ),
+                          );
+                          return TextButton(
+                            onPressed:
+                                statusOrderStates != RequestStates.loading &&
+                                    statusOrders.last.status !=
+                                        currentDriverStatus
+                                ? () => ref
+                                      .watch(
+                                        myOrdersControllerProvider.notifier,
+                                      )
+                                      .updateStatusOrder(
+                                        serviceOrderID: widget.serviceOrderID,
+                                      )
+                                : null,
+                            child: Text(
+                              "Mark as completed ✓",
+                              overflow: TextOverflow.visible,
+                              softWrap: true,
+                              style: Theme.of(context).textTheme.displaySmall!
+                                  .copyWith(
+                                    color: AppColors.greenText,
+                                    fontStyle: FontStyle.italic,
+                                    decoration: TextDecoration.underline,
+                                    decorationStyle: TextDecorationStyle.dotted,
+                                  ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          18.verticalSpace,
+          _wrapWithCard(
+            Column(
+              children: [
+                InfoRow("Customer", value: details?.customer?.customerName),
+                InfoRow("Area", value: details?.customer?.location),
+                InfoRow("Zone", value: details?.customer?.zone),
+                InfoRow(
+                  "Location",
+                  widget: details?.customer?.locationUrl != null
+                      ? MapPreviewCard(
+                          lcoationUrl: details!.customer!.locationUrl!,
+                          locationName: details.customer!.location!,
+                        )
+                      : null,
+                ),
+              ],
+            ),
           ),
 
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 24.h),
-            child: Divider(height: 0.1, color: AppColors.dividerGrey),
+          _wrapWithCard(
+            Column(
+              children: [
+                InfoRow("Service type", value: details?.serviceType),
+                InfoRow("Shift type", value: details?.shiftType),
+                InfoRow("Date", value: details!.date),
+                days.isNotEmpty
+                    ? InfoRow("Work Days", value: days.join(', '))
+                    : SizedBox.shrink(),
+              ],
+            ),
           ),
 
-          InfoRow("Service type", value: details?.serviceType),
-          InfoRow("Shift type", value: details?.shiftType),
-          InfoRow("Date", value: details?.date),
-
-          // InfoRow("Service Category", value: "On Call"),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 24.h),
-            child: Divider(height: 0.1, color: AppColors.dividerGrey),
+          _wrapWithCard(
+            Column(
+              children: [
+                InfoRow(
+                  "Employees name",
+                  value: (details.staffAppointment as List?)?.join(',\n') ?? '',
+                ),
+                InfoRow("Driver name", value: details.driver?.driverName),
+              ],
+            ),
           ),
 
-          InfoRow(
-            "Employees name",
-            value: (details?.staffAppointment as List?)?.join(',\n') ?? '',
+          _wrapWithCard(
+            Column(
+              children: [
+                InfoRow("Discount Type", value: details.discountType),
+                InfoRow(
+                  "Discount Percentage",
+                  value: details.discountPercentage.toString(),
+                ),
+                InfoRow("Payment Method", value: details.methodOfPayment),
+              ],
+            ),
           ),
 
-          InfoRow("Driver name", value: details?.driver?.driverName),
-
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 24.h),
-            child: Divider(height: 0.1, color: AppColors.dividerGrey),
+          _wrapWithCard(
+            Column(
+              children: [
+                InfoRow(
+                  "Cleaning supply",
+                  value: details.withCleaningSupplies == 0 ? "No" : "Yes",
+                ),
+                InfoRow("Note", value: "details.note"),
+              ],
+            ),
           ),
-
-          // InfoRow("Discount Type", value: details?.discountType),
-          InfoRow(
-            "Discount Percentage",
-            value: details?.discountPercentage.toString(),
-          ),
-          InfoRow("Payment Method", value: details?.methodOfPayment),
-
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 24.h),
-            child: Divider(height: 0.1, color: AppColors.dividerGrey),
-          ),
-
-          InfoRow(
-            "Cleaning supply",
-            value: details?.withCleaningSupplies == 0 ? "No" : "Yes",
-          ),
-
           24.verticalSpace,
           Center(
             child: Text(
-              "QR ${details?.totalNetAmount}",
+              "QR ${details.totalNetAmount}",
               style: TextStyle(
                 fontSize: 20.sp,
                 color: AppColors.green,

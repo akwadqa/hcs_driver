@@ -10,14 +10,14 @@ class MyOrdersController extends _$MyOrdersController {
   @override
   MyOrdersState build() => const MyOrdersState();
 
-  Future<void> fetchApprovedOrders() async {
+  Future<void> fetchYesterdayOrders() async {
     state = state.copyWith(approvedOrdersStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: 1,
-        status: 'Approved',
+        dateType: 'yesterday',
       );
 
       int? nextPage;
@@ -41,12 +41,12 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> onLoadMoreApprovedOrders() async {
+  Future<void> onLoadMoreYesterdayOrders() async {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: state.currentApprovedOrdersPage!,
-        status: 'Approved',
+        dateType: 'yesterday',
       );
 
       int? nextPage;
@@ -70,14 +70,14 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> fetchPendingOrders() async {
+  Future<void> fetchTodayOrders() async {
     state = state.copyWith(pendingOrdersStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: 1,
-        status: 'Pending',
+        dateType: 'today',
       );
 
       int? nextPage;
@@ -101,12 +101,12 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> onLoadMorePendingOrders() async {
+  Future<void> onLoadMoreTodayOrders() async {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: state.currentPendingOrdersPage!,
-        status: 'Pending',
+        dateType: 'today',
       );
 
       int? nextPage;
@@ -130,14 +130,14 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> fetchCancelledOrders() async {
+  Future<void> fetchTomorrowOrders() async {
     state = state.copyWith(cancelledOrdersStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: 1,
-        status: 'Cancelled',
+        dateType: 'tomorrow',
       );
 
       int? nextPage;
@@ -161,12 +161,12 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> onLoadMoreCancelledOrders() async {
+  Future<void> onLoadMoreTomorrowOrders() async {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: state.currentCancelledOrdersPage!,
-        status: 'Cancelled',
+        dateType: 'tomorrow',
       );
 
       int? nextPage;
@@ -204,6 +204,8 @@ class MyOrdersController extends _$MyOrdersController {
 
       state = state.copyWith(
         ordersDetails: ordersDetails.details,
+        currentDriverStatus: ordersDetails.details?.driver?.currentDriverStatus,
+        statusOrders: ordersDetails.details?.driver?.driverStatus,
         ordersDetailsStates: RequestStates.loaded,
         ordersDetailsMessage: '',
         orderCancelltionStates: RequestStates.init,
@@ -216,24 +218,49 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> orderCancelltion({required String serviceOrderID}) async {
-    state = state.copyWith(orderCancelltionStates: RequestStates.loading);
+  Future<void> updateStatusOrder({required String serviceOrderID}) async {
+    state = state.copyWith(statusOrderStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      await myOrdersRepo.orderCancelltion(serviceOrderId: serviceOrderID);
+      final statusOrders = await myOrdersRepo.updateStatusOrder(
+        serviceOrderId: serviceOrderID,
+      );
+      String currentDriverStatus = statusOrders.data
+          .lastWhere((element) => element.active == true)
+          .status;
 
       state = state.copyWith(
-        orderCancelltionStates: RequestStates.loaded,
-        orderCancelltionMessage: '',
+        statusOrders: statusOrders.data,
+        currentDriverStatus: currentDriverStatus,
+        statusOrderStates: RequestStates.loaded,
+        statusOrderMessage: '',
       );
-
-      fetchOrdersDetails(serviceOrderID: serviceOrderID);
     } catch (e) {
       state = state.copyWith(
-        orderCancelltionStates: RequestStates.error,
-        orderCancelltionMessage: e.toString(),
+        statusOrderStates: RequestStates.error,
+        statusOrderMessage: e.toString(),
       );
     }
   }
+  // Future<void> orderCancelltion({required String serviceOrderID}) async {
+  //   state = state.copyWith(orderCancelltionStates: RequestStates.loading);
+
+  //   try {
+  //     final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
+  //     await myOrdersRepo.orderCancelltion(serviceOrderId: serviceOrderID);
+
+  //     state = state.copyWith(
+  //       orderCancelltionStates: RequestStates.loaded,
+  //       orderCancelltionMessage: '',
+  //     );
+
+  //     fetchOrdersDetails(serviceOrderID: serviceOrderID);
+  //   } catch (e) {
+  //     state = state.copyWith(
+  //       orderCancelltionStates: RequestStates.error,
+  //       orderCancelltionMessage: e.toString(),
+  //     );
+  //   }
+  // }
 }

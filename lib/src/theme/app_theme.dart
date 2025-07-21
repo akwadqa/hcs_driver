@@ -127,10 +127,13 @@ abstract class AppTheme {
       // Add this to your ThemeData inside lightTheme()
       iconButtonTheme: IconButtonThemeData(
         style: ButtonStyle(
-          iconColor: WidgetStateProperty.all(AppColors.primary),
+          iconColor: WidgetStateProperty.all(AppColors.white),
+          backgroundColor: WidgetStatePropertyAll(AppColors.primary),
           overlayColor: WidgetStateProperty.all(
             AppColors.primary.withValues(alpha: 0.1),
           ),
+          shadowColor: WidgetStateProperty.all(Color(0x66000000)),
+          elevation: WidgetStateProperty.all(4),
           shape: WidgetStateProperty.all(
             RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(AppSizes.textFieldRadius),

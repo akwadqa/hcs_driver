@@ -38,7 +38,10 @@ class OrdersDetails {
 @JsonSerializable()
 class Details {
   @JsonKey(name: "status")
-  String? status;
+  final String? status;
+
+  @JsonKey(name: "supervisor")
+  final Supervisor? supervisor;
 
   @JsonKey(name: "customer")
   final Customer? customer;
@@ -73,8 +76,15 @@ class Details {
   @JsonKey(name: "staff_appointment")
   final List<String>? staffAppointment;
 
+  @JsonKey(name: "note")
+  final String? note;
+
+  @JsonKey(name: "days")
+  final List<String>? days;
+
   Details({
     this.status,
+    this.supervisor,
     this.customer,
     this.driver,
     this.date,
@@ -86,6 +96,8 @@ class Details {
     this.totalNetAmount,
     this.methodOfPayment,
     this.staffAppointment,
+    this.note,
+    this.days,
   });
 
   factory Details.fromJson(Map<String, dynamic> json) =>
@@ -97,7 +109,7 @@ class Details {
 @JsonSerializable()
 class Customer {
   @JsonKey(name: "customer_id")
-  final String? customerId;
+  final String customerId;
 
   @JsonKey(name: "customer_name")
   final String? customerName;
@@ -114,7 +126,7 @@ class Customer {
   @JsonKey(name: "phone_number")
   String? phoneNumber;
   Customer({
-    this.customerId,
+    required this.customerId,
     this.customerName,
     this.location,
     this.locationUrl,
@@ -131,14 +143,55 @@ class Customer {
 @JsonSerializable()
 class Driver {
   @JsonKey(name: "driver_id")
-  final String? driverId;
+  final String driverId;
 
   @JsonKey(name: "driver_name")
   final String? driverName;
 
-  Driver({this.driverId, this.driverName});
+  @JsonKey(name: "current_driver_status")
+  final String? currentDriverStatus;
+
+  @JsonKey(name: "driver_status")
+  final List<DriverStatus> driverStatus;
+
+  Driver({
+    required this.driverId,
+    this.driverName,
+    this.currentDriverStatus,
+    required this.driverStatus,
+  });
 
   factory Driver.fromJson(Map<String, dynamic> json) => _$DriverFromJson(json);
 
   Map<String, dynamic> toJson() => _$DriverToJson(this);
+}
+
+@JsonSerializable()
+class DriverStatus {
+  @JsonKey(name: "status")
+  final String status;
+  @JsonKey(name: "active")
+  final bool active;
+
+  DriverStatus({required this.status, required this.active});
+
+  factory DriverStatus.fromJson(Map<String, dynamic> json) =>
+      _$DriverStatusFromJson(json);
+
+  Map<String, dynamic> toJson() => _$DriverStatusToJson(this);
+}
+
+@JsonSerializable()
+class Supervisor {
+  @JsonKey(name: "supervisor")
+  String supervisor;
+  @JsonKey(name: "supervisor_name")
+  String supervisorName;
+
+  Supervisor({required this.supervisor, required this.supervisorName});
+
+  factory Supervisor.fromJson(Map<String, dynamic> json) =>
+      _$SupervisorFromJson(json);
+
+  Map<String, dynamic> toJson() => _$SupervisorToJson(this);
 }

@@ -25,6 +25,12 @@ class MyOrdersState extends Equatable {
   //cancelltion
   final RequestStates orderCancelltionStates;
   final String? orderCancelltionMessage;
+
+  //status Order
+  final List<DriverStatus> statusOrders;
+  final String currentDriverStatus;
+  final RequestStates statusOrderStates;
+  final String? statusOrderMessage;
   const MyOrdersState({
     //orders
     this.currentApprovedOrdersPage,
@@ -45,6 +51,12 @@ class MyOrdersState extends Equatable {
     //cancelletion
     this.orderCancelltionStates = RequestStates.init,
     this.orderCancelltionMessage = '',
+
+    //status order
+    this.statusOrders = const [],
+    this.currentDriverStatus = '',
+    this.statusOrderStates = RequestStates.init,
+    this.statusOrderMessage = '',
   });
   MyOrdersState copyWith({
     //orders
@@ -67,6 +79,12 @@ class MyOrdersState extends Equatable {
     //cancelletion
     RequestStates? orderCancelltionStates,
     String? orderCancelltionMessage,
+
+    //status Order
+    List<DriverStatus>? statusOrders,
+    String? currentDriverStatus,
+    RequestStates? statusOrderStates,
+    String? statusOrderMessage,
   }) {
     return MyOrdersState(
       //orders
@@ -91,6 +109,12 @@ class MyOrdersState extends Equatable {
           orderCancelltionStates ?? this.orderCancelltionStates,
       orderCancelltionMessage:
           orderCancelltionMessage ?? this.orderCancelltionMessage,
+
+      // status orders
+      statusOrders: statusOrders ?? this.statusOrders,
+      currentDriverStatus: currentDriverStatus ?? this.currentDriverStatus,
+      statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
+      statusOrderStates: statusOrderStates ?? this.statusOrderStates,
     );
   }
 
@@ -114,5 +138,9 @@ class MyOrdersState extends Equatable {
     ordersDetailsStates,
     orderCancelltionStates,
     orderCancelltionMessage,
+
+    //status order
+    statusOrders,
+    currentDriverStatus, statusOrderMessage, statusOrderStates,
   ];
 }

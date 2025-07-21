@@ -50,9 +50,23 @@ https://admin.aldobi.com/homecleaning/hc-store/order/start/7926
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
-      onPressed: shareToWhatsApp,
-      icon: Icon(Icons.share, size: 20.sp, color: AppColors.blueText),
+    return InkWell(
+      onTap: shareToWhatsApp,
+
+      // style: ButtonStyle(
+      //   iconColor: WidgetStateProperty.all(AppColors.primary),
+      //   backgroundColor: WidgetStatePropertyAll(AppColors.white),
+
+      //   shape: WidgetStateProperty.all(
+      //     RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(AppSizes.textFieldRadius),
+      //     ),
+      //   ),
+      // ),
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Icon(Icons.share, size: 20.sp, color: AppColors.blueText),
+      ),
     );
   }
 }

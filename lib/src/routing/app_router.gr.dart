@@ -158,18 +158,67 @@ class OrderDetailsRouteArgs {
 
 /// generated route for
 /// [_i7.OrderStatusScreen]
-class OrderStatusRoute extends _i9.PageRouteInfo<void> {
-  const OrderStatusRoute({List<_i9.PageRouteInfo>? children})
-    : super(OrderStatusRoute.name, initialChildren: children);
+class OrderStatusRoute extends _i9.PageRouteInfo<OrderStatusRouteArgs> {
+  OrderStatusRoute({
+    _i10.Key? key,
+    required String? statusOrderType,
+    required String serviceOrderID,
+    List<_i9.PageRouteInfo>? children,
+  }) : super(
+         OrderStatusRoute.name,
+         args: OrderStatusRouteArgs(
+           key: key,
+           statusOrderType: statusOrderType,
+           serviceOrderID: serviceOrderID,
+         ),
+         initialChildren: children,
+       );
 
   static const String name = 'OrderStatusRoute';
 
   static _i9.PageInfo page = _i9.PageInfo(
     name,
     builder: (data) {
-      return const _i7.OrderStatusScreen();
+      final args = data.argsAs<OrderStatusRouteArgs>();
+      return _i7.OrderStatusScreen(
+        key: args.key,
+        statusOrderType: args.statusOrderType,
+        serviceOrderID: args.serviceOrderID,
+      );
     },
   );
+}
+
+class OrderStatusRouteArgs {
+  const OrderStatusRouteArgs({
+    this.key,
+    required this.statusOrderType,
+    required this.serviceOrderID,
+  });
+
+  final _i10.Key? key;
+
+  final String? statusOrderType;
+
+  final String serviceOrderID;
+
+  @override
+  String toString() {
+    return 'OrderStatusRouteArgs{key: $key, statusOrderType: $statusOrderType, serviceOrderID: $serviceOrderID}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OrderStatusRouteArgs) return false;
+    return key == other.key &&
+        statusOrderType == other.statusOrderType &&
+        serviceOrderID == other.serviceOrderID;
+  }
+
+  @override
+  int get hashCode =>
+      key.hashCode ^ statusOrderType.hashCode ^ serviceOrderID.hashCode;
 }
 
 /// generated route for

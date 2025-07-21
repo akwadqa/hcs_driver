@@ -26,6 +26,9 @@ Map<String, dynamic> _$OrdersDetailsToJson(OrdersDetails instance) =>
 
 Details _$DetailsFromJson(Map<String, dynamic> json) => Details(
   status: json['status'] as String?,
+  supervisor: json['supervisor'] == null
+      ? null
+      : Supervisor.fromJson(json['supervisor'] as Map<String, dynamic>),
   customer: json['customer'] == null
       ? null
       : Customer.fromJson(json['customer'] as Map<String, dynamic>),
@@ -43,10 +46,13 @@ Details _$DetailsFromJson(Map<String, dynamic> json) => Details(
   staffAppointment: (json['staff_appointment'] as List<dynamic>?)
       ?.map((e) => e as String)
       .toList(),
+  note: json['note'] as String?,
+  days: (json['days'] as List<dynamic>?)?.map((e) => e as String).toList(),
 );
 
 Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
   'status': instance.status,
+  'supervisor': instance.supervisor,
   'customer': instance.customer,
   'driver': instance.driver,
   'date': instance.date,
@@ -58,10 +64,12 @@ Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
   'total_net_amount': instance.totalNetAmount,
   'method_of_payment': instance.methodOfPayment,
   'staff_appointment': instance.staffAppointment,
+  'note': instance.note,
+  'days': instance.days,
 };
 
 Customer _$CustomerFromJson(Map<String, dynamic> json) => Customer(
-  customerId: json['customer_id'] as String?,
+  customerId: json['customer_id'] as String,
   customerName: json['customer_name'] as String?,
   location: json['location'] as String?,
   locationUrl: json['location_url'] as String?,
@@ -79,11 +87,36 @@ Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
 };
 
 Driver _$DriverFromJson(Map<String, dynamic> json) => Driver(
-  driverId: json['driver_id'] as String?,
+  driverId: json['driver_id'] as String,
   driverName: json['driver_name'] as String?,
+  currentDriverStatus: json['current_driver_status'] as String?,
+  driverStatus: (json['driver_status'] as List<dynamic>)
+      .map((e) => DriverStatus.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$DriverToJson(Driver instance) => <String, dynamic>{
   'driver_id': instance.driverId,
   'driver_name': instance.driverName,
+  'current_driver_status': instance.currentDriverStatus,
+  'driver_status': instance.driverStatus,
 };
+
+DriverStatus _$DriverStatusFromJson(Map<String, dynamic> json) => DriverStatus(
+  status: json['status'] as String,
+  active: json['active'] as bool,
+);
+
+Map<String, dynamic> _$DriverStatusToJson(DriverStatus instance) =>
+    <String, dynamic>{'status': instance.status, 'active': instance.active};
+
+Supervisor _$SupervisorFromJson(Map<String, dynamic> json) => Supervisor(
+  supervisor: json['supervisor'] as String,
+  supervisorName: json['supervisor_name'] as String,
+);
+
+Map<String, dynamic> _$SupervisorToJson(Supervisor instance) =>
+    <String, dynamic>{
+      'supervisor': instance.supervisor,
+      'supervisor_name': instance.supervisorName,
+    };

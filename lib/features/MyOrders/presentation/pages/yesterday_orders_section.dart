@@ -9,17 +9,17 @@ import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/enums/request_state.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
-import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
+import 'package:hcs_driver/src/theme/app_colors.dart';
 
-class PendingOrdersScreen extends ConsumerStatefulWidget {
-  const PendingOrdersScreen({super.key});
+class YesterdayOrdersScreen extends ConsumerStatefulWidget {
+  const YesterdayOrdersScreen({super.key});
   @override
-  ConsumerState<PendingOrdersScreen> createState() =>
-      _PendingOrdersScreenState();
+  ConsumerState<YesterdayOrdersScreen> createState() =>
+      _YesterdayOrdersScreenState();
 }
 
-class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
+class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
   late ScrollController _scrollController;
   Timer? _loadMoreTimer;
 
@@ -27,7 +27,8 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
   void initState() {
     super.initState();
     Future(
-      () => ref.read(myOrdersControllerProvider.notifier).fetchPendingOrders(),
+      () =>
+          ref.read(myOrdersControllerProvider.notifier).fetchYesterdayOrders(),
     );
 
     _scrollController = ScrollController()..addListener(_onScroll);
@@ -35,14 +36,16 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
 
   _onScroll() {
     final customerState = ref.read(myOrdersControllerProvider);
-    final hasMore = customerState.currentPendingOrdersPage != null;
+    final hasMore = customerState.currentApprovedOrdersPage != null;
 
     if (_scrollController.position.pixels >
             _scrollController.position.maxScrollExtent - 100 &&
         hasMore) {
       _loadMoreTimer?.cancel();
       _loadMoreTimer = Timer(const Duration(milliseconds: 500), () {
-        ref.read(myOrdersControllerProvider.notifier).onLoadMorePendingOrders();
+        ref
+            .read(myOrdersControllerProvider.notifier)
+            .onLoadMoreYesterdayOrders();
       });
     }
   }
@@ -58,26 +61,34 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
   Widget build(BuildContext context) {
     var ordersState = ref.watch(myOrdersControllerProvider);
 
-    if (ordersState.pendingOrdersStates == RequestStates.init ||
-        ordersState.pendingOrdersStates == RequestStates.loading) {
+    if (ordersState.approvedOrdersStates == RequestStates.init ||
+        ordersState.approvedOrdersStates == RequestStates.loading) {
+      // return Center(child: FadeCircleLoadingIndicator());
       return Center(child: FadeCircleLoadingIndicator());
-    } else if (ordersState.pendingOrdersStates == RequestStates.loaded) {
-      if (ordersState.pendingOrders.isEmpty) {
-        return Assets.images.noDataMin.image();
+    } else if (ordersState.approvedOrdersStates == RequestStates.loaded) {
+      if (ordersState.approvedOrders.isEmpty) {
+        return RefreshIndicator(
+          onRefresh: () async {
+            await ref
+                .read(myOrdersControllerProvider.notifier)
+                .fetchYesterdayOrders();
+          },
+          child: Center(child: Assets.images.noDataMin.image()),
+        );
       }
       return RefreshIndicator(
         onRefresh: () async {
           await ref
               .read(myOrdersControllerProvider.notifier)
-              .fetchPendingOrders();
+              .fetchYesterdayOrders();
         },
         child: ListView.builder(
           controller: _scrollController,
           shrinkWrap: true,
-          itemCount: ordersState.pendingOrders.length + 1,
+          itemCount: ordersState.approvedOrders.length + 1,
           itemBuilder: (context, index) {
-            if (index >= ordersState.pendingOrders.length) {
-              if (ordersState.currentPendingOrdersPage == null) {
+            if (index >= ordersState.approvedOrders.length) {
+              if (ordersState.currentApprovedOrdersPage == null) {
                 return Center(
                   child: Text(
                     'No More Orders',
@@ -96,7 +107,7 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
                 context.pushRoute(
                   OrderDetailsRoute(
                     serviceOrderID:
-                        ordersState.pendingOrders[index].serviceOrderId,
+                        ordersState.approvedOrders[index].serviceOrderId,
                   ),
                 );
               },
@@ -116,7 +127,7 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          ordersState.pendingOrders[index].serviceOrderId,
+                          ordersState.approvedOrders[index].serviceOrderId,
                           style: Theme.of(context).textTheme.displaySmall!
                               .copyWith(
                                 fontSize: 14.sp,
@@ -128,7 +139,7 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
                             Assets.images.pending.svg(),
                             9.horizontalSpace,
                             Text(
-                              ordersState.pendingOrders[index].status
+                              ordersState.approvedOrders[index].status
                                   .toString(),
                               style: Theme.of(context).textTheme.displayMedium!
                                   .copyWith(fontSize: 14.sp),
@@ -139,7 +150,7 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
                     ),
                     8.verticalSpace,
                     Text(
-                      ordersState.pendingOrders[index].serviceType,
+                      ordersState.approvedOrders[index].serviceType,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 12.sp,
                         color: AppColors.greyText,
@@ -151,7 +162,7 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          ordersState.pendingOrders[index].postingDate,
+                          ordersState.approvedOrders[index].postingDate,
                           style: Theme.of(context).textTheme.bodyMedium!
                               .copyWith(
                                 fontSize: 12.sp,
@@ -160,7 +171,7 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
                               ),
                         ),
                         Text(
-                          "QR ${ordersState.pendingOrders[index].totalNetAmount}",
+                          "QR ${ordersState.approvedOrders[index].totalNetAmount}",
                           style: Theme.of(context).textTheme.displaySmall!
                               .copyWith(
                                 fontSize: 12.sp,
@@ -177,12 +188,12 @@ class _PendingOrdersScreenState extends ConsumerState<PendingOrdersScreen> {
           },
         ),
       );
-    } else if (ordersState.pendingOrdersStates == RequestStates.error) {
+    } else if (ordersState.approvedOrdersStates == RequestStates.error) {
       return AppErrorWidget(
         onTap: () => Future(
           () => ref
               .read(myOrdersControllerProvider.notifier)
-              .fetchPendingOrders(),
+              .fetchYesterdayOrders(),
         ),
       );
     }

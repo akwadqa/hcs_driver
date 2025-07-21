@@ -1,25 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/text_card.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/widgets/time_tile_card.dart';
+import 'package:hcs_driver/src/shared_widgets/custom_button.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
 class CustomTimelineTile extends StatelessWidget {
   final int index;
-  final bool isParentPassed;
+  final String title;
+  final bool isParentActive;
+  final bool isActive;
+  final bool isChildActive;
   final bool isFirst;
   final bool isLast;
-  final bool isPassed;
   final String? lastStepStatus; // 'done', 'issue', 'cancelled'
+  final void Function()? onPressed;
 
   const CustomTimelineTile({
     super.key,
     required this.index,
-    required this.isParentPassed,
+    required this.title,
+    required this.isParentActive,
+    required this.isActive,
+    required this.isChildActive,
     required this.isFirst,
     required this.isLast,
-    required this.isPassed,
-    this.lastStepStatus,
+    this.lastStepStatus, this.onPressed,
   });
 
   Color _getLastStepColor() {
@@ -59,7 +66,7 @@ class CustomTimelineTile extends StatelessWidget {
         ),
         child: Center(child: _getLastStepIcon()),
       );
-    } else if (isPassed) {
+    } else if (isActive && isChildActive) {
       return Container(
         height: 38.h,
         width: 38.w,
@@ -94,9 +101,9 @@ class CustomTimelineTile extends StatelessWidget {
 
   Color _getLineColor(bool beforeLine) {
     if (beforeLine) {
-      return isPassed || isParentPassed ? AppColors.blueTitle : Colors.white;
+      return isActive ? AppColors.blueTitle : Colors.white;
     } else {
-      return isPassed ? AppColors.blueTitle : Colors.white;
+      return isChildActive ? AppColors.blueTitle : Colors.white;
     }
   }
 
@@ -104,7 +111,6 @@ class CustomTimelineTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 90.h,
-      width: 600.w,
       child: TimelineTile(
         isFirst: isFirst,
         isLast: isLast,
@@ -116,19 +122,27 @@ class CustomTimelineTile extends StatelessWidget {
           width: 38.w,
           indicator: _buildIndicator(),
         ),
-
         beforeLineStyle: LineStyle(color: _getLineColor(true), thickness: 6),
         afterLineStyle: LineStyle(color: _getLineColor(false), thickness: 6),
-        startChild: !isLast && (index % 2 != 0)
-            ? Center(
-                child: TextCard(text: "New Job", isPassed: isPassed),
+
+        startChild: (index % 2 != 0)
+            ? TimeTileCard( 
+              onPressed: onPressed,
+                isActive: isActive,
+                isLast: isLast,
+                isChildActive: isChildActive,
+                text: title,
               )
-            : null,
+            : SizedBox.shrink(),
         endChild: !isLast && (index % 2 == 0)
-            ? Center(
-                child: TextCard(text: "Job Accepted", isPassed: isPassed),
+            ? TimeTileCard(
+              onPressed:onPressed ,
+                isActive: isActive,
+                isLast: isLast,
+                isChildActive: isChildActive,
+                text: title,
               )
-            : null,
+            : SizedBox.shrink(),
       ),
     );
   }

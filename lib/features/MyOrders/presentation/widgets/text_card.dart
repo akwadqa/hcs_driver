@@ -4,14 +4,14 @@ import 'package:hcs_driver/src/theme/app_colors.dart';
 
 class TextCard extends StatelessWidget {
   final String text;
-  final bool isPassed;
-  const TextCard({super.key, required this.text, required this.isPassed});
+  final bool isActive;
+  const TextCard({super.key, required this.text, required this.isActive});
 
   @override
   Widget build(BuildContext context) {
     return Text(
       text,
-      style: isPassed
+      style: isActive
           ? Theme.of(context).textTheme.displaySmall!.copyWith(
               fontSize: 15.sp,
               fontWeight: FontWeight.w500,
