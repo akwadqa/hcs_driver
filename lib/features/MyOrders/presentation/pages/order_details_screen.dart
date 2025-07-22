@@ -15,6 +15,7 @@ import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
+import 'package:hcs_driver/src/shared_widgets/row_error_widget.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 
 @RoutePage()
@@ -134,7 +135,26 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         (value) => value.currentDriverStatus,
                       ),
                     );
-                    return InfoRow("Status", value: currentDriverStatus);
+                    var statusOrderStates = ref.watch(
+                      myOrdersControllerProvider.select(
+                        (value) => value.statusOrderStates,
+                      ),
+                    );
+                    switch (statusOrderStates) {
+                      case RequestStates.init:
+                      case RequestStates.loaded:
+                        return InfoRow("Status", value: currentDriverStatus);
+                      case RequestStates.loading:
+                        return Center(child: FadeCircleLoadingIndicator());
+                      case RequestStates.error:
+                        return SimpleErrorWidget(
+                          onTap: () => ref
+                              .watch(myOrdersControllerProvider.notifier)
+                              .updateStatusOrder(
+                                serviceOrderID: widget.serviceOrderID,
+                              ),
+                        );
+                    }
                   },
                 ),
                 Row(

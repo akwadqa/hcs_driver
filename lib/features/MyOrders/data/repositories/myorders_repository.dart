@@ -1,9 +1,9 @@
 // home_repository.dart
 import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
-import 'package:hcs_driver/features/MyOrders/data/models/updated_status_model.dart';
 import 'package:hcs_driver/src/constants/api_constance.dart';
 import 'package:hcs_driver/src/network/network_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -67,15 +67,19 @@ class MyOrdersRepository {
   Future<UpdatedStatus> updateStatusOrder({
     required String serviceOrderId,
   }) async {
+    debugPrint('ngd 00 ');
+
     var data = FormData.fromMap({'service_order_id': serviceOrderId});
     final response = await _networkService.post(
       ApiConstance.updateStatusOrder,
       data,
     );
+    debugPrint('ngd 11 ');
 
     if (response.statusCode == 200) {
-  
-      return updatedStatusFromJson(response.data);
+      debugPrint('ngd 22 ');
+
+      return UpdatedStatus.fromJson(response.data);
     } else {
       throw Exception(response.message ?? 'Failed to update Status Order');
     }

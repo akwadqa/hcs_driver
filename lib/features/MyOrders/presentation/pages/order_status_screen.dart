@@ -76,6 +76,7 @@ class OrderStatusScreen extends ConsumerWidget {
                   isFirst: isFirst,
                   isLast: isLast,
                   lastStepStatus: lastStepStatus,
+                  hasButton: isActive && !isChildActive && !isLast, 
                   onPressed: () => ref
                       .read(myOrdersControllerProvider.notifier)
                       .updateStatusOrder(serviceOrderID: serviceOrderID),

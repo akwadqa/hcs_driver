@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:hcs_driver/features/MyOrders/data/repositories/myorders_repository.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
 import 'package:hcs_driver/src/enums/request_state.dart';
@@ -220,15 +221,19 @@ class MyOrdersController extends _$MyOrdersController {
 
   Future<void> updateStatusOrder({required String serviceOrderID}) async {
     state = state.copyWith(statusOrderStates: RequestStates.loading);
-
+    debugPrint('ngd 1 ');
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final statusOrders = await myOrdersRepo.updateStatusOrder(
         serviceOrderId: serviceOrderID,
       );
+    debugPrint('ngd 2 ');
+
       String currentDriverStatus = statusOrders.data
           .lastWhere((element) => element.active == true)
           .status;
+
+    debugPrint('ngd 3 ');
 
       state = state.copyWith(
         statusOrders: statusOrders.data,
@@ -236,6 +241,8 @@ class MyOrdersController extends _$MyOrdersController {
         statusOrderStates: RequestStates.loaded,
         statusOrderMessage: '',
       );
+    debugPrint('ngd 4 ');
+
     } catch (e) {
       state = state.copyWith(
         statusOrderStates: RequestStates.error,

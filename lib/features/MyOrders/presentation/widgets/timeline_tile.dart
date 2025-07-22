@@ -16,6 +16,7 @@ class CustomTimelineTile extends StatelessWidget {
   final bool isLast;
   final String? lastStepStatus; // 'done', 'issue', 'cancelled'
   final void Function()? onPressed;
+  final bool hasButton;
 
   const CustomTimelineTile({
     super.key,
@@ -26,7 +27,9 @@ class CustomTimelineTile extends StatelessWidget {
     required this.isChildActive,
     required this.isFirst,
     required this.isLast,
-    this.lastStepStatus, this.onPressed,
+    this.lastStepStatus,
+    this.onPressed,
+    required this.hasButton,
   });
 
   Color _getLastStepColor() {
@@ -109,8 +112,10 @@ class CustomTimelineTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = hasButton ? 120.h : 90.h;
+
     return SizedBox(
-      height: 90.h,
+      height: height,
       child: TimelineTile(
         isFirst: isFirst,
         isLast: isLast,
@@ -126,8 +131,8 @@ class CustomTimelineTile extends StatelessWidget {
         afterLineStyle: LineStyle(color: _getLineColor(false), thickness: 6),
 
         startChild: (index % 2 != 0)
-            ? TimeTileCard( 
-              onPressed: onPressed,
+            ? TimeTileCard(
+                onPressed: onPressed,
                 isActive: isActive,
                 isLast: isLast,
                 isChildActive: isChildActive,
@@ -136,7 +141,7 @@ class CustomTimelineTile extends StatelessWidget {
             : SizedBox.shrink(),
         endChild: !isLast && (index % 2 == 0)
             ? TimeTileCard(
-              onPressed:onPressed ,
+                onPressed: onPressed,
                 isActive: isActive,
                 isLast: isLast,
                 isChildActive: isChildActive,

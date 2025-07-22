@@ -87,7 +87,7 @@ class ApiConstance {
     required String dateType,
   }) =>
       // '$baseUrl/$baseDomain.api.service_order.service_orders?page=$page&limit=10&status=$status';
-      '$baseUrl/$baseDomain.api.service_order.service_orders?page=$page&limit=10&date_type=$dateType';
+      '$baseUrl/$baseDomain.api.service_order.service_orders?page=$page&limit=10&status=Approved&date_type=$dateType';
 
   static String getServiceOrderDetails({required String serviceOrderId}) =>
       // '$baseUrl/$baseDomain.api.service_order.service_order_details?service_order_id=$serviceOrderId';
@@ -96,7 +96,6 @@ class ApiConstance {
   static String orderCancelltion() =>
       '$baseUrl/$baseDomain.api.service_order.cancel_service_order';
 
-  static String updateStatusOrder=
+  static String updateStatusOrder =
       '$baseUrl/$baseDomain.api.service_order.update_driver_status';
-      
 }
