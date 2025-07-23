@@ -96,6 +96,10 @@ class $AssetsImagesGen {
   SvgGenImage get redSuccessful =>
       const SvgGenImage('assets/images/red_successful.svg');
 
+  /// File path: assets/images/right_arrow.svg
+  SvgGenImage get rightArrow =>
+      const SvgGenImage('assets/images/right_arrow.svg');
+
   /// File path: assets/images/search.svg
   SvgGenImage get search => const SvgGenImage('assets/images/search.svg');
 
@@ -139,6 +143,7 @@ class $AssetsImagesGen {
     noDataMin,
     pending,
     redSuccessful,
+    rightArrow,
     search,
     settingsSelected,
     settingsUnselected,
