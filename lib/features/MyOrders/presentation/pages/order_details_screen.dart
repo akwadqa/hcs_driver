@@ -127,156 +127,147 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           ),
           18.verticalSpace,
           _wrapWithCard(
-            Column(
-              children: [
-                Consumer(
-                  builder: (context, ref, child) {
-                    var currentDriverStatus = ref.watch(
-                      myOrdersControllerProvider.select(
-                        (value) => value.currentDriverStatus,
-                      ),
-                    );
-                    var statusOrderStates = ref.watch(
-                      myOrdersControllerProvider.select(
-                        (value) => value.statusOrderStates,
-                      ),
-                    );
-                    switch (statusOrderStates) {
-                      case RequestStates.init:
-                      case RequestStates.loaded:
-                        return Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.h),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                "Status",
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displayMedium!
-                                    .copyWith(
-                                      color: AppColors.blueText,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                              ),
-                              SizedBox(width: 10.w),
-                              Expanded(
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: 8.w,
-
-                                    vertical: 6.h,
-                                  ),
-                                  alignment: Alignment.centerLeft,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10.r),
-                                    border: Border.all(
-                                      color: AppColors.grayBorder,
-                                    ),
-                                  ),
-                                  child: Text(
-                                    currentDriverStatus,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.start,
-                                    style: Theme.of(
-                                      context,
-                                    ).textTheme.displayMedium!.copyWith(),
-                                  ),
+            Consumer(
+              builder: (context, ref, child) {
+                var currentDriverStatus = ref.watch(
+                  myOrdersControllerProvider.select(
+                    (value) => value.currentDriverStatus,
+                  ),
+                );
+                var statusOrderStates = ref.watch(
+                  myOrdersControllerProvider.select(
+                    (value) => value.statusOrderStates,
+                  ),
+                );
+                switch (statusOrderStates) {
+                  case RequestStates.init:
+                  case RequestStates.loaded:
+                    return Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.h),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            "Status",
+                            overflow: TextOverflow.ellipsis,
+                            style: Theme.of(context).textTheme.displayMedium!
+                                .copyWith(
+                                  color: AppColors.blueText,
+                                  fontWeight: FontWeight.w600,
                                 ),
-                              ),
-                              SizedBox(width: 10.w),
-                              Consumer(
-                                builder: (context, ref, child) {
-                                  var statusOrderStates = ref.watch(
-                                    myOrdersControllerProvider.select(
-                                      (value) => value.statusOrderStates,
-                                    ),
-                                  );
-
-                                  var statusOrders = ref.watch(
-                                    myOrdersControllerProvider.select(
-                                      (value) => value.statusOrders,
-                                    ),
-                                  );
-                                  var currentDriverStatus = ref.watch(
-                                    myOrdersControllerProvider.select(
-                                      (value) => value.currentDriverStatus,
-                                    ),
-                                  );
-                                  return InkWell(
-                                    onTap:
-                                        statusOrderStates !=
-                                                RequestStates.loading &&
-                                            statusOrders.last.status !=
-                                                currentDriverStatus
-                                        ? () => ref
-                                              .watch(
-                                                myOrdersControllerProvider
-                                                    .notifier,
-                                              )
-                                              .updateStatusOrder(
-                                                serviceOrderID:
-                                                    widget.serviceOrderID,
-                                              )
-                                        : null,
-                                    child: Text(
-                                      "Change",
-                                      overflow: TextOverflow.ellipsis,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .displayMedium!
-                                          .copyWith(
-                                            decoration:
-                                                TextDecoration.underline,
-                                            color: AppColors.blueText,
-                                          ),
-                                    ),
-                                  );
-                                },
-                              ),
-                              SizedBox(width: 5.w),
-                              InkWell(
-                                child: Container(
-                                  height: 27.sp,
-                                  width: 27.sp,
-
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: AppColors.primary,
-                                  ),
-
-                                  child: Assets.images.rightArrow.svg(
-                                    height: 10.sp,
-                                    width: 10.sp,
-                                  ),
-                                ),
-                                onTap: () => context.pushRoute(
-                                  OrderStatusRoute(
-                                    statusOrderType: details!.status,
-                                    serviceOrderID: widget.serviceOrderID,
-                                  ),
-                                ),
-                              ),
-                            ],
                           ),
-                        );
+                          SizedBox(width: 10.w),
+                          Expanded(
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 8.w,
 
-                      case RequestStates.loading:
-                        return Center(child: FadeCircleLoadingIndicator());
-                      case RequestStates.error:
-                        return SimpleErrorWidget(
-                          onTap: () => ref
-                              .watch(myOrdersControllerProvider.notifier)
-                              .updateStatusOrder(
+                                vertical: 6.h,
+                              ),
+                              alignment: Alignment.centerLeft,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.r),
+                                border: Border.all(color: AppColors.grayBorder),
+                              ),
+                              child: Text(
+                                currentDriverStatus,
+                                overflow: TextOverflow.ellipsis,
+                                textAlign: TextAlign.start,
+                                style: Theme.of(
+                                  context,
+                                ).textTheme.displayMedium!.copyWith(),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 10.w),
+                          Consumer(
+                            builder: (context, ref, child) {
+                              var statusOrderStates = ref.watch(
+                                myOrdersControllerProvider.select(
+                                  (value) => value.statusOrderStates,
+                                ),
+                              );
+
+                              var statusOrders = ref.watch(
+                                myOrdersControllerProvider.select(
+                                  (value) => value.statusOrders,
+                                ),
+                              );
+                              var currentDriverStatus = ref.watch(
+                                myOrdersControllerProvider.select(
+                                  (value) => value.currentDriverStatus,
+                                ),
+                              );
+                              return InkWell(
+                                onTap:
+                                    statusOrderStates !=
+                                            RequestStates.loading &&
+                                        statusOrders.last.status !=
+                                            currentDriverStatus
+                                    ? () => ref
+                                          .watch(
+                                            myOrdersControllerProvider.notifier,
+                                          )
+                                          .updateStatusOrder(
+                                            serviceOrderID:
+                                                widget.serviceOrderID,
+                                          )
+                                    : null,
+                                child: Text(
+                                  "Change",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium!
+                                      .copyWith(
+                                        decoration: TextDecoration.underline,
+                                        color: AppColors.blueText,
+                                      ),
+                                ),
+                              );
+                            },
+                          ),
+                          SizedBox(width: 5.w),
+                          InkWell(
+                            child: Container(
+                              height: 27.w,
+                              width: 27.w,
+
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: AppColors.primary,
+                              ),
+
+                              child: Assets.images.rightArrow.svg(
+                                height: 10.sp,
+                                width: 10.sp,
+                                fit: BoxFit.fill,
+                              ),
+                            ),
+                            onTap: () => context.pushRoute(
+                              OrderStatusRoute(
+                                statusOrderType: details!.status,
                                 serviceOrderID: widget.serviceOrderID,
                               ),
-                        );
-                    }
-                  },
-                ),
-              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+
+                  case RequestStates.loading:
+                    return Center(child: FadeCircleLoadingIndicator());
+                  case RequestStates.error:
+                    return SimpleErrorWidget(
+                      onTap: () => ref
+                          .watch(myOrdersControllerProvider.notifier)
+                          .updateStatusOrder(
+                            serviceOrderID: widget.serviceOrderID,
+                          ),
+                    );
+                }
+              },
             ),
           ),
           18.verticalSpace,

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/widgets/text_card.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/time_tile_card.dart';
-import 'package:hcs_driver/src/shared_widgets/custom_button.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
@@ -132,6 +130,7 @@ class CustomTimelineTile extends StatelessWidget {
 
         startChild: (index % 2 != 0)
             ? TimeTileCard(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 onPressed: onPressed,
                 isActive: isActive,
                 isLast: isLast,
@@ -141,6 +140,8 @@ class CustomTimelineTile extends StatelessWidget {
             : SizedBox.shrink(),
         endChild: !isLast && (index % 2 == 0)
             ? TimeTileCard(
+                crossAxisAlignment: CrossAxisAlignment.start,
+
                 onPressed: onPressed,
                 isActive: isActive,
                 isLast: isLast,
