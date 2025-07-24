@@ -29,6 +29,7 @@ class MyOrdersState extends Equatable {
   //status Order
   final List<DriverStatus> statusOrders;
   final String currentDriverStatus;
+  final String? nextDriverStatus;
   final RequestStates statusOrderStates;
   final String? statusOrderMessage;
   const MyOrdersState({
@@ -55,6 +56,7 @@ class MyOrdersState extends Equatable {
     //status order
     this.statusOrders = const [],
     this.currentDriverStatus = '',
+    this.nextDriverStatus,
     this.statusOrderStates = RequestStates.init,
     this.statusOrderMessage = '',
   });
@@ -83,6 +85,8 @@ class MyOrdersState extends Equatable {
     //status Order
     List<DriverStatus>? statusOrders,
     String? currentDriverStatus,
+    String? nextDriverStatus,
+
     RequestStates? statusOrderStates,
     String? statusOrderMessage,
   }) {
@@ -113,6 +117,7 @@ class MyOrdersState extends Equatable {
       // status orders
       statusOrders: statusOrders ?? this.statusOrders,
       currentDriverStatus: currentDriverStatus ?? this.currentDriverStatus,
+      nextDriverStatus: nextDriverStatus,
       statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
       statusOrderStates: statusOrderStates ?? this.statusOrderStates,
     );
@@ -141,6 +146,9 @@ class MyOrdersState extends Equatable {
 
     //status order
     statusOrders,
-    currentDriverStatus, statusOrderMessage, statusOrderStates,
+    currentDriverStatus,
+    nextDriverStatus,
+    statusOrderMessage,
+    statusOrderStates,
   ];
 }
