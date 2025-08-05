@@ -191,7 +191,7 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> fetchOrdersDetails({required String serviceOrderID}) async {
+  Future<void> fetchOrdersDetails({required String staffAppointmentLog}) async {
     state = state.copyWith(
       ordersDetailsStates: RequestStates.loading,
       orderCancelltionStates: RequestStates.init,
@@ -200,7 +200,8 @@ class MyOrdersController extends _$MyOrdersController {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersDetails = await myOrdersRepo.getServicesOrderDetails(
-        serviceOrderId: serviceOrderID,
+        // serviceOrderId: serviceOrderID,
+        staffAppointmentLog: staffAppointmentLog,
       );
 
       DriverStatus? nextStatusElement = ordersDetails
@@ -228,12 +229,12 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  Future<void> updateStatusOrder({required String serviceOrderID}) async {
+  Future<void> updateStatusOrder({required String appointmentID}) async {
     state = state.copyWith(statusOrderStates: RequestStates.loading);
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final statusOrders = await myOrdersRepo.updateStatusOrder(
-        serviceOrderId: serviceOrderID,
+        appointmentID: appointmentID,
       );
 
       String currentDriverStatus = statusOrders.data
@@ -259,6 +260,74 @@ class MyOrdersController extends _$MyOrdersController {
       );
     }
   }
+
+  Future<void> fetchAppontments({required String serviceOrderID}) async {
+    state = state.copyWith(appointmentsStates: RequestStates.loading);
+
+    try {
+      final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
+      final appointmentsData = await myOrdersRepo.getAppontments(
+        page: 1,
+        orderId: serviceOrderID,
+      );
+
+      int? nextPage;
+      //if there is a second page ?
+      if (appointmentsData.pagination.totalPages > 1) {
+        nextPage = 2;
+      } else {
+        nextPage = null;
+      }
+      state = state.copyWith(
+        currentAppointmentsPage: nextPage,
+        ordersAppointments: appointmentsData.data,
+
+        // ordersAppointments: appointmentsData.data,
+        appointmentsStates: RequestStates.loaded,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        appointmentsStates: RequestStates.error,
+        ordersMessage: e.toString(),
+      );
+    }
+  }
+
+  Future<void> onLoadMoreAppontments({required String serviceOrderID}) async {
+    try {
+      final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
+      final appointmentsData = await myOrdersRepo.getAppontments(
+        page: state.currentAppointmentsPage!,
+        orderId: serviceOrderID,
+      );
+
+      int? nextPage;
+      //if we reach the limit or not ?
+      if (appointmentsData.pagination.totalPages >
+          appointmentsData.pagination.page) {
+        nextPage = appointmentsData.pagination.page + 1;
+      } else {
+        nextPage = null;
+      }
+      state = state.copyWith(
+        currentAppointmentsPage: nextPage,
+        ordersAppointments: [
+          ...state.ordersAppointments,
+          ...appointmentsData.data,
+        ],
+        appointmentsStates: RequestStates.loaded,
+        ordersMessage: '',
+      );
+    } catch (e) {
+      state = state.copyWith(
+        appointmentsStates: RequestStates.error,
+        ordersMessage: e.toString(),
+      );
+    }
+  }
+}
+
+
   // Future<void> orderCancelltion({required String serviceOrderID}) async {
   //   state = state.copyWith(orderCancelltionStates: RequestStates.loading);
 
@@ -279,4 +348,3 @@ class MyOrdersController extends _$MyOrdersController {
   //     );
   //   }
   // }
-}

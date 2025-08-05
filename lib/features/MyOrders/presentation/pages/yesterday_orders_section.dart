@@ -105,10 +105,14 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
             return GestureDetector(
               onTap: () {
                 context.pushRoute(
-                  OrderDetailsRoute(
+                  AppoinmentRoute(
                     serviceOrderID:
-                        ordersState.approvedOrders[index].serviceOrderId,
+                        ordersState.pendingOrders[index].serviceOrderId,
                   ),
+                  // OrderDetailsRoute(
+                  //   serviceOrderID:
+                  //       ordersState.approvedOrders[index].serviceOrderId,
+                  // ),
                 );
               },
               child: Container(

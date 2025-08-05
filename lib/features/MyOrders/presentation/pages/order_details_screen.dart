@@ -22,7 +22,12 @@ import 'package:hcs_driver/src/theme/app_colors.dart';
 @RoutePage()
 class OrderDetailsScreen extends ConsumerStatefulWidget {
   final String serviceOrderID;
-  const OrderDetailsScreen({super.key, required this.serviceOrderID});
+  final String appointmentID;
+  const OrderDetailsScreen({
+    super.key,
+    required this.serviceOrderID,
+    required this.appointmentID,
+  });
 
   @override
   ConsumerState<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
@@ -35,7 +40,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     Future(
       () => ref
           .read(myOrdersControllerProvider.notifier)
-          .fetchOrdersDetails(serviceOrderID: widget.serviceOrderID),
+          //todo here we should use appointment Id not serviceOrderID
+          .fetchOrdersDetails(staffAppointmentLog: widget.appointmentID),
     );
   }
 
@@ -65,7 +71,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               onTap: () => Future(
                 () => ref
                     .read(myOrdersControllerProvider.notifier)
-                    .fetchOrdersDetails(serviceOrderID: widget.serviceOrderID),
+                    //todo here we should use appointment Id not serviceOrderID
+                    .fetchOrdersDetails(
+                      staffAppointmentLog: widget.appointmentID,
+                    ),
               ),
             )
           : SizedBox.shrink(),
@@ -130,7 +139,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             onTap: () => context.pushRoute(
               OrderStatusRoute(
                 statusOrderType: details!.status,
-                serviceOrderID: widget.serviceOrderID,
+                appointmentID: widget.appointmentID,
               ),
             ),
             child: _wrapWithCard(
@@ -179,8 +188,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                     .notifier,
                                               )
                                               .updateStatusOrder(
-                                                serviceOrderID:
-                                                    widget.serviceOrderID,
+                                                appointmentID:
+                                                    widget.appointmentID,
                                               )
                                         : null,
                                   ),
@@ -317,7 +326,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                         onTap: () => ref
                             .watch(myOrdersControllerProvider.notifier)
                             .updateStatusOrder(
-                              serviceOrderID: widget.serviceOrderID,
+                              appointmentID: widget.appointmentID,
                             ),
                       );
                   }

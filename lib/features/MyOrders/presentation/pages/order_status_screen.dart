@@ -13,12 +13,14 @@ import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart
 @RoutePage()
 class OrderStatusScreen extends ConsumerWidget {
   final String? statusOrderType;
-  final String serviceOrderID;
+  // final String serviceOrderID;
+  final String appointmentID;
 
   const OrderStatusScreen({
     super.key,
     required this.statusOrderType,
-    required this.serviceOrderID,
+    // required this.serviceOrderID,
+    required this.appointmentID,
   });
 
   @override
@@ -38,7 +40,7 @@ class OrderStatusScreen extends ConsumerWidget {
         return AppErrorWidget(
           onTap: () => ref
               .read(myOrdersControllerProvider.notifier)
-              .updateStatusOrder(serviceOrderID: serviceOrderID),
+              .updateStatusOrder(appointmentID: appointmentID),
         );
       case RequestStates.init:
       case RequestStates.loaded:
@@ -79,7 +81,7 @@ class OrderStatusScreen extends ConsumerWidget {
                   hasButton: isActive && !isChildActive && !isLast, 
                   onPressed: () => ref
                       .read(myOrdersControllerProvider.notifier)
-                      .updateStatusOrder(serviceOrderID: serviceOrderID),
+                      .updateStatusOrder(appointmentID: appointmentID),
                 );
               }),
             ),

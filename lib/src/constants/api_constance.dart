@@ -89,13 +89,22 @@ class ApiConstance {
       // '$baseUrl/$baseDomain.api.service_order.service_orders?page=$page&limit=10&status=$status';
       '$baseUrl/$baseDomain.api.service_order.service_orders?page=$page&limit=10&status=Approved&date_type=$dateType';
 
-  static String getServiceOrderDetails({required String serviceOrderId}) =>
-      // '$baseUrl/$baseDomain.api.service_order.service_order_details?service_order_id=$serviceOrderId';
-      '$baseUrl/$baseDomain.api.service_order.service_order_details?service_order_id=$serviceOrderId';
+  static String getServiceOrderDetails({required String staffAppointmentLog}) =>
+      // 'https://highclass.akwad.qa/api/method/highclass.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=SAL-59593-2025&';
+      '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=$staffAppointmentLog';
 
   static String orderCancelltion() =>
       '$baseUrl/$baseDomain.api.service_order.cancel_service_order';
 
   static String updateStatusOrder =
-      '$baseUrl/$baseDomain.api.service_order.update_driver_status';
+      '$baseUrl/$baseDomain.api.staff_appointment_log.update_driver_status';
+
+  static String appontmentsLogs({required int page, required String orderId}) =>
+      '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_logs?search&status=&date_type=&page=$page&limit=10&sort_by&sort=&order_id=$orderId';
+
+  static String appontmentsLogsDetails({
+    required int page,
+    required String staffAppointmentLog,
+  }) =>
+      '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=$staffAppointmentLog';
 }

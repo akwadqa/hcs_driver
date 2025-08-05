@@ -8,12 +8,10 @@ part of 'orders_details_model.dart';
 
 OrdersDetails _$OrdersDetailsFromJson(Map<String, dynamic> json) =>
     OrdersDetails(
-      statusCode: (json['status_code'] as num?)?.toInt(),
-      error: (json['error'] as num?)?.toInt(),
-      message: json['message'] as String?,
-      details: json['data'] == null
-          ? null
-          : Details.fromJson(json['data'] as Map<String, dynamic>),
+      statusCode: (json['status_code'] as num).toInt(),
+      error: (json['error'] as num).toInt(),
+      message: json['message'] as String,
+      details: Details.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$OrdersDetailsToJson(OrdersDetails instance) =>
@@ -25,33 +23,28 @@ Map<String, dynamic> _$OrdersDetailsToJson(OrdersDetails instance) =>
     };
 
 Details _$DetailsFromJson(Map<String, dynamic> json) => Details(
-  status: json['status'] as String?,
-  supervisor: json['supervisor'] == null
-      ? null
-      : Supervisor.fromJson(json['supervisor'] as Map<String, dynamic>),
-  customer: json['customer'] == null
-      ? null
-      : Customer.fromJson(json['customer'] as Map<String, dynamic>),
-  driver: json['driver'] == null
-      ? null
-      : Driver.fromJson(json['driver'] as Map<String, dynamic>),
-  date: json['date'] as String?,
-  serviceType: json['service_type'] as String?,
-  shiftType: json['shift_type'] as String?,
-  withCleaningSupplies: (json['with_cleaning_supplies'] as num?)?.toInt(),
+  status: json['status'] as String,
+  logId: json['log_id'] as String,
+  supervisor: Supervisor.fromJson(json['supervisor'] as Map<String, dynamic>),
+  customer: Customer.fromJson(json['customer'] as Map<String, dynamic>),
+  driver: Driver.fromJson(json['driver'] as Map<String, dynamic>),
+  date: json['date'] as String,
+  serviceType: json['service_type'] as String,
+  shiftType: json['shift_type'] as String,
+  withCleaningSupplies: (json['with_cleaning_supplies'] as num).toInt(),
   discountType: json['discount_type'],
-  discountPercentage: (json['discount_percentage'] as num?)?.toInt(),
-  totalNetAmount: (json['total_net_amount'] as num?)?.toInt(),
-  methodOfPayment: json['method_of_payment'] as String?,
-  staffAppointment: (json['staff_appointment'] as List<dynamic>?)
-      ?.map((e) => e as String)
+  discountPercentage: (json['discount_percentage'] as num).toInt(),
+  totalNetAmount: (json['total_net_amount'] as num).toInt(),
+  methodOfPayment: json['method_of_payment'] as String,
+  staffAppointment: (json['staff_appointment'] as List<dynamic>)
+      .map((e) => e as String)
       .toList(),
-  note: json['note'] as String?,
-  days: (json['days'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  note: json['note'],
 );
 
 Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
   'status': instance.status,
+  'log_id': instance.logId,
   'supervisor': instance.supervisor,
   'customer': instance.customer,
   'driver': instance.driver,
@@ -65,16 +58,15 @@ Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
   'method_of_payment': instance.methodOfPayment,
   'staff_appointment': instance.staffAppointment,
   'note': instance.note,
-  'days': instance.days,
 };
 
 Customer _$CustomerFromJson(Map<String, dynamic> json) => Customer(
   customerId: json['customer_id'] as String,
-  customerName: json['customer_name'] as String?,
-  location: json['location'] as String?,
-  locationUrl: json['location_url'] as String?,
-  zone: json['zone'] as String?,
-  phoneNumber: json['phone_number'] as String?,
+  customerName: json['customer_name'] as String,
+  location: json['location'] as String,
+  locationUrl: json['location_url'],
+  zone: json['zone'] as String,
+  phoneNumber: json['phone_number'] as String,
 );
 
 Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
@@ -88,8 +80,8 @@ Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
 
 Driver _$DriverFromJson(Map<String, dynamic> json) => Driver(
   driverId: json['driver_id'] as String,
-  driverName: json['driver_name'] as String?,
-  currentDriverStatus: json['current_driver_status'] as String?,
+  driverName: json['driver_name'] as String,
+  currentDriverStatus: json['current_driver_status'] as String,
   driverStatus: (json['driver_status'] as List<dynamic>)
       .map((e) => DriverStatus.fromJson(e as Map<String, dynamic>))
       .toList(),

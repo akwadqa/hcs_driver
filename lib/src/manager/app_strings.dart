@@ -55,6 +55,7 @@ class AppStrings {
   //My Orders
   static const String myOrders = 'myOrders';
   static const String orderDetails = 'Order Details';
+  static const String appointmentDetails = 'Appointment Details';
   static const String orderStatus = 'orderStatus';
 
   //Settings

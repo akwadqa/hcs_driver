@@ -27,8 +27,7 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
   void initState() {
     super.initState();
     Future(
-      () =>
-          ref.read(myOrdersControllerProvider.notifier).fetchTomorrowOrders(),
+      () => ref.read(myOrdersControllerProvider.notifier).fetchTomorrowOrders(),
     );
 
     _scrollController = ScrollController()..addListener(_onScroll);
@@ -104,10 +103,14 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
             return GestureDetector(
               onTap: () {
                 context.pushRoute(
-                  OrderDetailsRoute(
-                    serviceOrderID:
-                        ordersState.cancelledOrders[index].serviceOrderId,
+                  AppoinmentRoute(
+                       serviceOrderID:
+                        ordersState.pendingOrders[index].serviceOrderId,
                   ),
+                  // OrderDetailsRoute(
+                  //   serviceOrderID:
+                  //       ordersState.cancelledOrders[index].serviceOrderId,
+                  // ),
                 );
               },
               child: Container(

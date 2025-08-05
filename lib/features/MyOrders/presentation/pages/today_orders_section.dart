@@ -71,6 +71,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
           child: Center(child: Assets.images.noDataMin.image()),
         );
       }
+
       return RefreshIndicator(
         onRefresh: () async {
           await ref
@@ -100,10 +101,14 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
             return GestureDetector(
               onTap: () {
                 context.pushRoute(
-                  OrderDetailsRoute(
-                    serviceOrderID:
+                  AppoinmentRoute(
+                       serviceOrderID:
                         ordersState.pendingOrders[index].serviceOrderId,
                   ),
+                  // OrderDetailsRoute(
+                  //   serviceOrderID:
+                  //       ordersState.pendingOrders[index].serviceOrderId,
+                  // ),
                 );
               },
               child: Container(

@@ -1,20 +1,35 @@
 import 'package:equatable/equatable.dart';
+import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
 
 import 'package:hcs_driver/src/enums/request_state.dart';
 
+// List<Appointment> dummyData = [
+//   Appointment(name: '1111111'),
+//   Appointment(name: '2222222'),
+//   Appointment(name: '3333333'),
+//   Appointment(name: '4444444'),
+//   Appointment(name: '5555555'),
+// ];
+
 class MyOrdersState extends Equatable {
-  //orders
+  //approvedOrders
   final int? currentApprovedOrdersPage;
   final List<Orders> approvedOrders;
+  final RequestStates approvedOrdersStates;
+
+  //pendingOrders
   final int? currentPendingOrdersPage;
   final List<Orders> pendingOrders;
+  final RequestStates pendingOrdersStates;
+
+  //cancelledOrders
   final int? currentCancelledOrdersPage;
   final List<Orders> cancelledOrders;
-  final RequestStates approvedOrdersStates;
-  final RequestStates pendingOrdersStates;
   final RequestStates cancelledOrdersStates;
+
+  //
   final String? ordersMessage;
 
   //Orders Details
@@ -32,6 +47,12 @@ class MyOrdersState extends Equatable {
   final String? nextDriverStatus;
   final RequestStates statusOrderStates;
   final String? statusOrderMessage;
+
+  //Appointments
+  final int? currentAppointmentsPage;
+  final List<Appointment> ordersAppointments;
+  final RequestStates appointmentsStates;
+
   const MyOrdersState({
     //orders
     this.currentApprovedOrdersPage,
@@ -59,6 +80,11 @@ class MyOrdersState extends Equatable {
     this.nextDriverStatus,
     this.statusOrderStates = RequestStates.init,
     this.statusOrderMessage = '',
+
+    //Appointments
+    this.currentAppointmentsPage,
+    this.ordersAppointments = const [],
+    this.appointmentsStates = RequestStates.init,
   });
   MyOrdersState copyWith({
     //orders
@@ -89,6 +115,11 @@ class MyOrdersState extends Equatable {
 
     RequestStates? statusOrderStates,
     String? statusOrderMessage,
+
+    //Appointments
+    int? currentAppointmentsPage,
+    List<Appointment>? ordersAppointments,
+    RequestStates? appointmentsStates,
   }) {
     return MyOrdersState(
       //orders
@@ -120,6 +151,11 @@ class MyOrdersState extends Equatable {
       nextDriverStatus: nextDriverStatus,
       statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
       statusOrderStates: statusOrderStates ?? this.statusOrderStates,
+
+      //Appointments
+      currentAppointmentsPage: currentAppointmentsPage,
+      ordersAppointments: ordersAppointments ?? this.ordersAppointments,
+      appointmentsStates: appointmentsStates ?? this.appointmentsStates,
     );
   }
 
@@ -150,5 +186,10 @@ class MyOrdersState extends Equatable {
     nextDriverStatus,
     statusOrderMessage,
     statusOrderStates,
+
+    //Appointments
+    currentAppointmentsPage,
+    ordersAppointments,
+    appointmentsStates,
   ];
 }
