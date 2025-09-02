@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool _obscurePassword = true; // 👈 control password visibility
 
   @override
   void dispose() {
@@ -103,22 +104,32 @@ class _LoginScreenState extends State<LoginScreen> {
                             Validator.validateUserName(name, context),
                       ),
                       SizedBox(height: AppSizes.betweenTextFields.h),
-                      TextFormField(
-                        controller: _passwordController,
-                        obscureText: true,
-                        obscuringCharacter: '*',
-                        decoration: InputDecoration(
-                          hintText: "Password",
-
-                          prefixIcon: Assets.images.luckIcon.svg(
-                            width: 18,
-                            height: 18,
-                            fit: BoxFit.scaleDown,
-                          ),
-                        ),
-                        validator: (passord) =>
-                            Validator.validatePassword(passord, context),
-                      ),
+                     TextFormField(
+              controller: _passwordController,
+              obscureText: _obscurePassword,
+              obscuringCharacter: '*',
+              decoration: InputDecoration(
+                hintText: "Password",
+                prefixIcon: Assets.images.luckIcon.svg(
+                  width: 18,
+                  height: 18,
+                  fit: BoxFit.scaleDown,
+                ),
+                // 👇 Suffix eye icon
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    setState(() {
+                      _obscurePassword = !_obscurePassword;
+                    });
+                  },
+                ),
+              ),
+              validator: (pass) => Validator.validatePassword(pass, context),
+            ),
                       SizedBox(height: 32.h),
                       Align(
                         alignment: Alignment.centerLeft,

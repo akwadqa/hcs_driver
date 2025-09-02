@@ -124,21 +124,28 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
             }
             return GestureDetector(
               onTap: () {
-                context.pushRoute(
+                // if(ordersState.ordersAppointments[index].logStatus!="Canceled") {
+                  context.pushRoute(
                   OrderDetailsRoute(
                     serviceOrderID: widget.serviceOrderID,
                     appointmentID: ordersState.ordersAppointments[index].logId,
                   ),
                 );
+                // }
               },
               child: AppointmentCard(
-                orderNumber: ordersState.ordersAppointments[index].logId,
-                driverStatus:
-                    ordersState.ordersAppointments[index].driverStatus ?? "",
-                servicetype: ordersState.ordersAppointments[index].serviceType,
-                date: ordersState.ordersAppointments[index].date,
-                employeeName:
-                    ordersState.ordersAppointments[index].employeeName,
+
+                appointmentData: ordersState.ordersAppointments[index],
+                // orderDetailstData: ordersState.ordersDetails,
+                
+                // logStatus: ordersState.ordersAppointments[index].logStatus,
+                orderId: widget.serviceOrderID,
+                // driverStatus:
+                //     ordersState.ordersAppointments[index].driverStatus ?? "",
+                // servicetype: ordersState.ordersAppointments[index].serviceType,
+                // date: ordersState.ordersAppointments[index].date,
+                // employeeName:
+                //     ordersState.ordersAppointments[index].employeeName,
               ),
             );
           },

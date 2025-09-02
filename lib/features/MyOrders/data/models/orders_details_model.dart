@@ -41,6 +41,8 @@ class Details {
   final String status;
   @JsonKey(name: "log_id")
   final String logId;
+  @JsonKey(name: "log_status")
+  final String logStatus;
   @JsonKey(name: "supervisor")
   final Supervisor supervisor;
   @JsonKey(name: "customer")
@@ -71,6 +73,7 @@ class Details {
   Details({
     required this.status,
     required this.logId,
+    required this.logStatus,
     required this.supervisor,
     required this.customer,
     required this.driver,

@@ -1,8 +1,9 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:equatable/equatable.dart';
+
 import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
-
 import 'package:hcs_driver/src/enums/request_state.dart';
 
 // List<Appointment> dummyData = [
@@ -53,13 +54,27 @@ class MyOrdersState extends Equatable {
   final List<Appointment> ordersAppointments;
   final RequestStates appointmentsStates;
 
+  final RequestStates customOrdersState;
+  final List<Orders> customOrders;
+  final String? lastCustomDate; // yyyy-MM-dd
+  final int? currentCustomOrdersPage;
+
+  final List<Orders> completedOrders;
+  final RequestStates completedOrdersStates;
+  final int? currentCompletedOrdersPage;
+  final String? searchKey;
+
   const MyOrdersState({
     //orders
     this.currentApprovedOrdersPage,
+    this.customOrdersState = RequestStates.init,
+    this.customOrders = const [],
+    this.lastCustomDate = '',
     this.approvedOrders = const [],
     this.currentPendingOrdersPage,
     this.pendingOrders = const [],
     this.currentCancelledOrdersPage,
+    this.currentCustomOrdersPage,
     this.cancelledOrders = const [],
     this.approvedOrdersStates = RequestStates.init,
     this.pendingOrdersStates = RequestStates.init,
@@ -85,77 +100,86 @@ class MyOrdersState extends Equatable {
     this.currentAppointmentsPage,
     this.ordersAppointments = const [],
     this.appointmentsStates = RequestStates.init,
+    this.completedOrders = const [],
+    this.completedOrdersStates = RequestStates.init,
+    this.currentCompletedOrdersPage,
+    this.searchKey = '',
   });
   MyOrdersState copyWith({
-    //orders
     int? currentApprovedOrdersPage,
     List<Orders>? approvedOrders,
+    RequestStates? approvedOrdersStates,
     int? currentPendingOrdersPage,
     List<Orders>? pendingOrders,
-    int? currentCancelledOrdersPage,
-    List<Orders>? cancelledOrders,
-    RequestStates? approvedOrdersStates,
     RequestStates? pendingOrdersStates,
+    int? currentCancelledOrdersPage,
+    int? currentCustomOrdersPage,
+    List<Orders>? cancelledOrders,
     RequestStates? cancelledOrdersStates,
     String? ordersMessage,
-
-    //Orders Details
     Details? ordersDetails,
     RequestStates? ordersDetailsStates,
     String? ordersDetailsMessage,
-
-    //cancelletion
     RequestStates? orderCancelltionStates,
     String? orderCancelltionMessage,
-
-    //status Order
     List<DriverStatus>? statusOrders,
     String? currentDriverStatus,
     String? nextDriverStatus,
-
     RequestStates? statusOrderStates,
     String? statusOrderMessage,
-
-    //Appointments
     int? currentAppointmentsPage,
     List<Appointment>? ordersAppointments,
     RequestStates? appointmentsStates,
+    RequestStates? customOrdersState,
+    List<Orders>? customOrders,
+    String? lastCustomDate,
+    List<Orders>? completedOrders,
+    RequestStates? completedOrdersStates,
+    int? currentCompletedOrdersPage,
+    String? searchKey,
   }) {
     return MyOrdersState(
-      //orders
-      currentApprovedOrdersPage: currentApprovedOrdersPage,
+      currentApprovedOrdersPage:
+          currentApprovedOrdersPage ?? this.currentApprovedOrdersPage,
       approvedOrders: approvedOrders ?? this.approvedOrders,
-      currentPendingOrdersPage: currentPendingOrdersPage,
-      pendingOrders: pendingOrders ?? this.pendingOrders,
-      currentCancelledOrdersPage: currentCancelledOrdersPage,
-      cancelledOrders: cancelledOrders ?? this.cancelledOrders,
       approvedOrdersStates: approvedOrdersStates ?? this.approvedOrdersStates,
+      currentPendingOrdersPage:
+          currentPendingOrdersPage ?? this.currentPendingOrdersPage,
+      pendingOrders: pendingOrders ?? this.pendingOrders,
       pendingOrdersStates: pendingOrdersStates ?? this.pendingOrdersStates,
+      currentCancelledOrdersPage:
+          currentCancelledOrdersPage ?? this.currentCancelledOrdersPage,
+      currentCustomOrdersPage:
+          currentCustomOrdersPage ?? this.currentCustomOrdersPage,
+      cancelledOrders: cancelledOrders ?? this.cancelledOrders,
       cancelledOrdersStates:
           cancelledOrdersStates ?? this.cancelledOrdersStates,
       ordersMessage: ordersMessage ?? this.ordersMessage,
-
-      //Orders Details
       ordersDetails: ordersDetails ?? this.ordersDetails,
-      ordersDetailsMessage: ordersDetailsMessage ?? this.ordersDetailsMessage,
       ordersDetailsStates: ordersDetailsStates ?? this.ordersDetailsStates,
-      //cancelletion
+      ordersDetailsMessage: ordersDetailsMessage ?? this.ordersDetailsMessage,
       orderCancelltionStates:
           orderCancelltionStates ?? this.orderCancelltionStates,
       orderCancelltionMessage:
           orderCancelltionMessage ?? this.orderCancelltionMessage,
-
-      // status orders
       statusOrders: statusOrders ?? this.statusOrders,
       currentDriverStatus: currentDriverStatus ?? this.currentDriverStatus,
-      nextDriverStatus: nextDriverStatus,
-      statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
+      nextDriverStatus: nextDriverStatus ?? this.nextDriverStatus,
       statusOrderStates: statusOrderStates ?? this.statusOrderStates,
-
-      //Appointments
-      currentAppointmentsPage: currentAppointmentsPage,
+      statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
+      currentAppointmentsPage:
+          currentAppointmentsPage ?? this.currentAppointmentsPage,
       ordersAppointments: ordersAppointments ?? this.ordersAppointments,
       appointmentsStates: appointmentsStates ?? this.appointmentsStates,
+      customOrdersState: customOrdersState ?? this.customOrdersState,
+      customOrders: customOrders ?? this.customOrders,
+      lastCustomDate: lastCustomDate ?? this.lastCustomDate,
+      completedOrders: completedOrders ?? this.completedOrders,
+      completedOrdersStates:
+          completedOrdersStates ?? this.completedOrdersStates,
+      currentCompletedOrdersPage:
+          currentCompletedOrdersPage ?? this.currentCompletedOrdersPage,
+      searchKey: searchKey ?? this.searchKey,
     );
   }
 
@@ -191,5 +215,14 @@ class MyOrdersState extends Equatable {
     currentAppointmentsPage,
     ordersAppointments,
     appointmentsStates,
+    customOrdersState,
+    customOrders,
+
+    lastCustomDate,
+
+    completedOrders,
+    completedOrdersStates,
+    currentCompletedOrdersPage,
+    searchKey,
   ];
 }

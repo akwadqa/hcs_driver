@@ -40,20 +40,21 @@ final isAuthinticatedProvider = AutoDisposeProvider<bool>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef IsAuthinticatedRef = AutoDisposeProviderRef<bool>;
-String _$userDataHash() => r'44a9648f415cf42d34ba276ad6adb55406affdeb';
+String _$userDataHash() => r'635b90037b409b75e60d4d42e1c2e9d1cae29b2a';
 
 /// See also [UserData].
 @ProviderFor(UserData)
-final userDataProvider = NotifierProvider<UserData, (String, int)?>.internal(
-  UserData.new,
-  name: r'userDataProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$userDataHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final userDataProvider =
+    NotifierProvider<UserData, (String, int, String)?>.internal(
+      UserData.new,
+      name: r'userDataProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$userDataHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
 
-typedef _$UserData = Notifier<(String, int)?>;
+typedef _$UserData = Notifier<(String, int, String)?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

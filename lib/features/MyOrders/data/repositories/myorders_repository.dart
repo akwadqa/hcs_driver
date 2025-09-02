@@ -21,10 +21,20 @@ class MyOrdersRepository {
 
   Future<ServicesOrders> getServicesOrders({
     required int page,
-    required String dateType,
+     String? dateType,
+    String? status,
+    String? search,
+    String? date,
   }) async {
     final response = await _networkService.get(
-      ApiConstance.myServicesOrders(page: page.toString(), dateType: dateType),
+      ApiConstance.myServicesOrders(),
+      queryParameters: {
+        "page": page,
+        if (status != null) "status": status,
+        if (search != null) "search": search,
+        if (date != null) "for_date": date,
+        if (dateType!=null) "date_type": dateType,
+      },
     );
 
     if (response.statusCode == 200) {
@@ -54,12 +64,18 @@ class MyOrdersRepository {
     }
   }
 
-  Future<bool> orderCancelltion({required String serviceOrderId}) async {
+  Future<bool> orderCancelltion({
+    required String serviceOrderId,
+    required String? cancelMsg,
+  }) async {
     var data = FormData.fromMap({'service_order_id': serviceOrderId});
-    final response = await _networkService.post(
-      ApiConstance.orderCancelltion(),
-      data,
-    );
+    final response = await _networkService
+        .post(ApiConstance.orderCancelltion(), {
+          'service_order_id': serviceOrderId,
+
+          if (cancelMsg != null || cancelMsg!.isNotEmpty)
+            "cancellation_reason": cancelMsg,
+        });
 
     if (response.statusCode == 200) {
       return true;
@@ -68,13 +84,39 @@ class MyOrdersRepository {
     }
   }
 
+  Future<bool> orderAppointmentLogCancelltion({
+    required String appoinmentLog,
+    required String? cancelMsg,
+  }) async {
+    // var data = FormData.fromMap({'staff_appointment_log': appoinmentLog});
+    final response = await _networkService
+        .post(ApiConstance.cancelAppointmentLog, {
+          'staff_appointment_log': appoinmentLog,
+          if (cancelMsg != null || cancelMsg!.isNotEmpty)
+            "cancellation_reason": cancelMsg,
+        });
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception(
+        response.message ?? 'Failed to cancel the order appoinmentLog',
+      );
+    }
+  }
+
   Future<UpdatedStatus> updateStatusOrder({
     required String appointmentID,
+    String? amount,
   }) async {
     var data = FormData.fromMap({'staff_appointment_log': appointmentID});
     final response = await _networkService.post(
       ApiConstance.updateStatusOrder,
-      data,
+      {
+        'staff_appointment_log': appointmentID,
+
+        if (amount != null) "amount": amount,
+      },
     );
 
     if (response.statusCode == 200) {
@@ -83,7 +125,6 @@ class MyOrdersRepository {
       throw Exception(response.message ?? 'Failed to update Status Order');
     }
   }
-
 
   Future<AppointmentModel> getAppontments({
     required int page,

@@ -37,6 +37,7 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
   driverStatus: json['driver_status'] as String?,
   logStatus: json['log_status'] as String,
   creation: json['creation'] as String?,
+  supervisorName: json['supervisor_name'] as String,
   employeeName: json['employee_name'] as String,
 );
 
@@ -51,6 +52,7 @@ Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
       'log_status': instance.logStatus,
       'creation': instance.creation,
       'employee_name': instance.employeeName,
+      'supervisor_name': instance.supervisorName,
     };
 
 Pagination _$PaginationFromJson(Map<String, dynamic> json) => Pagination(

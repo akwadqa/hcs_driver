@@ -25,6 +25,7 @@ Map<String, dynamic> _$OrdersDetailsToJson(OrdersDetails instance) =>
 Details _$DetailsFromJson(Map<String, dynamic> json) => Details(
   status: json['status'] as String,
   logId: json['log_id'] as String,
+  logStatus: json['log_status'] as String,
   supervisor: Supervisor.fromJson(json['supervisor'] as Map<String, dynamic>),
   customer: Customer.fromJson(json['customer'] as Map<String, dynamic>),
   driver: Driver.fromJson(json['driver'] as Map<String, dynamic>),
@@ -45,6 +46,7 @@ Details _$DetailsFromJson(Map<String, dynamic> json) => Details(
 Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
   'status': instance.status,
   'log_id': instance.logId,
+  'log_status': instance.logStatus,
   'supervisor': instance.supervisor,
   'customer': instance.customer,
   'driver': instance.driver,

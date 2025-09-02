@@ -12,8 +12,10 @@ import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whats
 import 'package:hcs_driver/src/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
+import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
+import 'package:hcs_driver/src/shared_widgets/custom_bottom_sheets.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_button.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
 import 'package:hcs_driver/src/shared_widgets/row_error_widget.dart';
@@ -23,10 +25,12 @@ import 'package:hcs_driver/src/theme/app_colors.dart';
 class OrderDetailsScreen extends ConsumerStatefulWidget {
   final String serviceOrderID;
   final String appointmentID;
+  // final String status;
   const OrderDetailsScreen({
     super.key,
     required this.serviceOrderID,
     required this.appointmentID,
+    // required this.status,
   });
 
   @override
@@ -135,10 +139,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             ),
           ),
           18.verticalSpace,
+          if(details?.logStatus!="Cancelled")
           InkWell(
             onTap: () => context.pushRoute(
               OrderStatusRoute(
-                statusOrderType: details!.status,
+                statusOrderType: details?.status??"",
                 appointmentID: widget.appointmentID,
               ),
             ),
@@ -173,26 +178,114 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           nextDriverStatus != null
                               ? InfoRow(
                                   "Next status",
-                                  widget: CustomButton(
-                                    title: nextDriverStatus,
+                                  widget: (details?.logStatus == "Canceled")
+                                      ? Chip(
+                                          label: Text(
+                                            "Canceled",
+                                            style: TextStyle(
+                                              color: Colors.red,
+                                              fontSize: 12.sp,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          backgroundColor: Colors.red.shade50,
+                                          padding: EdgeInsets.symmetric(
+                                            horizontal: 6.w,
+                                          ),
+                                        )
+                                      : CustomButton(
+                                          title: nextDriverStatus,
 
-                                    onPressed:
-                                        statusOrderStates !=
-                                            RequestStates.loading
-                                        //     &&
-                                        // statusOrders.last.status !=
-                                        //     currentDriverStatus
-                                        ? () => ref
-                                              .watch(
-                                                myOrdersControllerProvider
-                                                    .notifier,
-                                              )
-                                              .updateStatusOrder(
-                                                appointmentID:
-                                                    widget.appointmentID,
-                                              )
-                                        : null,
-                                  ),
+                                          onPressed:
+                                              statusOrderStates !=
+                                                  RequestStates.loading
+                                              //     &&
+                                              // statusOrders.last.status !=
+                                              //     currentDriverStatus
+                                              ? () async {
+                                                  if (nextDriverStatus ==
+                                                      "Payment Received") {
+                                                    // 1) Ask how to handle payment (no status change yet)
+                                                    final res =
+                                                        await showPaymentMethodDialog(
+                                                          context,
+                                                        );
+                                                    if (res == null)
+                                                      return; // user canceled
+
+                                                    // 2) Call the correct API(s) based on the choice
+                                                    await withBlockingLoader(context, () async {
+                                                      final notifier = ref.read(
+                                                        myOrdersControllerProvider
+                                                            .notifier,
+                                                      );
+
+                                                      if (res.choice ==
+                                                          PaymentChoice.cash) {
+                                                        await ref
+                                                            .read(
+                                                              myOrdersControllerProvider
+                                                                  .notifier,
+                                                            )
+                                                            .updateStatusOrder(
+                                                              appointmentID: widget
+                                                                  .appointmentID,
+                                                                  amount: res.amount.toString()
+                                                            );
+                                                        // TODO: call your real endpoint:
+                                                        // await notifier.completeOrderWithCash(
+                                                        //   appointmentID: widget.appointmentID,
+                                                        //   amount: res.amount!,
+                                                        // );
+                                                        // If your backend needs status progression steps, do them here
+                                                        // (but only AFTER the choice was made).
+                                                      } else {
+                                                        await ref
+                                                            .read(
+                                                              myOrdersControllerProvider
+                                                                  .notifier,
+                                                            )
+                                                            .updateStatusOrder(
+                                                              appointmentID: widget
+                                                                  .appointmentID,
+                                                            );
+                                                        // TODO: call your real endpoint:
+                                                        // await notifier.completeOrderSkipCash(
+                                                        //   appointmentID: widget.appointmentID,
+                                                        // );
+                                                      }
+                                                    });
+
+                                                    // optional toast
+                                                    if (!mounted) return;
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      SnackBar(
+                                                        content: Text(
+                                                          res.choice ==
+                                                                  PaymentChoice
+                                                                      .cash
+                                                              ? "Order completed (cash)."
+                                                              : "Order completed.",
+                                                        ),
+                                                      ),
+                                                    );
+                                                  } else {
+                                                    // normal path for other next statuses
+                                                    await ref
+                                                        .read(
+                                                          myOrdersControllerProvider
+                                                              .notifier,
+                                                        )
+                                                        .updateStatusOrder(
+                                                          appointmentID: widget
+                                                              .appointmentID,
+                                                        );
+                                                  }
+                                                }
+                                              : null,
+                                        ),
                                 )
                               : Text(
                                   "Order Completed ✓",
@@ -338,9 +431,37 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           _wrapWithCard(
             Column(
               children: [
-                InfoRow("Customer", value: details?.customer?.customerName),
-                InfoRow("Area", value: details?.customer?.location),
-                InfoRow("Zone", value: details?.customer?.zone),
+                InfoRow("Customer", value: details?.customer.customerName),
+                InkWell(
+                  onTap: () {
+                    showContactActionsSheet(
+                      context,
+                      rawPhone: details.customer.phoneNumber,
+                      defaultCountryCode: "+974", // set your market’s code
+                    );
+                  },
+                  child: InfoRow(
+                    "Phone",
+                    value: details?.customer.phoneNumber,
+                    widget: Row(
+                      children: [
+                        Text(
+                          details!.customer.phoneNumber,
+                          softWrap: true,
+
+                          // textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.displayMedium?.copyWith(color: AppColors.blueText),
+                          
+                        ),
+                        10.horizontalSpace,
+                        Icon(Icons.phone,color: AppColors.blueText),
+                      ],
+                    ),
+                  ),
+                ),
+
+                InfoRow("Area", value: details?.customer.location),
+                InfoRow("Zone", value: details?.customer.zone),
                 InfoRow(
                   "Location",
                   widget: details?.customer?.locationUrl != null
@@ -360,9 +481,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 InfoRow("Service type", value: details?.serviceType),
                 InfoRow("Shift type", value: details?.shiftType),
                 InfoRow("Date", value: details!.date),
-                days.isNotEmpty
-                    ? InfoRow("Work Days", value: days.join(', '))
-                    : SizedBox.shrink(),
+                // days.isNotEmpty
+                //     ? InfoRow("Work Days", value: days.join(', '))
+                //     : SizedBox.shrink(),
               ],
             ),
           ),
@@ -374,6 +495,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                   "Employees name",
                   value: (details.staffAppointment as List?)?.join(',\n') ?? '',
                 ),
+                InfoRow("Supervisor name", value: details.supervisor?.supervisorName),
                 InfoRow("Driver name", value: details.driver?.driverName),
               ],
             ),

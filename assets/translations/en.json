@@ -80,5 +80,7 @@
   "confirmNewPassword": "Confirm New Password",
   "save": "Save",
   "emptyData":"There is no data to show",
+  "attention":"Attention",
+  "cancel_order_msg":"Are you sure you want to cancel this order?",
   "fieldRequired": "This Field Required"
 }

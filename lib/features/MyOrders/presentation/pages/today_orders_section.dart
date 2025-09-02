@@ -8,6 +8,7 @@ import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_c
 import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/enums/request_state.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
+import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
@@ -102,7 +103,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
               onTap: () {
                 context.pushRoute(
                   AppoinmentRoute(
-                       serviceOrderID:
+                    serviceOrderID:
                         ordersState.pendingOrders[index].serviceOrderId,
                   ),
                   // OrderDetailsRoute(
@@ -111,78 +112,155 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
                   // ),
                 );
               },
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
-                padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 22.w),
-                // height: 100.h,
-                width: 345.w,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          ordersState.pendingOrders[index].serviceOrderId,
-                          style: Theme.of(context).textTheme.displaySmall!
-                              .copyWith(
-                                fontSize: 14.sp,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
-                        Row(
-                          children: [
-                            Assets.images.pending.svg(),
-                            9.horizontalSpace,
-                            Text(
-                              ordersState.pendingOrders[index].status
-                                  .toString(),
-                              style: Theme.of(context).textTheme.displayMedium!
-                                  .copyWith(fontSize: 14.sp),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    8.verticalSpace,
-                    Text(
-                      ordersState.pendingOrders[index].serviceType,
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontSize: 12.sp,
-                        color: AppColors.greyText,
-                        fontWeight: FontWeight.w500,
+              child: Stack(
+                children: [
+                  Dismissible(
+                    key: ValueKey(
+                      ordersState.pendingOrders[index].serviceOrderId,
+                    ), // stable key
+                    background: Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: 16.h,
+                        horizontal: 24.w,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 13.h,
+                        horizontal: 22.w,
+                      ),
+                      color: Colors.redAccent,
+                      alignment: Alignment.center,
+                      child: Center(
+                        child: Icon(Icons.delete, color: Colors.white),
                       ),
                     ),
-                    8.verticalSpace,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          ordersState.pendingOrders[index].postingDate,
-                          style: Theme.of(context).textTheme.bodyMedium!
-                              .copyWith(
-                                fontSize: 12.sp,
-                                color: AppColors.greyText,
-                                fontWeight: FontWeight.w500,
+                    confirmDismiss: (direction) async {
+                      final ok = await showAcceptCancelOrder(
+                        context: context,
+                        orderID:
+                            ordersState.pendingOrders[index].serviceOrderId,
+
+                        // logId: logId,
+                        cancelAppointmentLog: false,
+                        ref: ref,
+                      );
+                      return ok; // true => card animates out, false => stays
+                    },
+
+                    // optional: update extra state or analytics after the animation
+                    onDismissed: (direction) {
+                      // No-op if your provider already refetches/removes the item.
+                      // If needed, you can also manually remove it from local list here.
+                    },
+
+                    child: Container(
+                      margin: EdgeInsets.symmetric(
+                        vertical: 16.h,
+                        horizontal: 24.w,
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        vertical: 13.h,
+                        horizontal: 22.w,
+                      ),
+                      // height: 100.h,
+                      width: 345.w,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                ordersState.pendingOrders[index].serviceOrderId,
+                                style: Theme.of(context).textTheme.displaySmall!
+                                    .copyWith(
+                                      fontSize: 14.sp,
+                                      fontWeight: FontWeight.w600,
+                                    ),
                               ),
-                        ),
-                        Text(
-                          "QR ${ordersState.pendingOrders[index].totalNetAmount}",
-                          style: Theme.of(context).textTheme.displaySmall!
-                              .copyWith(
-                                fontSize: 12.sp,
-                                color: AppColors.greenText,
-                                fontWeight: FontWeight.w600,
+                              Row(
+                                children: [
+                                  Assets.images.pending.svg(),
+                                  9.horizontalSpace,
+                                  Text(
+                                    ordersState.pendingOrders[index].status
+                                        .toString(),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayMedium!
+                                        .copyWith(fontSize: 14.sp),
+                                  ),
+                                ],
                               ),
-                        ),
-                      ],
+                            ],
+                          ),
+                          8.verticalSpace,
+                          Text(
+                            ordersState.pendingOrders[index].serviceType,
+                            style: Theme.of(context).textTheme.bodyMedium!
+                                .copyWith(
+                                  fontSize: 12.sp,
+                                  color: AppColors.greyText,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                          8.verticalSpace,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                ordersState.pendingOrders[index].postingDate,
+                                style: Theme.of(context).textTheme.bodyMedium!
+                                    .copyWith(
+                                      fontSize: 12.sp,
+                                      color: AppColors.greyText,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                              Text(
+                                "QR ${ordersState.pendingOrders[index].totalNetAmount}",
+                                style: Theme.of(context).textTheme.displaySmall!
+                                    .copyWith(
+                                      fontSize: 12.sp,
+                                      color: AppColors.greenText,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                ),
+                  ),
+
+                  // PositionedDirectional(
+                  //   start: 12,
+                  //   top: 12,
+                  //   child: InkWell(
+                  //     onTap: () async {
+                  //       await showAcceptCancelOrder(
+                  //         context,
+                  //         ordersState.pendingOrders[index].serviceOrderId,
+                  //         false,
+                  //         ref,
+                  //       );
+                  //     },
+                  //     child: Container(
+                  //       height: 25,
+                  //       width: 25,
+                  //       decoration: BoxDecoration(
+                  //         shape: BoxShape.circle,
+                  //         color: Colors.red,
+                  //       ),
+
+                  //       child: Icon(Icons.close, color: Colors.white),
+                  //     ),
+                  //   ),
+                  // ),
+                ],
               ),
             );
           },

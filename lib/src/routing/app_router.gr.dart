@@ -9,8 +9,8 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'package:auto_route/auto_route.dart' as _i10;
-import 'package:flutter/material.dart' as _i11;
+import 'package:auto_route/auto_route.dart' as _i11;
+import 'package:flutter/material.dart' as _i12;
 import 'package:hcs_driver/features/app/intro_screen.dart' as _i2;
 import 'package:hcs_driver/features/app/main_screen.dart' as _i4;
 import 'package:hcs_driver/features/Auth/presentation/pages/login_screen.dart'
@@ -25,16 +25,18 @@ import 'package:hcs_driver/features/MyOrders/presentation/pages/order_details_sc
     as _i7;
 import 'package:hcs_driver/features/MyOrders/presentation/pages/order_status_screen.dart'
     as _i8;
-import 'package:hcs_driver/features/settings/presentation/pages/settings_screen.dart'
+import 'package:hcs_driver/features/settings/presentation/pages/payment_summary.dart'
     as _i9;
+import 'package:hcs_driver/features/settings/presentation/pages/settings_screen.dart'
+    as _i10;
 
 /// generated route for
 /// [_i1.AppoinmentScreen]
-class AppoinmentRoute extends _i10.PageRouteInfo<AppoinmentRouteArgs> {
+class AppoinmentRoute extends _i11.PageRouteInfo<AppoinmentRouteArgs> {
   AppoinmentRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     required String serviceOrderID,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
          AppoinmentRoute.name,
          args: AppoinmentRouteArgs(key: key, serviceOrderID: serviceOrderID),
@@ -43,7 +45,7 @@ class AppoinmentRoute extends _i10.PageRouteInfo<AppoinmentRouteArgs> {
 
   static const String name = 'AppoinmentRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<AppoinmentRouteArgs>();
@@ -58,7 +60,7 @@ class AppoinmentRoute extends _i10.PageRouteInfo<AppoinmentRouteArgs> {
 class AppoinmentRouteArgs {
   const AppoinmentRouteArgs({this.key, required this.serviceOrderID});
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final String serviceOrderID;
 
@@ -80,13 +82,13 @@ class AppoinmentRouteArgs {
 
 /// generated route for
 /// [_i2.IntroScreen]
-class IntroRoute extends _i10.PageRouteInfo<void> {
-  const IntroRoute({List<_i10.PageRouteInfo>? children})
+class IntroRoute extends _i11.PageRouteInfo<void> {
+  const IntroRoute({List<_i11.PageRouteInfo>? children})
     : super(IntroRoute.name, initialChildren: children);
 
   static const String name = 'IntroRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i2.IntroScreen();
@@ -96,13 +98,13 @@ class IntroRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.LoginScreen]
-class LoginRoute extends _i10.PageRouteInfo<void> {
-  const LoginRoute({List<_i10.PageRouteInfo>? children})
+class LoginRoute extends _i11.PageRouteInfo<void> {
+  const LoginRoute({List<_i11.PageRouteInfo>? children})
     : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i3.LoginScreen();
@@ -112,13 +114,13 @@ class LoginRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i4.MainScreen]
-class MainRoute extends _i10.PageRouteInfo<void> {
-  const MainRoute({List<_i10.PageRouteInfo>? children})
+class MainRoute extends _i11.PageRouteInfo<void> {
+  const MainRoute({List<_i11.PageRouteInfo>? children})
     : super(MainRoute.name, initialChildren: children);
 
   static const String name = 'MainRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i4.MainScreen();
@@ -128,13 +130,13 @@ class MainRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i5.MyOrdersContentScreen]
-class MyOrdersContentRoute extends _i10.PageRouteInfo<void> {
-  const MyOrdersContentRoute({List<_i10.PageRouteInfo>? children})
+class MyOrdersContentRoute extends _i11.PageRouteInfo<void> {
+  const MyOrdersContentRoute({List<_i11.PageRouteInfo>? children})
     : super(MyOrdersContentRoute.name, initialChildren: children);
 
   static const String name = 'MyOrdersContentRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i5.MyOrdersContentScreen();
@@ -144,13 +146,13 @@ class MyOrdersContentRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i6.MyOrdersScreen]
-class MyOrdersRoute extends _i10.PageRouteInfo<void> {
-  const MyOrdersRoute({List<_i10.PageRouteInfo>? children})
+class MyOrdersRoute extends _i11.PageRouteInfo<void> {
+  const MyOrdersRoute({List<_i11.PageRouteInfo>? children})
     : super(MyOrdersRoute.name, initialChildren: children);
 
   static const String name = 'MyOrdersRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       return const _i6.MyOrdersScreen();
@@ -160,12 +162,12 @@ class MyOrdersRoute extends _i10.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i7.OrderDetailsScreen]
-class OrderDetailsRoute extends _i10.PageRouteInfo<OrderDetailsRouteArgs> {
+class OrderDetailsRoute extends _i11.PageRouteInfo<OrderDetailsRouteArgs> {
   OrderDetailsRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     required String serviceOrderID,
     required String appointmentID,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
          OrderDetailsRoute.name,
          args: OrderDetailsRouteArgs(
@@ -178,7 +180,7 @@ class OrderDetailsRoute extends _i10.PageRouteInfo<OrderDetailsRouteArgs> {
 
   static const String name = 'OrderDetailsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<OrderDetailsRouteArgs>();
@@ -198,7 +200,7 @@ class OrderDetailsRouteArgs {
     required this.appointmentID,
   });
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final String serviceOrderID;
 
@@ -225,12 +227,12 @@ class OrderDetailsRouteArgs {
 
 /// generated route for
 /// [_i8.OrderStatusScreen]
-class OrderStatusRoute extends _i10.PageRouteInfo<OrderStatusRouteArgs> {
+class OrderStatusRoute extends _i11.PageRouteInfo<OrderStatusRouteArgs> {
   OrderStatusRoute({
-    _i11.Key? key,
+    _i12.Key? key,
     required String? statusOrderType,
     required String appointmentID,
-    List<_i10.PageRouteInfo>? children,
+    List<_i11.PageRouteInfo>? children,
   }) : super(
          OrderStatusRoute.name,
          args: OrderStatusRouteArgs(
@@ -243,7 +245,7 @@ class OrderStatusRoute extends _i10.PageRouteInfo<OrderStatusRouteArgs> {
 
   static const String name = 'OrderStatusRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
       final args = data.argsAs<OrderStatusRouteArgs>();
@@ -263,7 +265,7 @@ class OrderStatusRouteArgs {
     required this.appointmentID,
   });
 
-  final _i11.Key? key;
+  final _i12.Key? key;
 
   final String? statusOrderType;
 
@@ -289,17 +291,33 @@ class OrderStatusRouteArgs {
 }
 
 /// generated route for
-/// [_i9.SettingsScreen]
-class SettingsRoute extends _i10.PageRouteInfo<void> {
-  const SettingsRoute({List<_i10.PageRouteInfo>? children})
+/// [_i9.PaymentSummaryScreen]
+class PaymentSummaryRoute extends _i11.PageRouteInfo<void> {
+  const PaymentSummaryRoute({List<_i11.PageRouteInfo>? children})
+    : super(PaymentSummaryRoute.name, initialChildren: children);
+
+  static const String name = 'PaymentSummaryRoute';
+
+  static _i11.PageInfo page = _i11.PageInfo(
+    name,
+    builder: (data) {
+      return const _i9.PaymentSummaryScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [_i10.SettingsScreen]
+class SettingsRoute extends _i11.PageRouteInfo<void> {
+  const SettingsRoute({List<_i11.PageRouteInfo>? children})
     : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
-  static _i10.PageInfo page = _i10.PageInfo(
+  static _i11.PageInfo page = _i11.PageInfo(
     name,
     builder: (data) {
-      return const _i9.SettingsScreen();
+      return const _i10.SettingsScreen();
     },
   );
 }

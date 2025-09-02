@@ -24,6 +24,7 @@ class AppRouter extends RootStackRouter {
               ],
             ),
             AutoRoute(page: SettingsRoute.page),
+            AutoRoute(page: PaymentSummaryRoute.page),
           ],
         ),
       ],

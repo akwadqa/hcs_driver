@@ -49,6 +49,8 @@ class Appointment {
   final String? creation;
   @JsonKey(name: "employee_name")
   final String employeeName;
+  @JsonKey(name: "supervisor_name")
+  final String supervisorName;
 
   Appointment({
     required this.logId,
@@ -59,6 +61,7 @@ class Appointment {
     this.driverStatus,
     required this.logStatus,
     this.creation,
+    required this.supervisorName,
     required this.employeeName,
   });
 
