@@ -16,6 +16,8 @@ class ApiConstance {
       '$baseUrl/$baseDomain.api.authentication.login';
   static String forgotPassword(String email) =>
       '$baseUrl/frappe.core.doctype.user.user.reset_password?user=$email';
+  static const String sendFcmToken = '$baseUrl/fcm_frappe.api.device_token';
+
   ////////////////// *  Customers   /////////////////////
   static String getCustomers({
     required String page,

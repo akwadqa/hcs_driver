@@ -1,18 +1,70 @@
-// import 'package:flutter/material.dart';
 
-// import 'services_locator.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hcs_driver/features/Auth/application/auth_service.dart';
+import 'package:hcs_driver/firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:hcs_driver/src/core/notifications/services/notifications_service.dart';
+import 'package:hcs_driver/src/riverpod_observer.dart';
 
-// abstract class AppInitializer {
-//   static init() async {
-//     /// because binding should be initialized before calling runApp.
-//     WidgetsFlutterBinding.ensureInitialized();
+abstract class AppInitializer {
+  static Future<void> init() async {
+    //-- Flutter init --
+    WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+    
+    // -- FIREBASE INIT -- //
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
-//     print("test app ini");
+    // -- Initialize Notifications -- //
+    // Initialize the notification service (singleton)
+    // await NotificationService().initialize();
+    
+    
+    // Note: Socket and location services will be initialized when driver logs in
+    // with their auth token and driver ID
+    
+    //-- ENV FILE LOAD  --
+    // await dotenv.load(fileName: '.env');
+    // //-- Hive initialize --
+    // await Hive.initFlutter();
+    // await HiveInitializer.initialize();
+    
+    //-- Load base URL's  --
+    // ServicesUrls.init();
+    
+    FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
-//     /// dependencies injection
-//     await ServicesLocator.setup();
+    //-- Localization init  --
+    await EasyLocalization.ensureInitialized();
+  }
+}
+Future<ProviderContainer> initializeProviders() async {
+  final container = ProviderContainer(observers: [RiverpodObserver()]);
+  await container.read(sharedPreferencesProvider.future);
+  await container.read(notificationsServiceProvider).init();
+  // await NotificationService().initialize();
 
-//     // /// hive initialize
-//     // await HiveInitializer.initialize();
-//   }
-// }
+    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  analytics.setAnalyticsCollectionEnabled(true);
+  return container;
+}
+Future<void> handleSplashScreen(ProviderContainer container) async {
+  const minSplashDuration = 2000;
+  final startTime = DateTime.now();
+  // await container.read(homeProvider.future);
+  final loadDuration = DateTime.now().difference(startTime).inMilliseconds;
+
+  if (loadDuration < minSplashDuration) {
+    await Future.delayed(
+      Duration(milliseconds: minSplashDuration - loadDuration),
+    );
+  }
+  await Future.delayed(Duration(milliseconds: 2000));
+
+  FlutterNativeSplash.remove();
+}

@@ -50,7 +50,7 @@ class Appointment {
   @JsonKey(name: "employee_name")
   final String employeeName;
   @JsonKey(name: "supervisor_name")
-  final String supervisorName;
+  final String? supervisorName;
 
   Appointment({
     required this.logId,

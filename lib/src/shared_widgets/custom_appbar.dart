@@ -83,7 +83,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
 
                         10.horizontalSpace,
                         Text(
-                          user?.$3 ?? "driveer",
+                          user?.$2 ?? "driveer",
                           style: Theme.of(context).textTheme.displaySmall!
                               .copyWith(
                                 fontSize: 16.sp,

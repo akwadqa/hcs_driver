@@ -9,7 +9,7 @@ import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_c
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/info_row.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/map_button.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whatsapp.dart';
-import 'package:hcs_driver/src/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
@@ -174,7 +174,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           nextDriverStatus == null
                               ? 10.verticalSpace
                               : 0.verticalSpace,
-
+currentDriverStatus!="Completed"?
                           nextDriverStatus != null
                               ? InfoRow(
                                   "Next status",
@@ -288,6 +288,13 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                         ),
                                 )
                               : Text(
+                                  "Order Completed ✓",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium!
+                                      .copyWith(color: AppColors.greenText),
+                                ):Text(
                                   "Order Completed ✓",
                                   overflow: TextOverflow.ellipsis,
                                   style: Theme.of(context)

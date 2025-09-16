@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "561681845902",
+    "project_id": "qa-app-hcs",
+    "storage_bucket": "qa-app-hcs.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:561681845902:android:25dfba84bcef6837c7c3df",
+        "android_client_info": {
+          "package_name": "qa.app.hcs.driver"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDlNvhmdWW-crFi0j8bqKWC8yO64zgfKNc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

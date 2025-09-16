@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/appointment_screen.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
-import 'package:hcs_driver/src/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
@@ -146,12 +147,13 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
 
       return GestureDetector(
         onTap: (){
-             context.pushRoute(
-                  AppoinmentRoute(
-                    serviceOrderID:
-                        order.serviceOrderId,
-                  ),
-             );
+          Navigator.of(context).push(MaterialPageRoute(builder: (m)=>AppoinmentScreen(serviceOrderID: order.serviceOrderId,)));
+            //  context.pushRoute(
+            //       AppoinmentRoute(
+            //         serviceOrderID:
+            //             order.serviceOrderId,
+            //       ),
+            //  );
         },
         child: Container(
           margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),

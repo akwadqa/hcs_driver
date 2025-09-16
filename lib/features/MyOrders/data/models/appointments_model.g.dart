@@ -37,7 +37,7 @@ Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
   driverStatus: json['driver_status'] as String?,
   logStatus: json['log_status'] as String,
   creation: json['creation'] as String?,
-  supervisorName: json['supervisor_name'] as String,
+  supervisorName: json['supervisor_name'] as String?,
   employeeName: json['employee_name'] as String,
 );
 

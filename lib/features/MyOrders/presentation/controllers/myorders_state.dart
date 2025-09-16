@@ -4,7 +4,7 @@ import 'package:equatable/equatable.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
-import 'package:hcs_driver/src/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 
 // List<Appointment> dummyData = [
 //   Appointment(name: '1111111'),

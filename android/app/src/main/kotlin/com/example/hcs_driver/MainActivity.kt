@@ -1,4 +1,4 @@
-package com.example.hcs_driver
+package qa.app.hcs.driver
 
 import io.flutter.embedding.android.FlutterActivity
 

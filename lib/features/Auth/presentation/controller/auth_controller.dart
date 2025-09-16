@@ -1,6 +1,8 @@
 import 'package:hcs_driver/features/Auth/application/auth_service.dart';
 import 'package:hcs_driver/features/Auth/data/models/login_params.dart';
 import 'package:hcs_driver/features/Auth/data/repo/auth_repository.dart';
+import 'package:hcs_driver/src/core/notifications/repositories/notifications_repository.dart';
+import 'package:hcs_driver/src/core/notifications/services/notifications_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_controller.g.dart';
@@ -15,9 +17,10 @@ class AuthController extends _$AuthController {
     state = await AsyncValue.guard(() async {
       final authRepo = ref.watch(authRepositoryProvider);
       final data = await authRepo.login(params);
-      ref.read(userDataProvider.notifier).setData(data.$1, 0,data.$2);
+      ref.read(userDataProvider.notifier).setData(data.$1, data.$2,data.$3);
+      ref.read(notificationsServiceProvider).sendDeviceToken(data.$3);
     });
-  }
+  } 
 
   Future<void> logout() async {
     state = const AsyncLoading();

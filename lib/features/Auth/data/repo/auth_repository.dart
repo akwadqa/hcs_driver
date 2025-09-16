@@ -18,7 +18,7 @@ class AuthRepository {
   final NetworkService _networkService;
 
   AuthRepository(this._networkService);
-
+// final fcm =ref.read
   // /// Handle API response and only allow access to message and status_code
   // Future<String> _handleAuthResponse(Map<String, dynamic> responseData) async {
   //   final int? statusCode = responseData['status_code'];
@@ -32,7 +32,12 @@ class AuthRepository {
   // }
 
   /// Login API request
-  Future<(String,String)> login(LoginParams params) async {
+  Future<(String,String,String)> login(LoginParams params) async {
+    // final fcm =ref.e
+    // ref.rea
+    // NotificationService n=NotificationService();
+  //  final fcm=await n.getFCMToken();
+  //  debugPrint("FCM token: $fcm");
     var formData = FormData.fromMap({
       'email': params.email,
       'password': params.pass,
@@ -46,7 +51,8 @@ class AuthRepository {
 
     final data = json.encode(response.data);
     if (response.statusCode == 200) {
-      return( loginResponseFromJson(data).data.token,loginResponseFromJson(data).fullName);
+      final loginResponse=loginResponseFromJson(data);
+      return( loginResponse.data.token,loginResponse.fullName,loginResponse.data.email);
     } else {
       throw Exception(response.message ?? "An unknown error occurred");
     }

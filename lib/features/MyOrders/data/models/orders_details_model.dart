@@ -167,7 +167,7 @@ class Supervisor {
   @JsonKey(name: "supervisor")
   final String supervisor;
   @JsonKey(name: "supervisor_name")
-  final String supervisorName;
+  final String? supervisorName;
 
   Supervisor({required this.supervisor, required this.supervisorName});
 

@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/repositories/myorders_repository.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
-import 'package:hcs_driver/src/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'myorders_controller.g.dart';
@@ -334,15 +334,15 @@ Future<void> onLoadMoreCompletedOrders() async {
           .details
           .driver
           .driverStatus
-          .where((element) => element.active == false)
-          .cast<DriverStatus?>()
+          .where((element) => element.active==false )
+          // .cast<DriverStatus?>()
           .firstOrNull;
 
       state = state.copyWith(
         ordersDetails: ordersDetails.details,
-        currentDriverStatus: ordersDetails.details?.driver?.currentDriverStatus,
-        nextDriverStatus: nextStatusElement?.status,
-        statusOrders: ordersDetails.details?.driver?.driverStatus,
+        currentDriverStatus: ordersDetails.details.driver.currentDriverStatus,
+        nextDriverStatus:state.currentDriverStatus!="Completed"? nextStatusElement?.status:null,
+        statusOrders: ordersDetails.details.driver.driverStatus,
         ordersDetailsStates: RequestStates.loaded,
         ordersDetailsMessage: '',
         orderCancelltionStates: RequestStates.init,

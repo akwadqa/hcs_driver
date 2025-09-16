@@ -46,9 +46,12 @@ class LoginResponse {
 class Data {
   @JsonKey(name: "token")
   String token;
+  @JsonKey(name: "email")
+  String email;
 
   Data({
     required this.token,
+    required this.email,
   });
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);

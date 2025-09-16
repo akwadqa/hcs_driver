@@ -106,7 +106,7 @@ Map<String, dynamic> _$DriverStatusToJson(DriverStatus instance) =>
 
 Supervisor _$SupervisorFromJson(Map<String, dynamic> json) => Supervisor(
   supervisor: json['supervisor'] as String,
-  supervisorName: json['supervisor_name'] as String,
+  supervisorName: json['supervisor_name'] as String?,
 );
 
 Map<String, dynamic> _$SupervisorToJson(Supervisor instance) =>

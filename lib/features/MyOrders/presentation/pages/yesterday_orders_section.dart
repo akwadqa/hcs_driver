@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
-import 'package:hcs_driver/src/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';

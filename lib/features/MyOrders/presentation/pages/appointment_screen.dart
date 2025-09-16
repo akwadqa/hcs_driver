@@ -6,9 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/order_details_screen.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/appointment_card.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
-import 'package:hcs_driver/src/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
@@ -125,12 +126,15 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
             return GestureDetector(
               onTap: () {
                 // if(ordersState.ordersAppointments[index].logStatus!="Canceled") {
-                  context.pushRoute(
-                  OrderDetailsRoute(
+                Navigator.of(context).push(MaterialPageRoute(builder: (m)=>OrderDetailsScreen(
                     serviceOrderID: widget.serviceOrderID,
-                    appointmentID: ordersState.ordersAppointments[index].logId,
-                  ),
-                );
+                    appointmentID: ordersState.ordersAppointments[index].logId,)));
+                //   context.pushRoute(
+                //   OrderDetailsRoute(
+                //     serviceOrderID: widget.serviceOrderID,
+                //     appointmentID: ordersState.ordersAppointments[index].logId,
+                //   ),
+                // );
                 // }
               },
               child: AppointmentCard(
