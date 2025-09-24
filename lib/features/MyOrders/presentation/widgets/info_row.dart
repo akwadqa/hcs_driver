@@ -11,36 +11,39 @@ class InfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (title != null)
-            Expanded(
-              child: Text(
-                title!,
-                softWrap: true,
-                style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                  color: AppColors.blueText,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          SizedBox(width: 16.w),
-          Expanded(
-            child:
-                widget ??
-                Text(
-                  "$value",
-                  softWrap: true,
+    return value != null
+        ? Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (title != null)
+                  Expanded(
+                    child: Text(
+                      title!,
+                      softWrap: true,
+                      style: Theme.of(context).textTheme.displayMedium!
+                          .copyWith(
+                            color: AppColors.blueText,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                  ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  child:
+                      widget ??
+                      Text(
+                        "$value",
+                        softWrap: true,
 
-                  // textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayMedium,
+                        // textAlign: TextAlign.center,
+                        style: Theme.of(context).textTheme.displayMedium,
+                      ),
                 ),
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          )
+        : SizedBox();
   }
 }

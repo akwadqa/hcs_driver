@@ -4,6 +4,7 @@ import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/pages/order_details_screen.dart';
@@ -92,7 +93,13 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                   .read(myOrdersControllerProvider.notifier)
                   .fetchAppontments(serviceOrderID: widget.serviceOrderID);
             },
-            child: Center(child: Assets.images.noDataMin.image()),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(height: 50.h),
+                Center(child: Assets.images.noDataMin.image()),
+              ],
+            ),
           ),
         );
       }
@@ -105,6 +112,7 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
         },
         child: ListView.builder(
           controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
           itemCount: ordersState.ordersAppointments.length + 1,
           itemBuilder: (context, index) {
@@ -126,9 +134,15 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
             return GestureDetector(
               onTap: () {
                 // if(ordersState.ordersAppointments[index].logStatus!="Canceled") {
-                Navigator.of(context).push(MaterialPageRoute(builder: (m)=>OrderDetailsScreen(
-                    serviceOrderID: widget.serviceOrderID,
-                    appointmentID: ordersState.ordersAppointments[index].logId,)));
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (m) => OrderDetailsScreen(
+                      serviceOrderID: widget.serviceOrderID,
+                      appointmentID:
+                          ordersState.ordersAppointments[index].logId,
+                    ),
+                  ),
+                );
                 //   context.pushRoute(
                 //   OrderDetailsRoute(
                 //     serviceOrderID: widget.serviceOrderID,
@@ -138,10 +152,9 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                 // }
               },
               child: AppointmentCard(
-
                 appointmentData: ordersState.ordersAppointments[index],
                 // orderDetailstData: ordersState.ordersDetails,
-                
+
                 // logStatus: ordersState.ordersAppointments[index].logStatus,
                 orderId: widget.serviceOrderID,
                 // driverStatus:

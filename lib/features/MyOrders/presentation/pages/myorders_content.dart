@@ -11,6 +11,7 @@ import 'package:hcs_driver/features/MyOrders/presentation/widgets/custom_order_d
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
 import 'package:riverpod/src/framework.dart';
+
 @RoutePage()
 class MyOrdersContentScreen extends ConsumerStatefulWidget {
   const MyOrdersContentScreen({super.key});
@@ -27,14 +28,22 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 4, vsync: this, initialIndex: 2); // Today
+    _tabController = TabController(
+
+      //? This must be 4 :
+      length: 3,
+      vsync: this,
+      initialIndex: 2,
+    ); // Today
   }
+
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
   }
-   Future<void> _handleTabTap(int index) async {
+
+  Future<void> _handleTabTap(int index) async {
     if (index != 0) return; // only for "Pick date"
 
     final now = DateTime.now();
@@ -69,7 +78,6 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
     _tabController.index = 0;
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,14 +86,15 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
         isHome: true,
         title: context.tr(AppStrings.myOrders),
         withTabs: true,
-onTabTap: _handleTabTap,
+        onTabTap: _handleTabTap,
         tabController: _tabController,
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
-CustomDateOrdersScreen(),
-          YesterdayOrdersScreen(),
+          CustomDateOrdersScreen(),
+          //? commint for now 
+          // YesterdayOrdersScreen(),
           TodayOrdersScreen(),
           TomorrowOrdersScreen(),
         ],
@@ -93,5 +102,3 @@ CustomDateOrdersScreen(),
     );
   }
 }
-
-
