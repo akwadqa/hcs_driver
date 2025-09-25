@@ -46,7 +46,8 @@ class AppointmentCard extends ConsumerWidget {
             child: Center(child: Icon(Icons.delete, color: Colors.white)),
           ),
           confirmDismiss: (direction) async {
-            if (appointmentData.serviceType != "Daily" || appointmentData.logStatus !="Canceled") {
+            if (appointmentData.serviceType != "Daily" ||
+                appointmentData.logStatus != "Canceled") {
               final ok = await showAcceptCancelOrder(
                 context: context,
                 orderID: orderId,
@@ -78,45 +79,49 @@ class AppointmentCard extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 18.w),
               child: Column(
                 children: [
-                    if (appointmentData.logStatus == "Cancelled")
-              Chip(
-                label: Text("Canceled",
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontSize: 12.sp,
-                      fontWeight: FontWeight.bold,
-                    )),
-                backgroundColor: Colors.red.shade50,
-                padding: EdgeInsets.symmetric(horizontal: 6.w),
-              ),
-                  AppoinmentInfoRow(
-                    'Order Number:',
-                    value: appointmentData.logId,
-                    image: Assets.images.numberVector.path,
-                  ),
+                  if (appointmentData.logStatus == "Cancelled")
+                    Chip(
+                      label: Text(
+                        "Canceled",
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      backgroundColor: Colors.red.shade50,
+                      padding: EdgeInsets.symmetric(horizontal: 6.w),
+                    ),
+
+                  //? for the id :
+                  // AppoinmentInfoRow(
+                  //   'Order Number:',
+                  //   value: appointmentData.logId,
+                  //   image: Assets.images.numberVector.path,
+                  // ),
                   AppoinmentInfoRow(
                     'Driver Status:',
-                    value:appointmentData. driverStatus,
+                    value: appointmentData.driverStatus,
                     image: Assets.images.driverStatus.path,
                   ),
                   AppoinmentInfoRow(
                     'Service type:',
-                    value:appointmentData.serviceType ,
+                    value: appointmentData.serviceType,
                     image: Assets.images.serviceType.path,
                   ),
                   AppoinmentInfoRow(
                     'Date:',
-                    value:appointmentData. date,
+                    value: appointmentData.date,
                     image: Assets.images.date.path,
                   ),
                   AppoinmentInfoRow(
                     'Employee Name:',
-                    value:appointmentData. employeeName,
+                    value: appointmentData.employeeName,
                     image: Assets.images.employeeName.path,
                   ),
                   AppoinmentInfoRow(
                     'supervisor Name:',
-                    value:appointmentData.supervisorName??"",
+                    value: appointmentData.supervisorName,
                     image: Assets.images.employeeName.path,
                   ),
                 ],
@@ -166,54 +171,61 @@ class AppoinmentInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (title != null)
-            Expanded(
-              flex: 3,
-              child: Row(
-                children: [
-                  SizedBox(
-                    height: 15.sp,
-                    width: 15.sp,
-                    child: SvgPicture.asset(image, height: 15.sp, width: 15.sp),
+    return value != null
+        ? Padding(
+            padding: EdgeInsets.symmetric(vertical: 8.h),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (title != null)
+                  Expanded(
+                    flex: 3,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          height: 15.sp,
+                          width: 15.sp,
+                          child: SvgPicture.asset(
+                            image,
+                            height: 15.sp,
+                            width: 15.sp,
+                          ),
 
-                    //  image?.svg(
-                    //   fit: BoxFit.contain,
-                    //   width: 15.sp,
-                    //   height: 15.sp,
-                    // ),
+                          //  image?.svg(
+                          //   fit: BoxFit.contain,
+                          //   width: 15.sp,
+                          //   height: 15.sp,
+                          // ),
+                        ),
+                        11.horizontalSpace,
+                        Text(
+                          title!,
+                          softWrap: true,
+                          style: Theme.of(
+                            context,
+                          ).textTheme.displayMedium!.copyWith(fontSize: 14.sp),
+                        ),
+                      ],
+                    ),
                   ),
-                  11.horizontalSpace,
-                  Text(
-                    title!,
-                    softWrap: true,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.displayMedium!.copyWith(fontSize: 14.sp),
-                  ),
-                ],
-              ),
-            ),
-          SizedBox(width: 16.w),
-          Expanded(
-            flex: 2,
-            child:
-                widget ??
-                Text(
-                  "$value",
-                  softWrap: true,
-                  style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                    fontSize: 12.sp,
-                    color: AppColors.greyText,
-                  ),
+                SizedBox(width: 16.w),
+                Expanded(
+                  flex: 2,
+                  child:
+                      widget ??
+                      Text(
+                        "$value",
+                        softWrap: true,
+                        style: Theme.of(context).textTheme.displayMedium!
+                            .copyWith(
+                              fontSize: 12.sp,
+                              color: AppColors.greyText,
+                            ),
+                      ),
                 ),
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          )
+        : SizedBox();
   }
 }

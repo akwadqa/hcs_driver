@@ -61,7 +61,9 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ),
                     ),
-                    Tab(text: 'Yesterday'),
+
+                    //? Dont forget it :
+                    // Tab(text: 'Yesterday'),
                     Tab(text: 'Today'),
                     Tab(text: 'Tomorrow'),
                   ],

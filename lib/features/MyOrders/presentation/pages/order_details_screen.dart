@@ -139,301 +139,315 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             ),
           ),
           18.verticalSpace,
-          if(details?.logStatus!="Cancelled")
-          InkWell(
-            onTap: () => context.pushRoute(
-              OrderStatusRoute(
-                statusOrderType: details?.status??"",
-                appointmentID: widget.appointmentID,
+          if (details?.logStatus != "Cancelled")
+            InkWell(
+              onTap: () => context.pushRoute(
+                OrderStatusRoute(
+                  statusOrderType: details?.status ?? "",
+                  appointmentID: widget.appointmentID,
+                ),
               ),
-            ),
-            child: _wrapWithCard(
-              Consumer(
-                builder: (context, ref, child) {
-                  var currentDriverStatus = ref.watch(
-                    myOrdersControllerProvider.select(
-                      (value) => value.currentDriverStatus,
-                    ),
-                  );
-                  var nextDriverStatus = ref.watch(
-                    myOrdersControllerProvider.select(
-                      (value) => value.nextDriverStatus,
-                    ),
-                  );
-                  var statusOrderStates = ref.watch(
-                    myOrdersControllerProvider.select(
-                      (value) => value.statusOrderStates,
-                    ),
-                  );
-                  switch (statusOrderStates) {
-                    case RequestStates.init:
-                    case RequestStates.loaded:
-                      return Column(
-                        children: [
-                          InfoRow("Status", value: currentDriverStatus),
-                          nextDriverStatus == null
-                              ? 10.verticalSpace
-                              : 0.verticalSpace,
-currentDriverStatus!="Completed"?
-                          nextDriverStatus != null
-                              ? InfoRow(
-                                  "Next status",
-                                  widget: (details?.logStatus == "Canceled")
-                                      ? Chip(
-                                          label: Text(
-                                            "Canceled",
-                                            style: TextStyle(
-                                              color: Colors.red,
-                                              fontSize: 12.sp,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          backgroundColor: Colors.red.shade50,
-                                          padding: EdgeInsets.symmetric(
-                                            horizontal: 6.w,
-                                          ),
-                                        )
-                                      : CustomButton(
-                                          title: nextDriverStatus,
+              child: _wrapWithCard(
+                Consumer(
+                  builder: (context, ref, child) {
+                    var currentDriverStatus = ref.watch(
+                      myOrdersControllerProvider.select(
+                        (value) => value.currentDriverStatus,
+                      ),
+                    );
+                    var nextDriverStatus = ref.watch(
+                      myOrdersControllerProvider.select(
+                        (value) => value.nextDriverStatus,
+                      ),
+                    );
+                    var statusOrderStates = ref.watch(
+                      myOrdersControllerProvider.select(
+                        (value) => value.statusOrderStates,
+                      ),
+                    );
+                    switch (statusOrderStates) {
+                      case RequestStates.init:
+                      case RequestStates.loaded:
+                        return Column(
+                          children: [
+                            InfoRow("Status", value: currentDriverStatus),
+                            nextDriverStatus == null
+                                ? 10.verticalSpace
+                                : 0.verticalSpace,
+                            currentDriverStatus != "Completed"
+                                ? nextDriverStatus != null
+                                      ? InfoRow(
+                                          "Next status",
+                                          widget:
+                                              (details?.logStatus == "Canceled")
+                                              ? Chip(
+                                                  label: Text(
+                                                    "Canceled",
+                                                    style: TextStyle(
+                                                      color: Colors.red,
+                                                      fontSize: 12.sp,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                  ),
+                                                  backgroundColor:
+                                                      Colors.red.shade50,
+                                                  padding: EdgeInsets.symmetric(
+                                                    horizontal: 6.w,
+                                                  ),
+                                                )
+                                              : CustomButton(
+                                                  title: nextDriverStatus,
 
-                                          onPressed:
-                                              statusOrderStates !=
-                                                  RequestStates.loading
-                                              //     &&
-                                              // statusOrders.last.status !=
-                                              //     currentDriverStatus
-                                              ? () async {
-                                                  if (nextDriverStatus ==
-                                                      "Payment Received") {
-                                                    // 1) Ask how to handle payment (no status change yet)
-                                                    final res =
-                                                        await showPaymentMethodDialog(
-                                                          context,
-                                                        );
-                                                    if (res == null)
-                                                      return; // user canceled
+                                                  onPressed:
+                                                      statusOrderStates !=
+                                                          RequestStates.loading
+                                                      //     &&
+                                                      // statusOrders.last.status !=
+                                                      //     currentDriverStatus
+                                                      ? () async {
+                                                          if (nextDriverStatus ==
+                                                              "Payment Received") {
+                                                            // 1) Ask how to handle payment (no status change yet)
+                                                            final res =
+                                                                await showPaymentMethodDialog(
+                                                                  context,
+                                                                );
+                                                            if (res == null)
+                                                              return; // user canceled
 
-                                                    // 2) Call the correct API(s) based on the choice
-                                                    await withBlockingLoader(context, () async {
-                                                      final notifier = ref.read(
-                                                        myOrdersControllerProvider
-                                                            .notifier,
-                                                      );
+                                                            // 2) Call the correct API(s) based on the choice
+                                                            await withBlockingLoader(context, () async {
+                                                              final notifier =
+                                                                  ref.read(
+                                                                    myOrdersControllerProvider
+                                                                        .notifier,
+                                                                  );
 
-                                                      if (res.choice ==
-                                                          PaymentChoice.cash) {
-                                                        await ref
-                                                            .read(
-                                                              myOrdersControllerProvider
-                                                                  .notifier,
-                                                            )
-                                                            .updateStatusOrder(
-                                                              appointmentID: widget
-                                                                  .appointmentID,
-                                                                  amount: res.amount.toString()
-                                                            );
-                                                        // TODO: call your real endpoint:
-                                                        // await notifier.completeOrderWithCash(
-                                                        //   appointmentID: widget.appointmentID,
-                                                        //   amount: res.amount!,
-                                                        // );
-                                                        // If your backend needs status progression steps, do them here
-                                                        // (but only AFTER the choice was made).
-                                                      } else {
-                                                        await ref
-                                                            .read(
-                                                              myOrdersControllerProvider
-                                                                  .notifier,
-                                                            )
-                                                            .updateStatusOrder(
-                                                              appointmentID: widget
-                                                                  .appointmentID,
-                                                            );
-                                                        // TODO: call your real endpoint:
-                                                        // await notifier.completeOrderSkipCash(
-                                                        //   appointmentID: widget.appointmentID,
-                                                        // );
-                                                      }
-                                                    });
-
-                                                    // optional toast
-                                                    if (!mounted) return;
-                                                    ScaffoldMessenger.of(
-                                                      context,
-                                                    ).showSnackBar(
-                                                      SnackBar(
-                                                        content: Text(
-                                                          res.choice ==
+                                                              if (res.choice ==
                                                                   PaymentChoice
-                                                                      .cash
-                                                              ? "Order completed (cash)."
-                                                              : "Order completed.",
-                                                        ),
-                                                      ),
-                                                    );
-                                                  } else {
-                                                    // normal path for other next statuses
-                                                    await ref
-                                                        .read(
-                                                          myOrdersControllerProvider
-                                                              .notifier,
-                                                        )
-                                                        .updateStatusOrder(
-                                                          appointmentID: widget
-                                                              .appointmentID,
-                                                        );
-                                                  }
-                                                }
-                                              : null,
-                                        ),
-                                )
-                              : Text(
-                                  "Order Completed ✓",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayMedium!
-                                      .copyWith(color: AppColors.greenText),
-                                ):Text(
-                                  "Order Completed ✓",
-                                  overflow: TextOverflow.ellipsis,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .displayMedium!
-                                      .copyWith(color: AppColors.greenText),
-                                ),
-                        ],
-                      );
+                                                                      .cash) {
+                                                                await ref
+                                                                    .read(
+                                                                      myOrdersControllerProvider
+                                                                          .notifier,
+                                                                    )
+                                                                    .updateStatusOrder(
+                                                                      appointmentID:
+                                                                          widget
+                                                                              .appointmentID,
+                                                                      amount: res
+                                                                          .amount
+                                                                          .toString(),
+                                                                    );
+                                                                // TODO: call your real endpoint:
+                                                                // await notifier.completeOrderWithCash(
+                                                                //   appointmentID: widget.appointmentID,
+                                                                //   amount: res.amount!,
+                                                                // );
+                                                                // If your backend needs status progression steps, do them here
+                                                                // (but only AFTER the choice was made).
+                                                              } else {
+                                                                await ref
+                                                                    .read(
+                                                                      myOrdersControllerProvider
+                                                                          .notifier,
+                                                                    )
+                                                                    .updateStatusOrder(
+                                                                      appointmentID:
+                                                                          widget
+                                                                              .appointmentID,
+                                                                    );
+                                                                // TODO: call your real endpoint:
+                                                                // await notifier.completeOrderSkipCash(
+                                                                //   appointmentID: widget.appointmentID,
+                                                                // );
+                                                              }
+                                                            });
 
-                    // Padding(
-                    //   padding: EdgeInsets.symmetric(vertical: 8.h),
-                    //   child: Row(
-                    //     crossAxisAlignment: CrossAxisAlignment.center,
-                    //     children: [
-                    //       Text(
-                    //         "Status",
-                    //         overflow: TextOverflow.ellipsis,
-                    //         style: Theme.of(context).textTheme.displayMedium!
-                    //             .copyWith(
-                    //               color: AppColors.blueText,
-                    //               fontWeight: FontWeight.w600,
-                    //             ),
-                    //       ),
-                    //       SizedBox(width: 10.w),
-                    //       Expanded(
-                    //         child: Container(
-                    //           padding: EdgeInsets.symmetric(
-                    //             horizontal: 8.w,
+                                                            // optional toast
+                                                            if (!mounted)
+                                                              return;
+                                                            ScaffoldMessenger.of(
+                                                              context,
+                                                            ).showSnackBar(
+                                                              SnackBar(
+                                                                content: Text(
+                                                                  res.choice ==
+                                                                          PaymentChoice
+                                                                              .cash
+                                                                      ? "Order completed (cash)."
+                                                                      : "Order completed.",
+                                                                ),
+                                                              ),
+                                                            );
+                                                          } else {
+                                                            // normal path for other next statuses
+                                                            await ref
+                                                                .read(
+                                                                  myOrdersControllerProvider
+                                                                      .notifier,
+                                                                )
+                                                                .updateStatusOrder(
+                                                                  appointmentID:
+                                                                      widget
+                                                                          .appointmentID,
+                                                                );
+                                                          }
+                                                        }
+                                                      : null,
+                                                ),
+                                        )
+                                      : Text(
+                                          "Order Completed ✓",
+                                          overflow: TextOverflow.ellipsis,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .displayMedium!
+                                              .copyWith(
+                                                color: AppColors.greenText,
+                                              ),
+                                        )
+                                : Text(
+                                    "Order Completed ✓",
+                                    overflow: TextOverflow.ellipsis,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displayMedium!
+                                        .copyWith(color: AppColors.greenText),
+                                  ),
+                          ],
+                        );
 
-                    //             vertical: 6.h,
-                    //           ),
-                    //           alignment: Alignment.centerLeft,
-                    //           decoration: BoxDecoration(
-                    //             borderRadius: BorderRadius.circular(10.r),
-                    //             border: Border.all(color: AppColors.grayBorder),
-                    //           ),
-                    //           child: Text(
-                    //             currentDriverStatus,
-                    //             overflow: TextOverflow.ellipsis,
-                    //             textAlign: TextAlign.start,
-                    //             style: Theme.of(
-                    //               context,
-                    //             ).textTheme.displayMedium!.copyWith(),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //       SizedBox(width: 10.w),
-                    //       Consumer(
-                    //         builder: (context, ref, child) {
-                    //           var statusOrderStates = ref.watch(
-                    //             myOrdersControllerProvider.select(
-                    //               (value) => value.statusOrderStates,
-                    //             ),
-                    //           );
+                      // Padding(
+                      //   padding: EdgeInsets.symmetric(vertical: 8.h),
+                      //   child: Row(
+                      //     crossAxisAlignment: CrossAxisAlignment.center,
+                      //     children: [
+                      //       Text(
+                      //         "Status",
+                      //         overflow: TextOverflow.ellipsis,
+                      //         style: Theme.of(context).textTheme.displayMedium!
+                      //             .copyWith(
+                      //               color: AppColors.blueText,
+                      //               fontWeight: FontWeight.w600,
+                      //             ),
+                      //       ),
+                      //       SizedBox(width: 10.w),
+                      //       Expanded(
+                      //         child: Container(
+                      //           padding: EdgeInsets.symmetric(
+                      //             horizontal: 8.w,
 
-                    //           var statusOrders = ref.watch(
-                    //             myOrdersControllerProvider.select(
-                    //               (value) => value.statusOrders,
-                    //             ),
-                    //           );
-                    //           var currentDriverStatus = ref.watch(
-                    //             myOrdersControllerProvider.select(
-                    //               (value) => value.currentDriverStatus,
-                    //             ),
-                    //           );
-                    //           return InkWell(
-                    //             onTap:
-                    //                 statusOrderStates !=
-                    //                         RequestStates.loading &&
-                    //                     statusOrders.last.status !=
-                    //                         currentDriverStatus
-                    //                 ? () => ref
-                    //                       .watch(
-                    //                         myOrdersControllerProvider.notifier,
-                    //                       )
-                    //                       .updateStatusOrder(
-                    //                         serviceOrderID:
-                    //                             widget.serviceOrderID,
-                    //                       )
-                    //                 : null,
-                    //             child: Text(
-                    //               "Change",
-                    //               overflow: TextOverflow.ellipsis,
-                    //               style: Theme.of(context)
-                    //                   .textTheme
-                    //                   .displayMedium!
-                    //                   .copyWith(
-                    //                     decoration: TextDecoration.underline,
-                    //                     color: AppColors.blueText,
-                    //                   ),
-                    //             ),
-                    //           );
-                    //         },
-                    //       ),
-                    //       SizedBox(width: 5.w),
-                    //       InkWell(
-                    //         child: Container(
-                    //           height: 27.w,
-                    //           width: 27.w,
+                      //             vertical: 6.h,
+                      //           ),
+                      //           alignment: Alignment.centerLeft,
+                      //           decoration: BoxDecoration(
+                      //             borderRadius: BorderRadius.circular(10.r),
+                      //             border: Border.all(color: AppColors.grayBorder),
+                      //           ),
+                      //           child: Text(
+                      //             currentDriverStatus,
+                      //             overflow: TextOverflow.ellipsis,
+                      //             textAlign: TextAlign.start,
+                      //             style: Theme.of(
+                      //               context,
+                      //             ).textTheme.displayMedium!.copyWith(),
+                      //           ),
+                      //         ),
+                      //       ),
+                      //       SizedBox(width: 10.w),
+                      //       Consumer(
+                      //         builder: (context, ref, child) {
+                      //           var statusOrderStates = ref.watch(
+                      //             myOrdersControllerProvider.select(
+                      //               (value) => value.statusOrderStates,
+                      //             ),
+                      //           );
 
-                    //           alignment: Alignment.center,
-                    //           decoration: BoxDecoration(
-                    //             shape: BoxShape.circle,
-                    //             color: AppColors.primary,
-                    //           ),
+                      //           var statusOrders = ref.watch(
+                      //             myOrdersControllerProvider.select(
+                      //               (value) => value.statusOrders,
+                      //             ),
+                      //           );
+                      //           var currentDriverStatus = ref.watch(
+                      //             myOrdersControllerProvider.select(
+                      //               (value) => value.currentDriverStatus,
+                      //             ),
+                      //           );
+                      //           return InkWell(
+                      //             onTap:
+                      //                 statusOrderStates !=
+                      //                         RequestStates.loading &&
+                      //                     statusOrders.last.status !=
+                      //                         currentDriverStatus
+                      //                 ? () => ref
+                      //                       .watch(
+                      //                         myOrdersControllerProvider.notifier,
+                      //                       )
+                      //                       .updateStatusOrder(
+                      //                         serviceOrderID:
+                      //                             widget.serviceOrderID,
+                      //                       )
+                      //                 : null,
+                      //             child: Text(
+                      //               "Change",
+                      //               overflow: TextOverflow.ellipsis,
+                      //               style: Theme.of(context)
+                      //                   .textTheme
+                      //                   .displayMedium!
+                      //                   .copyWith(
+                      //                     decoration: TextDecoration.underline,
+                      //                     color: AppColors.blueText,
+                      //                   ),
+                      //             ),
+                      //           );
+                      //         },
+                      //       ),
+                      //       SizedBox(width: 5.w),
+                      //       InkWell(
+                      //         child: Container(
+                      //           height: 27.w,
+                      //           width: 27.w,
 
-                    //           child: Assets.images.rightArrow.svg(
-                    //             height: 10.sp,
-                    //             width: 10.sp,
-                    //             fit: BoxFit.fill,
-                    //           ),
-                    //         ),
-                    //         onTap: () => context.pushRoute(
-                    //           OrderStatusRoute(
-                    //             statusOrderType: details!.status,
-                    //             serviceOrderID: widget.serviceOrderID,
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // );
+                      //           alignment: Alignment.center,
+                      //           decoration: BoxDecoration(
+                      //             shape: BoxShape.circle,
+                      //             color: AppColors.primary,
+                      //           ),
 
-                    case RequestStates.loading:
-                      return Center(child: FadeCircleLoadingIndicator());
-                    case RequestStates.error:
-                      return SimpleErrorWidget(
-                        onTap: () => ref
-                            .watch(myOrdersControllerProvider.notifier)
-                            .updateStatusOrder(
-                              appointmentID: widget.appointmentID,
-                            ),
-                      );
-                  }
-                },
+                      //           child: Assets.images.rightArrow.svg(
+                      //             height: 10.sp,
+                      //             width: 10.sp,
+                      //             fit: BoxFit.fill,
+                      //           ),
+                      //         ),
+                      //         onTap: () => context.pushRoute(
+                      //           OrderStatusRoute(
+                      //             statusOrderType: details!.status,
+                      //             serviceOrderID: widget.serviceOrderID,
+                      //           ),
+                      //         ),
+                      //       ),
+                      //     ],
+                      //   ),
+                      // );
+
+                      case RequestStates.loading:
+                        return Center(child: FadeCircleLoadingIndicator());
+                      case RequestStates.error:
+                        return SimpleErrorWidget(
+                          onTap: () => ref
+                              .watch(myOrdersControllerProvider.notifier)
+                              .updateStatusOrder(
+                                appointmentID: widget.appointmentID,
+                              ),
+                        );
+                    }
+                  },
+                ),
               ),
             ),
-          ),
           18.verticalSpace,
           _wrapWithCard(
             Column(
@@ -452,16 +466,18 @@ currentDriverStatus!="Completed"?
                     value: details?.customer.phoneNumber,
                     widget: Row(
                       children: [
-                        Text(
-                          details!.customer.phoneNumber,
-                          softWrap: true,
+                        Expanded(
+                          child: Text(
+                            details!.customer.phoneNumber,
+                            softWrap: true,
 
-                          // textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.displayMedium?.copyWith(color: AppColors.blueText),
-                          
+                            // textAlign: TextAlign.center,
+                            style: Theme.of(context).textTheme.displayMedium
+                                ?.copyWith(color: AppColors.blueText),
+                          ),
                         ),
                         10.horizontalSpace,
-                        Icon(Icons.phone,color: AppColors.blueText),
+                        Icon(Icons.phone, color: AppColors.blueText),
                       ],
                     ),
                   ),
@@ -502,7 +518,10 @@ currentDriverStatus!="Completed"?
                   "Employees name",
                   value: (details.staffAppointment as List?)?.join(',\n') ?? '',
                 ),
-                InfoRow("Supervisor name", value: details.supervisor?.supervisorName),
+                InfoRow(
+                  "Supervisor name",
+                  value: details.supervisor?.supervisorName,
+                ),
                 InfoRow("Driver name", value: details.driver?.driverName),
               ],
             ),

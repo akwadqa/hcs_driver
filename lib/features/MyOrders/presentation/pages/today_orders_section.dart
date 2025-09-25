@@ -69,7 +69,13 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
                 .read(myOrdersControllerProvider.notifier)
                 .fetchTodayOrders();
           },
-          child: Center(child: Assets.images.noDataMin.image()),
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: [
+              SizedBox(height: 50.h),
+              Center(child: Assets.images.noDataMin.image()),
+            ],
+          ),
         );
       }
 
@@ -80,6 +86,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
               .fetchTodayOrders();
         },
         child: ListView.builder(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           shrinkWrap: true,
           itemCount: ordersState.pendingOrders.length + 1,
