@@ -8,15 +8,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'notifications_repository.g.dart';
 
 @riverpod
-NotificationsRepository notificationsRepository(
-    Ref ref) {
+
+NotificationsRepository notificationsRepository(Ref ref) {
   final dio = ref.watch(dioProvider);
-  final newDio = Dio(dio.options.copyWith(baseUrl:       ApiConstance.baseUrl
-));
+  final newDio = Dio(dio.options.copyWith(baseUrl: ApiConstance.baseUrl));
   newDio.interceptors.addAll(dio.interceptors);
 
-  final NetworkService networkService =
-      ref.watch(networkServiceProvider(newDio));
+  final NetworkService networkService = ref.watch(
+    networkServiceProvider(newDio),
+  );
 
   return NotificationsRepository(networkService);
 }
@@ -27,12 +27,16 @@ class NotificationsRepository {
   NotificationsRepository(this._networkService);
 
   Future<void> sendFCMToken(String token, String userId) async {
-    final response = await _networkService.post(
 
-        ApiConstance.sendFcmToken,{'device_token': token, 'user_id': userId});
+    final response = await _networkService.post(ApiConstance.sendFcmToken, {
+      'device_token': token,
+      'user_id': userId,
+    });
 
-    final AppResponse appResponse =
-        AppResponse.fromJson(response.data, (json) => null);
+    final AppResponse appResponse = AppResponse.fromJson(
+      response.data,
+      (json) => null,
+    );
 
     if (appResponse.error == 1) {
       throw AppException(appResponse.message);

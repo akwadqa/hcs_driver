@@ -528,7 +528,7 @@ currentDriverStatus!="Completed"?
                   "Cleaning supply",
                   value: details.withCleaningSupplies == 0 ? "No" : "Yes",
                 ),
-                InfoRow("Note", value: "details.note"),
+                InfoRow("Note", value: details.note),
               ],
             ),
           ),

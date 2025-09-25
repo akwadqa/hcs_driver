@@ -43,9 +43,12 @@ abstract class AppInitializer {
     await EasyLocalization.ensureInitialized();
   }
 }
+
+
 Future<ProviderContainer> initializeProviders() async {
   final container = ProviderContainer(observers: [RiverpodObserver()]);
   await container.read(sharedPreferencesProvider.future);
+  // ? INIT FIREBASE NOTIFICATION SERVICE
   await container.read(notificationsServiceProvider).init();
   // await NotificationService().initialize();
 
