@@ -19,7 +19,7 @@ class LoginResponse {
   @JsonKey(name: "home_page")
   String homePage;
   @JsonKey(name: "full_name")
-  String fullName;  
+  String fullName;
   @JsonKey(name: "status_code")
   int statusCode;
   @JsonKey(name: "error")
@@ -49,10 +49,7 @@ class Data {
   @JsonKey(name: "email")
   String email;
 
-  Data({
-    required this.token,
-    required this.email,
-  });
+  Data({required this.token, required this.email});
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
 

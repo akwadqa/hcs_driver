@@ -89,7 +89,8 @@ class Details {
     required this.note,
   });
 
-  factory Details.fromJson(Map<String, dynamic> json) => _$DetailsFromJson(json);
+  factory Details.fromJson(Map<String, dynamic> json) =>
+      _$DetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$DetailsToJson(this);
 }

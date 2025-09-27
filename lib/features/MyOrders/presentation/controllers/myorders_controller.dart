@@ -12,71 +12,71 @@ part 'myorders_controller.g.dart';
 class MyOrdersController extends _$MyOrdersController {
   @override
   MyOrdersState build() => const MyOrdersState();
-// inside MyOrdersController
+  // inside MyOrdersController
 
-Future<void> fetchCompletedOrders({String? searchKey}) async {
-  state = state.copyWith(
-    completedOrdersStates: RequestStates.loading,
-    searchKey: searchKey ?? '',
-  );
-
-  try {
-    final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-    final ordersData = await myOrdersRepo.getServicesOrders(
-      page: 1,
-      status: 'completed', // 👈 أهم حاجة
-      search: searchKey, // 👈 دعم البحث بالاسم أو الموبايل
+  Future<void> fetchCompletedOrders({String? searchKey}) async {
+    state = state.copyWith(
+      completedOrdersStates: RequestStates.loading,
+      searchKey: searchKey ?? '',
     );
 
-    int? nextPage;
-    if (ordersData.pagination.totalPages > 1) {
-      nextPage = 2;
-    } else {
-      nextPage = null;
+    try {
+      final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
+      final ordersData = await myOrdersRepo.getServicesOrders(
+        page: 1,
+        status: 'completed', // 👈 أهم حاجة
+        search: searchKey, // 👈 دعم البحث بالاسم أو الموبايل
+      );
+
+      int? nextPage;
+      if (ordersData.pagination.totalPages > 1) {
+        nextPage = 2;
+      } else {
+        nextPage = null;
+      }
+
+      state = state.copyWith(
+        currentCompletedOrdersPage: nextPage,
+        completedOrders: ordersData.data,
+        completedOrdersStates: RequestStates.loaded,
+        ordersMessage: '',
+      );
+    } catch (e) {
+      state = state.copyWith(
+        completedOrdersStates: RequestStates.error,
+        ordersMessage: e.toString(),
+      );
     }
-
-    state = state.copyWith(
-      currentCompletedOrdersPage: nextPage,
-      completedOrders: ordersData.data,
-      completedOrdersStates: RequestStates.loaded,
-      ordersMessage: '',
-    );
-  } catch (e) {
-    state = state.copyWith(
-      completedOrdersStates: RequestStates.error,
-      ordersMessage: e.toString(),
-    );
   }
-}
 
-Future<void> onLoadMoreCompletedOrders() async {
-  final nextPage = state.currentCompletedOrdersPage;
-  if (nextPage == null) return;
+  Future<void> onLoadMoreCompletedOrders() async {
+    final nextPage = state.currentCompletedOrdersPage;
+    if (nextPage == null) return;
 
-  try {
-    final repo = ref.read(myOrdersRepositoryProvider);
-    final resp = await repo.getServicesOrders(
-      page: nextPage,
-      status: 'completed',
-      search: state.searchKey, // 👈 يحافظ على الفلترة
-    );
+    try {
+      final repo = ref.read(myOrdersRepositoryProvider);
+      final resp = await repo.getServicesOrders(
+        page: nextPage,
+        status: 'completed',
+        search: state.searchKey, // 👈 يحافظ على الفلترة
+      );
 
-    final next = resp.pagination.totalPages > resp.pagination.page
-        ? resp.pagination.page + 1
-        : null;
+      final next = resp.pagination.totalPages > resp.pagination.page
+          ? resp.pagination.page + 1
+          : null;
 
-    state = state.copyWith(
-      currentCompletedOrdersPage: next,
-      completedOrders: [...state.completedOrders, ...resp.data],
-      completedOrdersStates: RequestStates.loaded,
-    );
-  } catch (e) {
-    state = state.copyWith(
-      completedOrdersStates: RequestStates.error,
-      ordersMessage: e.toString(),
-    );
+      state = state.copyWith(
+        currentCompletedOrdersPage: next,
+        completedOrders: [...state.completedOrders, ...resp.data],
+        completedOrdersStates: RequestStates.loaded,
+      );
+    } catch (e) {
+      state = state.copyWith(
+        completedOrdersStates: RequestStates.error,
+        ordersMessage: e.toString(),
+      );
+    }
   }
-}
 
   Future<void> fetchYesterdayOrders() async {
     state = state.copyWith(approvedOrdersStates: RequestStates.loading);
@@ -108,7 +108,8 @@ Future<void> onLoadMoreCompletedOrders() async {
       );
     }
   }
- Future<void> fetchOrdersForDate(String yyyymmdd) async {
+
+  Future<void> fetchOrdersForDate(String yyyymmdd) async {
     state = state.copyWith(
       customOrdersState: RequestStates.loading,
       lastCustomDate: yyyymmdd,
@@ -118,7 +119,7 @@ Future<void> onLoadMoreCompletedOrders() async {
       final resp = await repo.getServicesOrders(
         page: 1,
         dateType: '',
-        date: yyyymmdd,           // <— pass the specific date
+        date: yyyymmdd, // <— pass the specific date
       );
 
       // final next = resp.pagination.totalPages > 1 ? 2 : null;
@@ -141,7 +142,7 @@ Future<void> onLoadMoreCompletedOrders() async {
   }
 
   // Optional if you need infinite scroll for custom date
-  
+
   Future<void> onLoadMoreCustomDate() async {
     final nextPage = state.currentCustomOrdersPage;
     if (nextPage == null) return;
@@ -317,6 +318,39 @@ Future<void> onLoadMoreCompletedOrders() async {
     }
   }
 
+  // Future<void> getOrderDetails({required String serviceOrderId}) async {
+  //   state = state.copyWith(ordersDetailsStates: RequestStates.loading);
+
+  //   try {
+  //     final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
+  //     final orderDetails = await myOrdersRepo.getOrderDetails(
+  //       serviceOrderId: serviceOrderId,
+  //     );
+  //     // DriverStatus? nextStatusElement = orderDetails.details.driver.driverStatus
+  //     //     .where((element) => element.active == false)
+  //     //     // .cast<DriverStatus?>()
+  //     //     .firstOrNull;
+
+  //     state = state.copyWith(
+  //       orderShare:  orderDetails,
+  //       // ordersDetails: orderDetails.,
+  //       // currentDriverStatus: orderDetails.details.driver.currentDriverStatus,
+  //       // nextDriverStatus: state.currentDriverStatus != "Completed"
+  //       //     ? nextStatusElement?.status
+  //       //     : null,
+  //       // statusOrders: orderDetails.details.driver.driverStatus,
+  //       ordersDetailsStates: RequestStates.loaded,
+  //       ordersDetailsMessage: '',
+  //       orderCancelltionStates: RequestStates.init,
+  //     );
+  //   } catch (e) {
+  //     state = state.copyWith(
+  //       ordersDetailsStates: RequestStates.error,
+  //       ordersDetailsMessage: e.toString(),
+  //     );
+  //   }
+  // }
+
   Future<void> fetchOrdersDetails({required String staffAppointmentLog}) async {
     state = state.copyWith(
       ordersDetailsStates: RequestStates.loading,
@@ -334,14 +368,16 @@ Future<void> onLoadMoreCompletedOrders() async {
           .details
           .driver
           .driverStatus
-          .where((element) => element.active==false )
+          .where((element) => element.active == false)
           // .cast<DriverStatus?>()
           .firstOrNull;
 
       state = state.copyWith(
         ordersDetails: ordersDetails.details,
         currentDriverStatus: ordersDetails.details.driver.currentDriverStatus,
-        nextDriverStatus:state.currentDriverStatus!="Completed"? nextStatusElement?.status:null,
+        nextDriverStatus: state.currentDriverStatus != "Completed"
+            ? nextStatusElement?.status
+            : null,
         statusOrders: ordersDetails.details.driver.driverStatus,
         ordersDetailsStates: RequestStates.loaded,
         ordersDetailsMessage: '',
@@ -355,13 +391,16 @@ Future<void> onLoadMoreCompletedOrders() async {
     }
   }
 
-  Future<void> updateStatusOrder({required String appointmentID,String? amount}) async {
+  Future<void> updateStatusOrder({
+    required String appointmentID,
+    String? amount,
+  }) async {
     state = state.copyWith(statusOrderStates: RequestStates.loading);
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final statusOrders = await myOrdersRepo.updateStatusOrder(
         appointmentID: appointmentID,
-        amount:amount,
+        amount: amount,
       );
 
       String currentDriverStatus = statusOrders.data
@@ -388,12 +427,16 @@ Future<void> onLoadMoreCompletedOrders() async {
     }
   }
 
-  Future<void> fetchAppontments({required String serviceOrderID}) async {
+  Future<void> fetchAppontments({
+    required String serviceOrderID,
+    String? dateType,
+  }) async {
     state = state.copyWith(appointmentsStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final appointmentsData = await myOrdersRepo.getAppontments(
+        dateType: dateType,
         page: 1,
         orderId: serviceOrderID,
       );
@@ -420,12 +463,16 @@ Future<void> onLoadMoreCompletedOrders() async {
     }
   }
 
-  Future<void> onLoadMoreAppontments({required String serviceOrderID}) async {
+  Future<void> onLoadMoreAppontments({
+    required String serviceOrderID,
+    String? dateType,
+  }) async {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final appointmentsData = await myOrdersRepo.getAppontments(
         page: state.currentAppointmentsPage!,
         orderId: serviceOrderID,
+        dateType: dateType,
       );
 
       int? nextPage;
@@ -464,7 +511,10 @@ Future<void> onLoadMoreCompletedOrders() async {
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      await myOrdersRepo.orderCancelltion(serviceOrderId: serviceOrderID,cancelMsg:cancelMsg);
+      await myOrdersRepo.orderCancelltion(
+        serviceOrderId: serviceOrderID,
+        cancelMsg: cancelMsg,
+      );
 
       state = state.copyWith(
         orderCancelltionStates: RequestStates.loaded,
@@ -494,7 +544,7 @@ Future<void> onLoadMoreCompletedOrders() async {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       await myOrdersRepo.orderAppointmentLogCancelltion(
         appoinmentLog: staffAppointmentLog,
-        cancelMsg:cancelMsg
+        cancelMsg: cancelMsg,
       );
       debugPrint('staffAppointmentLogCancelltion: $staffAppointmentLog');
       // context.pop();
@@ -504,7 +554,8 @@ Future<void> onLoadMoreCompletedOrders() async {
         orderCancelltionStates: RequestStates.loaded,
         orderCancelltionMessage: '',
       );
-         await fetchAppontments(serviceOrderID: orderId);
+      //TODO
+      await fetchAppontments(serviceOrderID: orderId, dateType: '');
       // ref.invalidate(myOrdersControllerProvider);
       // fetchOrdersDetails(staffAppointmentLog: serviceOrderID);
     } catch (e) {

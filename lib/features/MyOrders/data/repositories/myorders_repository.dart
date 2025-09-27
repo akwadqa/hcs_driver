@@ -2,6 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
+import 'package:hcs_driver/features/MyOrders/data/models/order_details_share.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
 import 'package:hcs_driver/src/constants/api_constance.dart';
@@ -21,7 +22,7 @@ class MyOrdersRepository {
 
   Future<ServicesOrders> getServicesOrders({
     required int page,
-     String? dateType,
+    String? dateType,
     String? status,
     String? search,
     String? date,
@@ -30,11 +31,11 @@ class MyOrdersRepository {
       ApiConstance.myServicesOrders(),
       queryParameters: {
         "page": page,
-      "action":"driver",
+        "action": "driver",
         if (status != null) "status": status,
         if (search != null) "search": search,
         if (date != null) "for_date": date,
-        if (dateType!=null) "date_type": dateType,
+        if (dateType != null) "date_type": dateType,
       },
     );
 
@@ -58,6 +59,21 @@ class MyOrdersRepository {
 
     if (response.statusCode == 200) {
       return OrdersDetails.fromJson(response.data);
+    } else {
+      throw Exception(
+        response.message ?? 'Failed to get Services Order Details',
+      );
+    }
+  }
+
+  Future<OrderDetailsShare> getOrderDetails({
+    required String serviceOrderId,
+  }) async {
+    final response = await _networkService.get(
+      ApiConstance.getOrderDetails(serviceOrderId: serviceOrderId),
+    );
+    if (response.statusCode == 200) {
+      return OrderDetailsShare.fromJson(response.data);
     } else {
       throw Exception(
         response.message ?? 'Failed to get Services Order Details',
@@ -130,9 +146,12 @@ class MyOrdersRepository {
   Future<AppointmentModel> getAppontments({
     required int page,
     required String orderId,
+     String? dateType,
   }) async {
     final response = await _networkService.get(
       ApiConstance.appontmentsLogs(page: page, orderId: orderId),
+      queryParameters: {if (dateType != null) "date_type": dateType},
+      // queryParameters: {"date_type": 'today'},
     );
 
     if (response.statusCode == 200) {

@@ -91,6 +91,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                 ShareToWhatsApp(
                   serviceOrderId: widget.serviceOrderID,
                   orderDetails: details,
+                  isOrderShare: false,
                 ),
               ]
             : null,

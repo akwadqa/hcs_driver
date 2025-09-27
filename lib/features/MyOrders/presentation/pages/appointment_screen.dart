@@ -9,6 +9,7 @@ import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_c
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/pages/order_details_screen.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/appointment_card.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whatsapp.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
@@ -20,8 +21,13 @@ import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart
 @RoutePage()
 class AppoinmentScreen extends ConsumerStatefulWidget {
   final String serviceOrderID;
+  final String dateType;
 
-  const AppoinmentScreen({super.key, required this.serviceOrderID});
+  const AppoinmentScreen({
+    super.key,
+    required this.serviceOrderID,
+    required this.dateType,
+  });
 
   @override
   ConsumerState<AppoinmentScreen> createState() => _MyOrdersContentState();
@@ -38,7 +44,10 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
     Future(
       () => ref
           .read(myOrdersControllerProvider.notifier)
-          .fetchAppontments(serviceOrderID: widget.serviceOrderID),
+          .fetchAppontments(
+            serviceOrderID: widget.serviceOrderID,
+            dateType: widget.dateType,
+          ),
     );
 
     _scrollController = ScrollController()..addListener(_onScroll);
@@ -55,7 +64,10 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
       _loadMoreTimer = Timer(const Duration(milliseconds: 500), () {
         ref
             .read(myOrdersControllerProvider.notifier)
-            .onLoadMoreAppontments(serviceOrderID: widget.serviceOrderID);
+            .onLoadMoreAppontments(
+              serviceOrderID: widget.serviceOrderID,
+              dateType: widget.dateType,
+            );
       });
     }
   }
@@ -75,7 +87,13 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
       appBar: CustomAppbar(
         hasBackArrow: true,
         title: AppStrings.appointmentDetails,
-        
+        actions: [
+          ShareToWhatsApp(
+            serviceOrderId: widget.serviceOrderID,
+            orderDetails: null,
+            isOrderShare: true,
+          ),
+        ],
       ),
       body: buildBody(context, ordersState),
     );
@@ -92,7 +110,10 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
             onRefresh: () async {
               await ref
                   .read(myOrdersControllerProvider.notifier)
-                  .fetchAppontments(serviceOrderID: widget.serviceOrderID);
+                  .fetchAppontments(
+                    serviceOrderID: widget.serviceOrderID,
+                    dateType: widget.dateType,
+                  );
             },
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -109,7 +130,10 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
         onRefresh: () async {
           await ref
               .read(myOrdersControllerProvider.notifier)
-              .fetchAppontments(serviceOrderID: widget.serviceOrderID);
+              .fetchAppontments(
+                serviceOrderID: widget.serviceOrderID,
+                dateType: widget.dateType,
+              );
         },
         child: ListView.builder(
           controller: _scrollController,
@@ -174,7 +198,10 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
         onTap: () => Future(
           () => ref
               .read(myOrdersControllerProvider.notifier)
-              .fetchAppontments(serviceOrderID: widget.serviceOrderID),
+              .fetchAppontments(
+                serviceOrderID: widget.serviceOrderID,
+                dateType: widget.dateType,
+              ),
         ),
       );
     }

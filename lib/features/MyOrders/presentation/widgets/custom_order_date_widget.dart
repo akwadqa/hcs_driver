@@ -72,9 +72,8 @@ class _CustomDateOrdersScreenState
 
     if (ordersState.customOrdersState == RequestStates.error) {
       return AppErrorWidget(
-        onTap: () => ref
-            .read(myOrdersControllerProvider.notifier)
-            .refetchCustomDate(),
+        onTap: () =>
+            ref.read(myOrdersControllerProvider.notifier).refetchCustomDate(),
       );
     }
 
@@ -124,8 +123,9 @@ class _CustomDateOrdersScreenState
 
           return GestureDetector(
             onTap: () {
+              // TODO : fix it to other dates :
               context.pushRoute(
-                AppoinmentRoute(serviceOrderID: o.serviceOrderId),
+                AppoinmentRoute(serviceOrderID: o.serviceOrderId,dateType: ''),
               );
             },
             child: Container(
@@ -145,7 +145,8 @@ class _CustomDateOrdersScreenState
                     children: [
                       Text(
                         o.serviceOrderId,
-                        style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        style: Theme.of(context).textTheme.displaySmall!
+                            .copyWith(
                               fontSize: 14.sp,
                               fontWeight: FontWeight.w600,
                             ),
@@ -157,9 +158,7 @@ class _CustomDateOrdersScreenState
                           // 9.horizontalSpace,
                           Text(
                             o.status.toString(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayMedium!
+                            style: Theme.of(context).textTheme.displayMedium!
                                 .copyWith(fontSize: 14.sp),
                           ),
                         ],
@@ -171,10 +170,10 @@ class _CustomDateOrdersScreenState
                   Text(
                     o.serviceType,
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 12.sp,
-                          color: AppColors.greyText,
-                          fontWeight: FontWeight.w500,
-                        ),
+                      fontSize: 12.sp,
+                      color: AppColors.greyText,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   8.verticalSpace,
                   // date + price
@@ -184,14 +183,15 @@ class _CustomDateOrdersScreenState
                       Text(
                         o.postingDate,
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontSize: 12.sp,
-                              color: AppColors.greyText,
-                              fontWeight: FontWeight.w500,
-                            ),
+                          fontSize: 12.sp,
+                          color: AppColors.greyText,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                       Text(
                         "QR ${o.totalNetAmount}",
-                        style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                        style: Theme.of(context).textTheme.displaySmall!
+                            .copyWith(
                               fontSize: 12.sp,
                               color: AppColors.greenText,
                               fontWeight: FontWeight.w600,

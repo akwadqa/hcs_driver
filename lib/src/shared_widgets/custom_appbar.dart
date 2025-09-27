@@ -52,7 +52,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                     context,
                   ).textTheme.displayMedium,
 
-                  tabs:const [
+                  tabs: const [
                     Tab(
                       icon: SizedBox(
                         child: Icon(
@@ -94,7 +94,6 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ],
                     ),
-             
                   ],
                 )
               : Text(
