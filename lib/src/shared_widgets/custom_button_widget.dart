@@ -44,27 +44,26 @@ class CustomButtonWidget extends StatelessWidget {
         padding: EdgeInsets.zero,
         backgroundColor: backgroundColor ?? Colors.transparent,
         foregroundColor: AppColors.black900,
-        fixedSize: Size(
-          width,
-          height,
-        ),
+        fixedSize: Size(width, height),
         shape: RoundedRectangleBorder(
           side: BorderSide(
-              color: isDisabled
-                  ? Colors.transparent
-                  : borderColor ?? backgroundColor ?? Colors.transparent),
+            color: isDisabled
+                ? Colors.transparent
+                : borderColor ?? backgroundColor ?? Colors.transparent,
+          ),
           borderRadius: BorderRadius.circular(radius ?? 25),
         ),
       ),
       onPressed: isDisabled ? null : onTap,
-      child: child ??
+      child:
+          child ??
           Text(
             context.tr(text),
             style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                  fontSize: fontSize ?? 15,
-                  color: color ?? (isFiled ? Colors.white : Colors.black),
-                  fontWeight: FontWeight.w500,
-                ),
+              fontSize: fontSize ?? 15,
+              color: color ?? (isFiled ? Colors.white : Colors.black),
+              fontWeight: FontWeight.w500,
+            ),
           ).centered(),
     ).onlyPadding(top: topPading ?? 0);
   }

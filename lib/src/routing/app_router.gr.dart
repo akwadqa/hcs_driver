@@ -36,10 +36,15 @@ class AppoinmentRoute extends _i11.PageRouteInfo<AppoinmentRouteArgs> {
   AppoinmentRoute({
     _i12.Key? key,
     required String serviceOrderID,
+    required String dateType,
     List<_i11.PageRouteInfo>? children,
   }) : super(
          AppoinmentRoute.name,
-         args: AppoinmentRouteArgs(key: key, serviceOrderID: serviceOrderID),
+         args: AppoinmentRouteArgs(
+           key: key,
+           serviceOrderID: serviceOrderID,
+           dateType: dateType,
+         ),
          initialChildren: children,
        );
 
@@ -52,32 +57,42 @@ class AppoinmentRoute extends _i11.PageRouteInfo<AppoinmentRouteArgs> {
       return _i1.AppoinmentScreen(
         key: args.key,
         serviceOrderID: args.serviceOrderID,
+        dateType: args.dateType,
       );
     },
   );
 }
 
 class AppoinmentRouteArgs {
-  const AppoinmentRouteArgs({this.key, required this.serviceOrderID});
+  const AppoinmentRouteArgs({
+    this.key,
+    required this.serviceOrderID,
+    required this.dateType,
+  });
 
   final _i12.Key? key;
 
   final String serviceOrderID;
 
+  final String dateType;
+
   @override
   String toString() {
-    return 'AppoinmentRouteArgs{key: $key, serviceOrderID: $serviceOrderID}';
+    return 'AppoinmentRouteArgs{key: $key, serviceOrderID: $serviceOrderID, dateType: $dateType}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! AppoinmentRouteArgs) return false;
-    return key == other.key && serviceOrderID == other.serviceOrderID;
+    return key == other.key &&
+        serviceOrderID == other.serviceOrderID &&
+        dateType == other.dateType;
   }
 
   @override
-  int get hashCode => key.hashCode ^ serviceOrderID.hashCode;
+  int get hashCode =>
+      key.hashCode ^ serviceOrderID.hashCode ^ dateType.hashCode;
 }
 
 /// generated route for

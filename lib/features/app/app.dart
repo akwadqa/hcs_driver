@@ -34,7 +34,7 @@ class _AppState extends ConsumerState<App> {
       routerDelegate: appRouter.delegate(
         deepLinkBuilder: (deepLink) => DeepLink.defaultPath,
       ),
-      
+
       routeInformationParser: appRouter.defaultRouteParser(),
       theme: ref.watch(appThemeProvider),
       onGenerateTitle: (context) => context.tr('appName'),

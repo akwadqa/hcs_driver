@@ -44,54 +44,58 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-         Expanded(
-  child: ListView(
-    // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-    children: [
-      _buildMenuItem(context, "Payment Summary", onTap: (){
-        Navigator.of(context).push(
-          MaterialPageRoute(builder: (_)=>PaymentSummaryScreen())
-        );
-//  context.pushRoute(
-//                   PaymentSummaryRoute()
-//                   // OrderDetailsRoute(
-//                   //   serviceOrderID:
-//                   //       ordersState.pendingOrders[index].serviceOrderId,
-//                   // ),
-//                 );     
-                 }).symmetricPadding(horizontal: 10),
-      20.verticalSpace,
-      Assets.images.byebye.image(
-        fit: BoxFit.fitWidth,
-        height: 0.4.sh,
-      ),
-      20.verticalSpace,
-      Container(
-        padding: EdgeInsets.symmetric(vertical: 15.h),
-        width: double.infinity,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black12,
-              blurRadius: 6,
-              offset: Offset(0, 2),
+          Expanded(
+            child: ListView(
+              // padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              children: [
+                _buildMenuItem(
+                  context,
+                  "Payment Summary",
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(builder: (_) => PaymentSummaryScreen()),
+                    );
+                    //  context.pushRoute(
+                    //                   PaymentSummaryRoute()
+                    //                   // OrderDetailsRoute(
+                    //                   //   serviceOrderID:
+                    //                   //       ordersState.pendingOrders[index].serviceOrderId,
+                    //                   // ),
+                    //                 );
+                  },
+                ).symmetricPadding(horizontal: 10),
+                20.verticalSpace,
+                Assets.images.byebye.image(
+                  fit: BoxFit.fitWidth,
+                  height: 0.4.sh,
+                ),
+                20.verticalSpace,
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 15.h),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 6,
+                        offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    tr(context: context, AppStrings.goodBye),
+                    style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 30.sp,
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        alignment: Alignment.center,
-        child: Text(
-          tr(context: context, AppStrings.goodBye),
-          style: Theme.of(context).textTheme.displaySmall!.copyWith(
-            fontWeight: FontWeight.bold,
-            fontSize: 30.sp,
           ),
-        ),
-      ),
-    ],
-  ),
-),
 
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 26.w, vertical: 25.h),
@@ -109,35 +113,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     );
   }
 
-Widget _buildMenuItem(
-  BuildContext context,
-  String title, {
-  required VoidCallback onTap,
-  bool showDivider = true,
-}) {
-  return Column(
-    children: [
-      ListTile(
-        contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        leading: Icon(Icons.settings, color: AppColors.primary), // ✅
-        title: Text(
-          title,
-          style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                color: AppColors.black900,
-              ),
+  Widget _buildMenuItem(
+    BuildContext context,
+    String title, {
+    required VoidCallback onTap,
+    bool showDivider = true,
+  }) {
+    return Column(
+      children: [
+        ListTile(
+          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          leading: Icon(Icons.settings, color: AppColors.primary), // ✅
+          title: Text(
+            title,
+            style: Theme.of(
+              context,
+            ).textTheme.titleMedium!.copyWith(color: AppColors.black900),
+          ),
+          trailing: Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
+          onTap: onTap,
         ),
-        trailing: Icon(Icons.arrow_forward_ios, size: 18, color: Colors.grey),
-        onTap: onTap,
-      ),
-      if (showDivider)
-        const Divider(
-          height: 1,
-          indent: 12,
-          endIndent: 12,
-          color: AppColors.lightGray,
-        ),
-    ],
-  );
-}
-
+        if (showDivider)
+          const Divider(
+            height: 1,
+            indent: 12,
+            endIndent: 12,
+            color: AppColors.lightGray,
+          ),
+      ],
+    );
+  }
 }

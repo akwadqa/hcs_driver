@@ -16,7 +16,7 @@ Dialog showYesNowChoicesDialog(
   required String dsc,
   required VoidCallback yesButton,
   bool withField = false,
-  TextEditingController? controller ,
+  TextEditingController? controller,
   VoidCallback? noButton,
 }) {
   return Dialog(
@@ -748,13 +748,17 @@ Future<bool> showAcceptCancelOrder({
     if (cancelAppointmentLog) {
       await notifier.orderAppointmentLogCancelltion(
         staffAppointmentLog: logId!,
-        cancelMsg:controller.text,
+        cancelMsg: controller.text,
         orderId: orderID,
         context: context,
       );
       // await notifier.fetchAppontments(serviceOrderID: orderID);
     } else {
-      await notifier.orderCancelltion(serviceOrderID: orderID, orderDate: 0,cancelMsg:controller.text);
+      await notifier.orderCancelltion(
+        serviceOrderID: orderID,
+        orderDate: 0,
+        cancelMsg: controller.text,
+      );
     }
     return true; // success -> allow Dismissible to remove
   } catch (e) {
@@ -766,7 +770,6 @@ Future<bool> showAcceptCancelOrder({
     if (nav.canPop()) nav.pop(); // close loader
   }
 }
-
 
 // Future<void> showAcceptCancelOrder(
 //   BuildContext context,
@@ -792,7 +795,7 @@ Future<bool> showAcceptCancelOrder({
 //                          });
 //                         }
 //                         if (next.orderCancelltionStates ==RequestStates.loaded) {
-                         
+
 //                           ref.read(myOrdersControllerProvider.notifier)
 //                            .fetchAppontments(serviceOrderID: orderID);
 //                             context.pop();
@@ -814,7 +817,7 @@ Future<bool> showAcceptCancelOrder({
 //               final asyncMyOrder =  ref.read(
 //                 myOrdersControllerProvider.notifier,
 //               );
-          
+
 //               cancelAppointmentLog
 //                   ? {
 //                     await  asyncMyOrder.orderAppointmentLogCancelltion(
@@ -831,7 +834,7 @@ Future<bool> showAcceptCancelOrder({
 //                     };
 //               //  if(result){
 //               //   Navigator.pop(context);
-          
+
 //               //   // Navigator.pop(context);
 //               //  }
 //               //   // await Future.delayed(Duration(milliseconds: 1000));

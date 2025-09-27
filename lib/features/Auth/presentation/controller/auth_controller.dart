@@ -17,10 +17,10 @@ class AuthController extends _$AuthController {
     state = await AsyncValue.guard(() async {
       final authRepo = ref.watch(authRepositoryProvider);
       final data = await authRepo.login(params);
-      ref.read(userDataProvider.notifier).setData(data.$1, data.$2,data.$3);
+      ref.read(userDataProvider.notifier).setData(data.$1, data.$2, data.$3);
       ref.read(notificationsServiceProvider).sendDeviceToken(data.$3);
     });
-  } 
+  }
 
   Future<void> logout() async {
     state = const AsyncLoading();

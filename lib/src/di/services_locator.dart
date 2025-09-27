@@ -73,7 +73,6 @@
 //           // dataStore: sl<DataStore>()
 //         ));
 
-
 //   }
 
 //   static _injectDataSources() async {
@@ -81,7 +80,6 @@
 //         () => AuthRemoteDatasource(
 //             // dataStore: sl<DataStore>()
 //             ));
-
 
 //   }
 
@@ -108,7 +106,6 @@
 //     sl.registerLazySingleton(
 //         () => UpdateUserUseCase(authBaseRepo: sl<AuthBaseRepo>()));
 
-   
 //   }
 
 //   static _core() async {
@@ -149,7 +146,7 @@
 //           // UserInfo? userInfo = await dataStore.getUserInfo();
 //               // final userData = ref.watch(userDataProvider);
 
-//           UserInfo? userInfo = await 
+//           UserInfo? userInfo = await
 
 //            sl.get<DataStore>().getUserInfo();
 

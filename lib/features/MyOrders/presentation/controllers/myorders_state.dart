@@ -217,9 +217,7 @@ class MyOrdersState extends Equatable {
     appointmentsStates,
     customOrdersState,
     customOrders,
-
     lastCustomDate,
-
     completedOrders,
     completedOrdersStates,
     currentCompletedOrdersPage,

@@ -14,8 +14,6 @@ import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
 
-
-
 @RoutePage()
 class PaymentSummaryScreen extends ConsumerStatefulWidget {
   const PaymentSummaryScreen({super.key});
@@ -34,8 +32,10 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
   @override
   void initState() {
     super.initState();
-    Future(() =>
-        ref.read(myOrdersControllerProvider.notifier).fetchCompletedOrders());
+    Future(
+      () =>
+          ref.read(myOrdersControllerProvider.notifier).fetchCompletedOrders(),
+    );
 
     _scrollController = ScrollController()..addListener(_onScroll);
   }
@@ -99,138 +99,172 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
             ),
           ),
           Expanded(
-            child: Builder(builder: (context) {
-              if (ordersState.completedOrdersStates == RequestStates.loading) {
-                return const Center(child: FadeCircleLoadingIndicator());
-              }
-              if (ordersState.completedOrdersStates == RequestStates.error) {
-                return Center(
+            child: Builder(
+              builder: (context) {
+                if (ordersState.completedOrdersStates ==
+                    RequestStates.loading) {
+                  return const Center(child: FadeCircleLoadingIndicator());
+                }
+                if (ordersState.completedOrdersStates == RequestStates.error) {
+                  return Center(
                     child: Text(
-                        "Error: ${ordersState.ordersMessage ?? "Unknown"}"));
-              }
-              if (ordersState.completedOrders.isEmpty) {
-                return const Center(child: Text("No completed orders"));
-              }
-
-            return RefreshIndicator(
-  onRefresh: () async {
-    await ref
-        .read(myOrdersControllerProvider.notifier)
-        .fetchCompletedOrders(searchKey: _searchController.text);
-  },
-  child: ListView.builder(
-    controller: _scrollController,
-    shrinkWrap: true,
-    itemCount: ordersState.completedOrders.length + 1, // +1 for footer
-    itemBuilder: (context, index) {
-      // Footer (load-more / no more)
-      if (index >= ordersState.completedOrders.length) {
-        if (ordersState.currentCompletedOrdersPage == null) {
-          return Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              child: Text(
-                'No More Orders',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ),
-          );
-        } else {
-          return const Padding(
-            padding: EdgeInsets.all(8),
-            child: Center(child: FadeCircleLoadingIndicator()),
-          );
-        }
-      }
-
-      final order = ordersState.completedOrders[index];
-
-      return GestureDetector(
-        onTap: (){
-          Navigator.of(context).push(MaterialPageRoute(builder: (m)=>AppoinmentScreen(serviceOrderID: order.serviceOrderId,)));
-            //  context.pushRoute(
-            //       AppoinmentRoute(
-            //         serviceOrderID:
-            //             order.serviceOrderId,
-            //       ),
-            //  );
-        },
-        child: Container(
-          margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
-          padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 22.w),
-          width: 345.w,
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(8),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // top row: id + status
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    order.serviceOrderId,
-                    style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                          fontSize: 14.sp,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                  Row(
-                    children: [
-                      Assets.images.pending.svg(),
-                      9.horizontalSpace,
-                      Text(
-                        order.status.toString(),
-                        style: Theme.of(context)
-                            .textTheme
-                            .displayMedium!
-                            .copyWith(fontSize: 14.sp),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              8.verticalSpace,
-              Text(
-                order.serviceType,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 12.sp,
-                      color: AppColors.greyText,
-                      fontWeight: FontWeight.w500,
+                      "Error: ${ordersState.ordersMessage ?? "Unknown"}",
                     ),
-              ),
-              8.verticalSpace,
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    order.postingDate,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 12.sp,
-                          color: AppColors.greyText,
-                          fontWeight: FontWeight.w500,
+                  );
+                }
+                if (ordersState.completedOrders.isEmpty) {
+                  return const Center(child: Text("No completed orders"));
+                }
+
+                return RefreshIndicator(
+                  onRefresh: () async {
+                    await ref
+                        .read(myOrdersControllerProvider.notifier)
+                        .fetchCompletedOrders(
+                          searchKey: _searchController.text,
+                        );
+                  },
+                  child: ListView.builder(
+                    controller: _scrollController,
+                    shrinkWrap: true,
+                    itemCount:
+                        ordersState.completedOrders.length + 1, // +1 for footer
+                    itemBuilder: (context, index) {
+                      // Footer (load-more / no more)
+                      if (index >= ordersState.completedOrders.length) {
+                        if (ordersState.currentCompletedOrdersPage == null) {
+                          return Center(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              child: Text(
+                                'No More Orders',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                            ),
+                          );
+                        } else {
+                          return const Padding(
+                            padding: EdgeInsets.all(8),
+                            child: Center(child: FadeCircleLoadingIndicator()),
+                          );
+                        }
+                      }
+
+                      final order = ordersState.completedOrders[index];
+
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            //TODO: 
+                            MaterialPageRoute(
+                              builder: (m) => AppoinmentScreen(
+                                serviceOrderID: order.serviceOrderId,
+                                dateType: '',
+                              ),
+                            ),
+                          );
+                          //  context.pushRoute(
+                          //       AppoinmentRoute(
+                          //         serviceOrderID:
+                          //             order.serviceOrderId,
+                          //       ),
+                          //  );
+                        },
+                        child: Container(
+                          margin: EdgeInsets.symmetric(
+                            vertical: 16.h,
+                            horizontal: 24.w,
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            vertical: 13.h,
+                            horizontal: 22.w,
+                          ),
+                          width: 345.w,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // top row: id + status
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    order.serviceOrderId,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          fontSize: 14.sp,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Assets.images.pending.svg(),
+                                      9.horizontalSpace,
+                                      Text(
+                                        order.status.toString(),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .displayMedium!
+                                            .copyWith(fontSize: 14.sp),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              8.verticalSpace,
+                              Text(
+                                order.serviceType,
+                                style: Theme.of(context).textTheme.bodyMedium!
+                                    .copyWith(
+                                      fontSize: 12.sp,
+                                      color: AppColors.greyText,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                              ),
+                              8.verticalSpace,
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    order.postingDate,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyMedium!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          color: AppColors.greyText,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                  ),
+                                  Text(
+                                    "QR ${order.totalNetAmount}",
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .displaySmall!
+                                        .copyWith(
+                                          fontSize: 12.sp,
+                                          color: AppColors.greenText,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
                         ),
+                      );
+                    },
                   ),
-                  Text(
-                    "QR ${order.totalNetAmount}",
-                    style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                          fontSize: 12.sp,
-                          color: AppColors.greenText,
-                          fontWeight: FontWeight.w600,
-                        ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  ),
-);
-}),
+                );
+              },
+            ),
           ),
         ],
       ),

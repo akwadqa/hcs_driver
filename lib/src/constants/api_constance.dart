@@ -94,6 +94,9 @@ class ApiConstance {
   static String orderCancelltion() =>
       '$baseUrl/$baseDomain.api.service_order.cancel_service_order';
 
+  static String getOrderDetails({required String serviceOrderId}) =>
+      '$baseUrl/$baseDomain.api.service_order.service_order_details?service_order_id=$serviceOrderId';
+
   static String updateStatusOrder =
       '$baseUrl/$baseDomain.api.staff_appointment_log.update_driver_status';
   static String cancelAppointmentLog =

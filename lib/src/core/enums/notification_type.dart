@@ -1,5 +1,1 @@
-enum NotificationType {
-  order,
-  driver,
-  general,
-} 
+enum NotificationType { order, driver, general }

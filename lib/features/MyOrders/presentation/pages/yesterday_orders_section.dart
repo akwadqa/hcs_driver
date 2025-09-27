@@ -106,6 +106,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
               onTap: () {
                 context.pushRoute(
                   AppoinmentRoute(
+                    dateType: 'yesterday',
                     serviceOrderID:
                         ordersState.pendingOrders[index].serviceOrderId,
                   ),
