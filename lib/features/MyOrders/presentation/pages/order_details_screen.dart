@@ -179,6 +179,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                 ? nextDriverStatus != null
                                       ? InfoRow(
                                           "Next status",
+                                          value: nextDriverStatus,
                                           widget:
                                               (details?.logStatus == "Canceled")
                                               ? Chip(
