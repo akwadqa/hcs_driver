@@ -168,7 +168,7 @@ class MyOrdersState extends Equatable {
       statusOrderStates: statusOrderStates ?? this.statusOrderStates,
       statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
       currentAppointmentsPage:
-          currentAppointmentsPage ?? this.currentAppointmentsPage,
+          currentAppointmentsPage ,
       ordersAppointments: ordersAppointments ?? this.ordersAppointments,
       appointmentsStates: appointmentsStates ?? this.appointmentsStates,
       customOrdersState: customOrdersState ?? this.customOrdersState,

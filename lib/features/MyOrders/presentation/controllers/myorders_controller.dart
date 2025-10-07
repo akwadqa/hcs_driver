@@ -37,7 +37,7 @@ class MyOrdersController extends _$MyOrdersController {
 
       state = state.copyWith(
         currentCompletedOrdersPage: nextPage,
-        completedOrders: ordersData.data,
+        completedOrders: ordersData.data.orders,
         completedOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -67,7 +67,7 @@ class MyOrdersController extends _$MyOrdersController {
 
       state = state.copyWith(
         currentCompletedOrdersPage: next,
-        completedOrders: [...state.completedOrders, ...resp.data],
+        completedOrders: [...state.completedOrders, ...resp.data.orders],
         completedOrdersStates: RequestStates.loaded,
       );
     } catch (e) {
@@ -97,7 +97,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentApprovedOrdersPage: nextPage,
-        approvedOrders: ordersData.data,
+        approvedOrders: ordersData.data.orders,
         approvedOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -125,7 +125,7 @@ class MyOrdersController extends _$MyOrdersController {
       // final next = resp.pagination.totalPages > 1 ? 2 : null;
       state = state.copyWith(
         // currentCustomOrdersPage: next,
-        customOrders: resp.data,
+        customOrders: resp.data.orders,
         customOrdersState: RequestStates.loaded,
       );
     } catch (e) {
@@ -158,7 +158,7 @@ class MyOrdersController extends _$MyOrdersController {
           : null;
       state = state.copyWith(
         currentCustomOrdersPage: next,
-        customOrders: [...state.customOrders, ...resp.data],
+        customOrders: [...state.customOrders, ...resp.data.orders],
         customOrdersState: RequestStates.loaded,
       );
     } catch (e) {
@@ -186,7 +186,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentApprovedOrdersPage: nextPage,
-        approvedOrders: [...state.approvedOrders, ...ordersData.data],
+        approvedOrders: [...state.approvedOrders, ...ordersData.data.orders],
         approvedOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -217,7 +217,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentPendingOrdersPage: nextPage,
-        pendingOrders: ordersData.data,
+        pendingOrders: ordersData.data.orders,
         pendingOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -246,7 +246,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentPendingOrdersPage: nextPage,
-        pendingOrders: [...state.pendingOrders, ...ordersData.data],
+        pendingOrders: [...state.pendingOrders, ...ordersData.data.orders],
         pendingOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -277,7 +277,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentCancelledOrdersPage: nextPage,
-        cancelledOrders: ordersData.data,
+        cancelledOrders: ordersData.data.orders,
         cancelledOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -306,7 +306,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentCancelledOrdersPage: nextPage,
-        cancelledOrders: [...state.cancelledOrders, ...ordersData.data],
+        cancelledOrders: [...state.cancelledOrders, ...ordersData.data.orders],
         cancelledOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );

@@ -67,6 +67,9 @@ class Data extends Equatable {
   @JsonKey(name: 'method_of_payment')
   final String? methodOfPayment;
 
+  @JsonKey(name: 'skipcash_link')
+  final String? skipCashLink;
+
   @JsonKey(name: 'staff_appointment')
   final List<String>? staffAppointment;
 
@@ -77,6 +80,7 @@ class Data extends Equatable {
   const Data({
     this.status,
     this.supervisor,
+    this.skipCashLink,
     this.customer,
     this.driver,
     this.date,

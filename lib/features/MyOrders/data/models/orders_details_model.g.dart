@@ -23,6 +23,7 @@ Map<String, dynamic> _$OrdersDetailsToJson(OrdersDetails instance) =>
     };
 
 Details _$DetailsFromJson(Map<String, dynamic> json) => Details(
+  skipCashLink: json['skipcash_link'] as String?,
   status: json['status'] as String,
   logId: json['log_id'] as String,
   logStatus: json['log_status'] as String,
@@ -58,6 +59,7 @@ Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
   'discount_percentage': instance.discountPercentage,
   'total_net_amount': instance.totalNetAmount,
   'method_of_payment': instance.methodOfPayment,
+  'skipcash_link': instance.skipCashLink,
   'staff_appointment': instance.staffAppointment,
   'note': instance.note,
 };

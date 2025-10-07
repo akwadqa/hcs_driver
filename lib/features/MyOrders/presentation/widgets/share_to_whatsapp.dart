@@ -36,9 +36,10 @@ class _ShareToWhatsAppState extends ConsumerState<ShareToWhatsApp> {
     if (widget.isOrderShare! && orderDetails != null) {
       final cleanersList =
           (orderDetails?.data?.staffAppointment as List?) ?? [];
-      final cleaners = widget.isOrderShare!
-          ? cleanersList.join('\n') // each cleaner in new line
-          : cleanersList.join(' - '); // all in one line
+      // final cleaners = widget.isOrderShare!
+      //     ? cleanersList.join('\n') // each cleaner in new line
+      //     : cleanersList.join(' - '); // all in one line
+      final cleaners = cleanersList.join('\n');
 
       final cleaningSupplies = orderDetails?.data?.withCleaningSupplies == 0
           ? "NO"
@@ -55,24 +56,25 @@ class _ShareToWhatsAppState extends ConsumerState<ShareToWhatsApp> {
       final String message =
           '''
 Booking Number: ${widget.serviceOrderId}
-Supervisor Name: ${orderDetails?.data?.supervisor?.supervisorName}
-
+${widget.orderDetails?.supervisor.supervisorName != null ? 'Supervisor Name: ${widget.orderDetails?.supervisor.supervisorName} \n' : ''}
 Customer: ${orderDetails?.data?.customer?.customerName}
 Address: ${orderDetails?.data?.customer?.zone}, ${orderDetails?.data?.customer?.location}
 Mobile: ${orderDetails?.data?.customer?.phoneNumber}
 
-${orderDetails?.data?.customer?.locationUrl}
-
+${orderDetails?.data?.customer?.locationUrl != null ? '${orderDetails?.data?.customer?.locationUrl}\n' : ''}
 Date: ${orderDetails?.data?.date}
 Service Type: ${orderDetails?.data?.serviceType}
 
 Shift Type: ${orderDetails?.data?.shiftType}
 Duration: ${orderDetails?.data?.shiftType == "Full Day" ? "10 Hours" : "5 Hours"}
 
-Names of Cleaners: $cleaners
+${(orderDetails.data?.staffAppointment != null && orderDetails.data!.staffAppointment!.length > 1 ) ? 'Names of Cleaners: \n$cleaners' : 'Names of Cleaners: $cleaners'}
+
 Cleaning Material: $cleaningSupplies$note
 
 $orderAmount
+${(orderDetails.data?.skipCashLink != null && orderDetails.data?.methodOfPayment == 'SkipCash') ? orderDetails.data!.skipCashLink : ''}
+
 ''';
 
       final whatsappUrl = Uri.parse(
@@ -117,13 +119,12 @@ $orderAmount
 
       final paymentAmount = order?.totalNetAmount ?? "";
       final paymentMethod = order?.methodOfPayment ?? "";
-      final orderAmount = "Order Amount: QR $paymentAmount\nBy $paymentMethod";
+      final orderAmount = "Order Amount: $paymentAmount\n QR By $paymentMethod";
 
       final String message =
           '''
 Booking Number: ${widget.serviceOrderId}
-Supervisor Name: ${order?.supervisor.supervisorName}
-
+${order?.supervisor.supervisorName != null ? 'Supervisor Name: ${order?.supervisor.supervisorName} \n' : ''}
 Customer: ${order?.customer.customerName}
 Address: ${order?.customer.zone}, ${order?.customer.location}
 Mobile: ${order?.customer.phoneNumber}
@@ -136,10 +137,12 @@ Service Type: ${order?.serviceType}
 Shift Type: ${order?.shiftType}
 Duration: ${order?.shiftType == "Full Day" ? "10 Hours" : "5 Hours"}
 
-Names of Cleaners: $cleaners
+${(order?.staffAppointment != null && order!.staffAppointment.length > 1 ) ? 'Names of Cleaners: \n$cleaners' : 'Names of Cleaners: $cleaners' }
+
 Cleaning Material: $cleaningSupplies$note
 
 $orderAmount
+${(order?.skipCashLink != null && order?.methodOfPayment == 'SkipCash') ? order!.skipCashLink : ''}
     ''';
 
       final whatsappUrl = Uri.parse(

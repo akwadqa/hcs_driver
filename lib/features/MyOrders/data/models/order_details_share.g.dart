@@ -29,6 +29,7 @@ Data _$DataFromJson(Map<String, dynamic> json) => Data(
   supervisor: json['supervisor'] == null
       ? null
       : Supervisor.fromJson(json['supervisor'] as Map<String, dynamic>),
+  skipCashLink: json['skipcash_link'] as String?,
   customer: json['customer'] == null
       ? null
       : Customer.fromJson(json['customer'] as Map<String, dynamic>),
@@ -65,6 +66,7 @@ Map<String, dynamic> _$DataToJson(Data instance) => <String, dynamic>{
   'total_net_amount': instance.totalNetAmount,
   'outstanding_amount': instance.outstandingAmount,
   'method_of_payment': instance.methodOfPayment,
+  'skipcash_link': instance.skipCashLink,
   'staff_appointment': instance.staffAppointment,
   'note': instance.note,
   'days': instance.days,

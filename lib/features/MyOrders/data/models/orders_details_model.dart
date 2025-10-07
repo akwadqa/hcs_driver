@@ -65,12 +65,15 @@ class Details {
   final int totalNetAmount;
   @JsonKey(name: "method_of_payment")
   final String methodOfPayment;
+  @JsonKey(name: "skipcash_link")
+  final String? skipCashLink;
   @JsonKey(name: "staff_appointment")
   final List<String> staffAppointment;
   @JsonKey(name: "note")
   final dynamic note;
 
   Details({
+    this.skipCashLink,
     required this.status,
     required this.logId,
     required this.logStatus,
