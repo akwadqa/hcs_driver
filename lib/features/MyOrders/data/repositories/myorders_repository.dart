@@ -146,15 +146,19 @@ class MyOrdersRepository {
   Future<AppointmentModel> getAppontments({
     required int page,
     required String orderId,
-     String? dateType,
+    String? dateType,
   }) async {
     final response = await _networkService.get(
-      ApiConstance.appontmentsLogs(page: page, orderId: orderId),
-      queryParameters: {if (dateType != null) "date_type": dateType},
-      // queryParameters: {"date_type": 'today'},
+      ApiConstance.appontmentsLogs(),
+      queryParameters: {'page': page, 'date_type': dateType},
+      data: FormData.fromMap({'order_id': orderId}),
+
     );
 
     if (response.statusCode == 200) {
+      print('----------------');
+      print(dateType);
+      print('----------------');
       return AppointmentModel.fromJson(response.data);
     } else {
       throw Exception(response.message ?? 'Failed to get Appontments');

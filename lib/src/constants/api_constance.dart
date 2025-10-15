@@ -102,9 +102,9 @@ class ApiConstance {
   static String cancelAppointmentLog =
       '$baseUrl/$baseDomain.api.staff_appointment_log.cancel_staff_appointment_log';
 
-  static String appontmentsLogs({required int page, required String orderId}) =>
-      '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_logs?search&status=&date_type=&page=$page&limit=10&sort_by&sort=&order_id=$orderId';
-
+  static String appontmentsLogs() =>
+      '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_logs?limit=10';
+      // 'https://highclass.akwad.qa/api/method/highclass.api.staff_appointment_log.staff_appointment_logs?date_type=today&page=1&limit=10';
   static String appontmentsLogsDetails({
     required int page,
     required String staffAppointmentLog,

@@ -441,6 +441,7 @@ class MyOrdersController extends _$MyOrdersController {
         orderId: serviceOrderID,
       );
 
+
       int? nextPage;
       //if there is a second page ?
       if (appointmentsData.pagination.totalPages > 1) {

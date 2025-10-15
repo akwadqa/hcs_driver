@@ -117,7 +117,7 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
                   AppoinmentRoute(
                     dateType: 'tomorrow',
                     serviceOrderID:
-                        ordersState.pendingOrders[index].serviceOrderId,
+                        ordersState.cancelledOrders[index].serviceOrderId,
                   ),
                   // OrderDetailsRoute(
                   //   serviceOrderID:
@@ -129,7 +129,7 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
                 children: [
                   Dismissible(
                     key: ValueKey(
-                      ordersState.pendingOrders[index].serviceOrderId,
+                      ordersState.cancelledOrders[index].serviceOrderId,
                     ), // stable key
                     background: Container(
                       margin: EdgeInsets.symmetric(
