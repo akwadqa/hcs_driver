@@ -67,9 +67,9 @@ Map<String, dynamic> _$DetailsToJson(Details instance) => <String, dynamic>{
 Customer _$CustomerFromJson(Map<String, dynamic> json) => Customer(
   customerId: json['customer_id'] as String,
   customerName: json['customer_name'] as String,
-  location: json['location'] as String,
+  location: json['location'] as String?,
   locationUrl: json['location_url'],
-  zone: json['zone'] as String,
+  zone: json['zone'] as String?,
   phoneNumber: json['phone_number'] as String,
 );
 

@@ -45,6 +45,7 @@ class CustomButtonWidget extends StatelessWidget {
         backgroundColor: backgroundColor ?? Colors.transparent,
         foregroundColor: AppColors.black900,
         fixedSize: Size(width, height),
+        
         shape: RoundedRectangleBorder(
           side: BorderSide(
             color: isDisabled

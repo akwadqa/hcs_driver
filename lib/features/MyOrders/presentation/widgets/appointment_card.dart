@@ -9,7 +9,7 @@ import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 
 class AppointmentCard extends ConsumerWidget {
-  final Appointment appointmentData;
+  final StaffAppointments appointmentData;
   // final Details? orderDetailstData;
   // final String logId;
   // final String logStatus;
@@ -46,8 +46,7 @@ class AppointmentCard extends ConsumerWidget {
             child: Center(child: Icon(Icons.delete, color: Colors.white)),
           ),
           confirmDismiss: (direction) async {
-            if (appointmentData.serviceType != "Daily" ||
-                appointmentData.logStatus != "Canceled") {
+            if (appointmentData.serviceType != "Daily" ) {
               final ok = await showAcceptCancelOrder(
                 context: context,
                 orderID: orderId,
@@ -79,19 +78,19 @@ class AppointmentCard extends ConsumerWidget {
               padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 18.w),
               child: Column(
                 children: [
-                  if (appointmentData.logStatus == "Cancelled")
-                    Chip(
-                      label: Text(
-                        "Canceled",
-                        style: TextStyle(
-                          color: Colors.red,
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      backgroundColor: Colors.red.shade50,
-                      padding: EdgeInsets.symmetric(horizontal: 6.w),
-                    ),
+                  // if (appointmentData.logStatus == "Cancelled")
+                  //   Chip(
+                  //     label: Text(
+                  //       "Canceled",
+                  //       style: TextStyle(
+                  //         color: Colors.red,
+                  //         fontSize: 12.sp,
+                  //         fontWeight: FontWeight.bold,
+                  //       ),
+                  //     ),
+                  //     backgroundColor: Colors.red.shade50,
+                  //     padding: EdgeInsets.symmetric(horizontal: 6.w),
+                  //   ),
 
                   //? for the id :
                   // AppoinmentInfoRow(
@@ -114,11 +113,11 @@ class AppointmentCard extends ConsumerWidget {
                     value: appointmentData.date,
                     image: Assets.images.date.path,
                   ),
-                  AppoinmentInfoRow(
-                    'Employee Name:',
-                    value: appointmentData.employeeName,
-                    image: Assets.images.employeeName.path,
-                  ),
+                  // AppoinmentInfoRow(
+                  //   'Employee Name:',
+                  //   value: appointmentData.employeeName,
+                  //   image: Assets.images.employeeName.path,
+                  // ),
                   AppoinmentInfoRow(
                     'supervisor Name:',
                     value: appointmentData.supervisorName,

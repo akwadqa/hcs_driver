@@ -5,15 +5,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/widgets/order_card.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
+import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 
 class CustomDateOrdersScreen extends ConsumerStatefulWidget {
-  const CustomDateOrdersScreen({super.key});
+  const 
+  CustomDateOrdersScreen({super.key});
 
   @override
   ConsumerState<CustomDateOrdersScreen> createState() =>
@@ -119,90 +122,111 @@ class _CustomDateOrdersScreenState
             }
           }
 
-          final o = ordersState.customOrders[index];
+final order = ordersState.customOrders[index];
 
-          return GestureDetector(
-            onTap: () {
-              // TODO : fix it to other dates :
-              context.pushRoute(
-                AppoinmentRoute(serviceOrderID: o.serviceOrderId,dateType: ''),
-              );
-            },
-            child: Container(
-              margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
-              padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 22.w),
-              width: 345.w,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8.r),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // top row: id + status
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        o.serviceOrderId,
-                        style: Theme.of(context).textTheme.displaySmall!
-                            .copyWith(
-                              fontSize: 14.sp,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                      Row(
-                        children: [
-                          // use an icon if you have a specific status icon
-                          // Assets.images.pending.svg(),
-                          // 9.horizontalSpace,
-                          Text(
-                            o.status.toString(),
-                            style: Theme.of(context).textTheme.displayMedium!
-                                .copyWith(fontSize: 14.sp),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                  8.verticalSpace,
-                  // service type
-                  Text(
-                    o.serviceType,
-                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 12.sp,
-                      color: AppColors.greyText,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  8.verticalSpace,
-                  // date + price
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        o.postingDate,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                          fontSize: 12.sp,
-                          color: AppColors.greyText,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        "QR ${o.totalNetAmount}",
-                        style: Theme.of(context).textTheme.displaySmall!
-                            .copyWith(
-                              fontSize: 12.sp,
-                              color: AppColors.greenText,
-                              fontWeight: FontWeight.w600,
-                            ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          );
+            return OrderCard(
+    order: order,
+    // parentContext: context,
+    onTap: () {
+         context.pushRoute(
+        OrderDetailsRoute(
+          serviceOrderID: order.serviceOrderId,
+          appointmentID: order.logId,
+        ),
+      );
+    },
+    onDismissedConfirm: () => showAcceptCancelOrder(
+      context: context,
+      orderID: order.serviceOrderId,
+      cancelAppointmentLog: false,
+      ref: ref,
+    ),
+  );
+          // final o = ordersState.customOrders[index];
+
+          // return GestureDetector(
+          //   onTap: () {
+          //     // TODO : fix it to other dates :
+          //     context.pushRoute(
+          //       AppoinmentRoute(serviceOrderID: o.serviceOrderId,dateType: ''),
+          //     );
+          //   },
+          //   child: Container(
+          //     margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
+          //     padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 22.w),
+          //     width: 345.w,
+          //     decoration: BoxDecoration(
+          //       color: Colors.white,
+          //       borderRadius: BorderRadius.circular(8.r),
+          //     ),
+          //     child: Column(
+          //       crossAxisAlignment: CrossAxisAlignment.start,
+          //       children: [
+          //         // top row: id + status
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: [
+          //             Text(
+          //               o.serviceOrderId,
+          //               style: Theme.of(context).textTheme.displaySmall!
+          //                   .copyWith(
+          //                     fontSize: 14.sp,
+          //                     fontWeight: FontWeight.w600,
+          //                   ),
+          //             ),
+          //             Row(
+          //               children: [
+          //                 // use an icon if you have a specific status icon
+          //                 // Assets.images.pending.svg(),
+          //                 // 9.horizontalSpace,
+          //                 Text(
+          //                   o.status.toString(),
+          //                   style: Theme.of(context).textTheme.displayMedium!
+          //                       .copyWith(fontSize: 14.sp),
+          //                 ),
+          //               ],
+          //             ),
+          //           ],
+          //         ),
+          //         8.verticalSpace,
+          //         // service type
+          //         Text(
+          //           o.serviceType,
+          //           style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          //             fontSize: 12.sp,
+          //             color: AppColors.greyText,
+          //             fontWeight: FontWeight.w500,
+          //           ),
+          //         ),
+          //         8.verticalSpace,
+          //         // date + price
+          //         Row(
+          //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //           children: [
+          //             Text(
+          //               o.postingDate,
+          //               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+          //                 fontSize: 12.sp,
+          //                 color: AppColors.greyText,
+          //                 fontWeight: FontWeight.w500,
+          //               ),
+          //             ),
+          //             Text(
+          //               "QR ${o.totalNetAmount}",
+          //               style: Theme.of(context).textTheme.displaySmall!
+          //                   .copyWith(
+          //                     fontSize: 12.sp,
+          //                     color: AppColors.greenText,
+          //                     fontWeight: FontWeight.w600,
+          //                   ),
+          //             ),
+          //           ],
+          //         ),
+          //       ],
+          //     ),
+          //   ),
+          // );
+       
         },
       ),
     );

@@ -105,11 +105,11 @@ class Customer {
   @JsonKey(name: "customer_name")
   final String customerName;
   @JsonKey(name: "location")
-  final String location;
+  final String? location;
   @JsonKey(name: "location_url")
   final dynamic locationUrl;
   @JsonKey(name: "zone")
-  final String zone;
+  final String? zone;
   @JsonKey(name: "phone_number")
   final String phoneNumber;
 

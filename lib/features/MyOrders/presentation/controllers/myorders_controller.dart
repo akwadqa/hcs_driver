@@ -1,4 +1,3 @@
-import 'package:auto_route/auto_route.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/repositories/myorders_repository.dart';
@@ -116,16 +115,16 @@ class MyOrdersController extends _$MyOrdersController {
     );
     try {
       final repo = ref.read(myOrdersRepositoryProvider);
-      final resp = await repo.getServicesOrders(
+      final resp = await repo.getAppontments(
         page: 1,
-        dateType: '',
+        // dateType: '',
         date: yyyymmdd, // <— pass the specific date
       );
 
       // final next = resp.pagination.totalPages > 1 ? 2 : null;
       state = state.copyWith(
         // currentCustomOrdersPage: next,
-        customOrders: resp.data.orders,
+        customOrders: resp.data.staffAppointments,
         customOrdersState: RequestStates.loaded,
       );
     } catch (e) {
@@ -148,9 +147,9 @@ class MyOrdersController extends _$MyOrdersController {
     if (nextPage == null) return;
     try {
       final repo = ref.read(myOrdersRepositoryProvider);
-      final resp = await repo.getServicesOrders(
+      final resp = await repo.getAppontments(
         page: nextPage,
-        dateType: '',
+        // dateType: '',
         date: state.lastCustomDate,
       );
       final next = resp.pagination.totalPages > resp.pagination.page
@@ -158,7 +157,7 @@ class MyOrdersController extends _$MyOrdersController {
           : null;
       state = state.copyWith(
         currentCustomOrdersPage: next,
-        customOrders: [...state.customOrders, ...resp.data.orders],
+        customOrders: [...state.customOrders, ...resp.data.staffAppointments],
         customOrdersState: RequestStates.loaded,
       );
     } catch (e) {
@@ -199,11 +198,11 @@ class MyOrdersController extends _$MyOrdersController {
   }
 
   Future<void> fetchTodayOrders() async {
-    state = state.copyWith(pendingOrdersStates: RequestStates.loading);
+    state = state.copyWith(todayOrdersStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      final ordersData = await myOrdersRepo.getServicesOrders(
+      final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'today',
       );
@@ -216,14 +215,14 @@ class MyOrdersController extends _$MyOrdersController {
         nextPage = null;
       }
       state = state.copyWith(
-        currentPendingOrdersPage: nextPage,
-        pendingOrders: ordersData.data.orders,
-        pendingOrdersStates: RequestStates.loaded,
+        currentTodayOrdersPage: nextPage,
+        todayOrders: ordersData.data.staffAppointments,
+        todayOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
     } catch (e) {
       state = state.copyWith(
-        pendingOrdersStates: RequestStates.error,
+        todayOrdersStates: RequestStates.error,
         ordersMessage: e.toString(),
       );
     }
@@ -232,8 +231,8 @@ class MyOrdersController extends _$MyOrdersController {
   Future<void> onLoadMoreTodayOrders() async {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      final ordersData = await myOrdersRepo.getServicesOrders(
-        page: state.currentPendingOrdersPage!,
+      final ordersData = await myOrdersRepo.getAppontments(
+        page: state.currentTodayOrdersPage!,
         dateType: 'today',
       );
 
@@ -245,25 +244,25 @@ class MyOrdersController extends _$MyOrdersController {
         nextPage = null;
       }
       state = state.copyWith(
-        currentPendingOrdersPage: nextPage,
-        pendingOrders: [...state.pendingOrders, ...ordersData.data.orders],
-        pendingOrdersStates: RequestStates.loaded,
+        currentTodayOrdersPage: nextPage,
+        todayOrders: [...state.todayOrders, ...ordersData.data.staffAppointments],
+        todayOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
     } catch (e) {
       state = state.copyWith(
-        pendingOrdersStates: RequestStates.error,
+        todayOrdersStates: RequestStates.error,
         ordersMessage: e.toString(),
       );
     }
   }
 
   Future<void> fetchTomorrowOrders() async {
-    state = state.copyWith(cancelledOrdersStates: RequestStates.loading);
+    state = state.copyWith(tomorrowOrdersStates: RequestStates.loading);
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      final ordersData = await myOrdersRepo.getServicesOrders(
+      final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'tomorrow',
       );
@@ -276,14 +275,14 @@ class MyOrdersController extends _$MyOrdersController {
         nextPage = null;
       }
       state = state.copyWith(
-        currentCancelledOrdersPage: nextPage,
-        cancelledOrders: ordersData.data.orders,
-        cancelledOrdersStates: RequestStates.loaded,
+        currentTodayOrdersPage: nextPage,
+        todayOrders: ordersData.data.staffAppointments,
+        tomorrowOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
     } catch (e) {
       state = state.copyWith(
-        cancelledOrdersStates: RequestStates.error,
+        tomorrowOrdersStates: RequestStates.error,
         ordersMessage: e.toString(),
       );
     }
@@ -292,8 +291,8 @@ class MyOrdersController extends _$MyOrdersController {
   Future<void> onLoadMoreTomorrowOrders() async {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      final ordersData = await myOrdersRepo.getServicesOrders(
-        page: state.currentCancelledOrdersPage!,
+      final ordersData = await myOrdersRepo.getAppontments(
+        page: state.currentTodayOrdersPage!,
         dateType: 'tomorrow',
       );
 
@@ -305,14 +304,14 @@ class MyOrdersController extends _$MyOrdersController {
         nextPage = null;
       }
       state = state.copyWith(
-        currentCancelledOrdersPage: nextPage,
-        cancelledOrders: [...state.cancelledOrders, ...ordersData.data.orders],
-        cancelledOrdersStates: RequestStates.loaded,
+        currentAppointmentsPage: nextPage,
+        tomorrowOrders: [...state.todayOrders, ...ordersData.data.staffAppointments],
+        tomorrowOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
     } catch (e) {
       state = state.copyWith(
-        cancelledOrdersStates: RequestStates.error,
+        todayOrdersStates: RequestStates.error,
         ordersMessage: e.toString(),
       );
     }
@@ -394,12 +393,14 @@ class MyOrdersController extends _$MyOrdersController {
   Future<void> updateStatusOrder({
     required String appointmentID,
     String? amount,
+    String? paymentMethod,
   }) async {
     state = state.copyWith(statusOrderStates: RequestStates.loading);
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final statusOrders = await myOrdersRepo.updateStatusOrder(
         appointmentID: appointmentID,
+        paymentMethod:paymentMethod,
         amount: amount,
       );
 
@@ -438,7 +439,7 @@ class MyOrdersController extends _$MyOrdersController {
       final appointmentsData = await myOrdersRepo.getAppontments(
         dateType: dateType,
         page: 1,
-        orderId: serviceOrderID,
+        // orderId: serviceOrderID,
       );
 
 
@@ -451,7 +452,7 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentAppointmentsPage: nextPage,
-        ordersAppointments: appointmentsData.data,
+        // ordersAppointments: appointmentsData.data,
 
         // ordersAppointments: appointmentsData.data,
         appointmentsStates: RequestStates.loaded,
@@ -472,7 +473,7 @@ class MyOrdersController extends _$MyOrdersController {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final appointmentsData = await myOrdersRepo.getAppontments(
         page: state.currentAppointmentsPage!,
-        orderId: serviceOrderID,
+        // orderId: serviceOrderID,
         dateType: dateType,
       );
 
@@ -488,7 +489,7 @@ class MyOrdersController extends _$MyOrdersController {
         currentAppointmentsPage: nextPage,
         ordersAppointments: [
           ...state.ordersAppointments,
-          ...appointmentsData.data,
+          // ...appointmentsData.data,
         ],
         appointmentsStates: RequestStates.loaded,
         ordersMessage: '',

@@ -108,7 +108,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
                   AppoinmentRoute(
                     dateType: 'yesterday',
                     serviceOrderID:
-                        ordersState.pendingOrders[index].serviceOrderId,
+                        ordersState.todayOrders[index].serviceOrderId,
                   ),
                   // OrderDetailsRoute(
                   //   serviceOrderID:

@@ -21,14 +21,14 @@ class MyOrdersState extends Equatable {
   final RequestStates approvedOrdersStates;
 
   //pendingOrders
-  final int? currentPendingOrdersPage;
-  final List<Orders> pendingOrders;
-  final RequestStates pendingOrdersStates;
+  final int? currentTodayOrdersPage;
+  final List<StaffAppointments> todayOrders;
+  final RequestStates todayOrdersStates;
 
-  //cancelledOrders
-  final int? currentCancelledOrdersPage;
-  final List<Orders> cancelledOrders;
-  final RequestStates cancelledOrdersStates;
+  //tommorowOrders
+  final int? currentTomorrowOrdersPage;
+  final List<StaffAppointments> tomorrowOrders;
+  final RequestStates tomorrowOrdersStates;
 
   //
   final String? ordersMessage;
@@ -51,11 +51,11 @@ class MyOrdersState extends Equatable {
 
   //Appointments
   final int? currentAppointmentsPage;
-  final List<Appointment> ordersAppointments;
+  final List<StaffAppointments> ordersAppointments;
   final RequestStates appointmentsStates;
 
   final RequestStates customOrdersState;
-  final List<Orders> customOrders;
+  final List<StaffAppointments> customOrders;
   final String? lastCustomDate; // yyyy-MM-dd
   final int? currentCustomOrdersPage;
 
@@ -71,14 +71,14 @@ class MyOrdersState extends Equatable {
     this.customOrders = const [],
     this.lastCustomDate = '',
     this.approvedOrders = const [],
-    this.currentPendingOrdersPage,
-    this.pendingOrders = const [],
-    this.currentCancelledOrdersPage,
+    this.currentTodayOrdersPage,
+    this.todayOrders = const [],
+    this.currentTomorrowOrdersPage,
     this.currentCustomOrdersPage,
-    this.cancelledOrders = const [],
+    this.tomorrowOrders = const [],
     this.approvedOrdersStates = RequestStates.init,
-    this.pendingOrdersStates = RequestStates.init,
-    this.cancelledOrdersStates = RequestStates.init,
+    this.todayOrdersStates = RequestStates.init,
+    this.tomorrowOrdersStates = RequestStates.init,
     this.ordersMessage = '',
     //Orders Details
     this.ordersDetails,
@@ -109,13 +109,13 @@ class MyOrdersState extends Equatable {
     int? currentApprovedOrdersPage,
     List<Orders>? approvedOrders,
     RequestStates? approvedOrdersStates,
-    int? currentPendingOrdersPage,
-    List<Orders>? pendingOrders,
-    RequestStates? pendingOrdersStates,
-    int? currentCancelledOrdersPage,
+    int? currentTodayOrdersPage,
+    List<StaffAppointments>? todayOrders,
+    RequestStates? todayOrdersStates,
+    int? currentTomorrowOrdersPage,
     int? currentCustomOrdersPage,
-    List<Orders>? cancelledOrders,
-    RequestStates? cancelledOrdersStates,
+    List<StaffAppointments>? tomorrowOrders,
+    RequestStates? tomorrowOrdersStates,
     String? ordersMessage,
     Details? ordersDetails,
     RequestStates? ordersDetailsStates,
@@ -128,10 +128,10 @@ class MyOrdersState extends Equatable {
     RequestStates? statusOrderStates,
     String? statusOrderMessage,
     int? currentAppointmentsPage,
-    List<Appointment>? ordersAppointments,
+    List<StaffAppointments>? ordersAppointments,
     RequestStates? appointmentsStates,
     RequestStates? customOrdersState,
-    List<Orders>? customOrders,
+    List<StaffAppointments>? customOrders,
     String? lastCustomDate,
     List<Orders>? completedOrders,
     RequestStates? completedOrdersStates,
@@ -143,17 +143,17 @@ class MyOrdersState extends Equatable {
           currentApprovedOrdersPage ?? this.currentApprovedOrdersPage,
       approvedOrders: approvedOrders ?? this.approvedOrders,
       approvedOrdersStates: approvedOrdersStates ?? this.approvedOrdersStates,
-      currentPendingOrdersPage:
-          currentPendingOrdersPage ?? this.currentPendingOrdersPage,
-      pendingOrders: pendingOrders ?? this.pendingOrders,
-      pendingOrdersStates: pendingOrdersStates ?? this.pendingOrdersStates,
-      currentCancelledOrdersPage:
-          currentCancelledOrdersPage ?? this.currentCancelledOrdersPage,
+      currentTodayOrdersPage:
+          currentTodayOrdersPage ?? this.currentTodayOrdersPage,
+      todayOrders: todayOrders ?? this.todayOrders,
+      todayOrdersStates: todayOrdersStates ?? this.todayOrdersStates,
+      currentTomorrowOrdersPage:
+          currentTomorrowOrdersPage ?? this.currentTomorrowOrdersPage,
       currentCustomOrdersPage:
           currentCustomOrdersPage ?? this.currentCustomOrdersPage,
-      cancelledOrders: cancelledOrders ?? this.cancelledOrders,
-      cancelledOrdersStates:
-          cancelledOrdersStates ?? this.cancelledOrdersStates,
+      tomorrowOrders: tomorrowOrders ?? this.tomorrowOrders,
+      tomorrowOrdersStates:
+          tomorrowOrdersStates ?? this.tomorrowOrdersStates,
       ordersMessage: ordersMessage ?? this.ordersMessage,
       ordersDetails: ordersDetails ?? this.ordersDetails,
       ordersDetailsStates: ordersDetailsStates ?? this.ordersDetailsStates,
@@ -188,13 +188,13 @@ class MyOrdersState extends Equatable {
     //orders
     currentApprovedOrdersPage,
     approvedOrders,
-    currentPendingOrdersPage,
-    pendingOrders,
-    currentCancelledOrdersPage,
-    cancelledOrders,
+    currentTodayOrdersPage,
+   todayOrders,
+    currentTomorrowOrdersPage,
+    tomorrowOrders,
     approvedOrdersStates,
-    pendingOrdersStates,
-    cancelledOrdersStates,
+   todayOrdersStates,
+    tomorrowOrdersStates,
     ordersMessage,
 
     //Orders Details

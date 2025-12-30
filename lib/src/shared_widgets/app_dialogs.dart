@@ -191,7 +191,7 @@ Future<void> showPaymentStatusDialog(BuildContext context) async {
   );
 }
 
-enum PaymentChoice { cash, skip }
+enum PaymentChoice { Cash, SkipCash }
 
 class PaymentResult {
   final PaymentChoice choice;
@@ -202,7 +202,7 @@ class PaymentResult {
 Future<PaymentResult?> showPaymentMethodDialog(BuildContext context) async {
   final formKey = GlobalKey<FormState>();
   final amountCtrl = TextEditingController();
-  PaymentChoice choice = PaymentChoice.cash;
+  PaymentChoice choice = PaymentChoice.Cash;
 
   return showDialog<PaymentResult>(
     context: context,
@@ -225,60 +225,101 @@ Future<PaymentResult?> showPaymentMethodDialog(BuildContext context) async {
                 const SizedBox(height: 12),
 
                 RadioListTile<PaymentChoice>(
-                  value: PaymentChoice.cash,
+                  value: PaymentChoice.Cash,
                   groupValue: choice,
                   onChanged: (v) => setState(() => choice = v!),
                   title: const Text("Cash"),
                 ),
-                if (choice == PaymentChoice.cash) ...[
-                  TextFormField(
-                    controller: amountCtrl,
-                    style: TextStyle(color: AppColors.gray),
-                    decoration: InputDecoration(
-                      labelText: "Received amount",
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColors.grey600),
-                      ),
-                      enabledBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColors.grayBorder),
-                      ),
-                      focusedBorder: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: AppColors.primary),
-                      ),
-                      labelStyle: TextStyle(
-                        color: AppColors.black900,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w400,
-                      ),
-                      hintText: "0.00",
-                      hintStyle: Theme.of(context).textTheme.labelSmall!
-                          .copyWith(fontSize: 14, color: AppColors.grey600),
-                    ),
-                    textInputAction: TextInputAction.next,
-                    keyboardType: const TextInputType.numberWithOptions(
-                      decimal: true,
-                    ),
-                    validator: (v) {
-                      if (choice != PaymentChoice.cash) return null;
-                      if (v == null || v.trim().isEmpty)
-                        return "Amount is required";
-                      final d = double.tryParse(v.replaceAll(',', '.'));
-                      if (d == null || d <= 0) return "Enter a valid amount";
-                      return null;
-                    },
-                  ),
 
-                  const SizedBox(height: 8),
-                ],
+                // if (choice == PaymentChoice.cash) ...[
+                //   TextFormField(
+                //     controller: amountCtrl,
+                //     style: TextStyle(color: AppColors.gray),
+                //     decoration: InputDecoration(
+                //       labelText: "Received amount",
+                //       border: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(8),
+                //         borderSide: BorderSide(color: AppColors.grey600),
+                //       ),
+                //       enabledBorder: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(8),
+                //         borderSide: BorderSide(color: AppColors.grayBorder),
+                //       ),
+                //       focusedBorder: OutlineInputBorder(
+                //         borderRadius: BorderRadius.circular(8),
+                //         borderSide: BorderSide(color: AppColors.primary),
+                //       ),
+                //       labelStyle: TextStyle(
+                //         color: AppColors.black900,
+                //         fontSize: 16,
+                //         fontWeight: FontWeight.w400,
+                //       ),
+                //       hintText: "0.00",
+                //       hintStyle: Theme.of(context).textTheme.labelSmall!
+                //           .copyWith(fontSize: 14, color: AppColors.grey600),
+                //     ),
+                //     textInputAction: TextInputAction.next,
+                //     keyboardType: const TextInputType.numberWithOptions(
+                //       decimal: true,
+                //     ),
+                //     validator: (v) {
+                //       if (choice != PaymentChoice.cash) return null;
+                //       if (v == null || v.trim().isEmpty)
+                //         return "Amount is required";
+                //       final d = double.tryParse(v.replaceAll(',', '.'));
+                //       if (d == null || d <= 0) return "Enter a valid amount";
+                //       return null;
+                //     },
+                //   ),
 
+                //   const SizedBox(height: 8),
+                // ],
                 RadioListTile<PaymentChoice>(
-                  value: PaymentChoice.skip,
+                  value: PaymentChoice.SkipCash,
                   groupValue: choice,
                   onChanged: (v) => setState(() => choice = v!),
                   title: const Text("Skip Cash"),
+                ),
+                TextFormField(
+                  controller: amountCtrl,
+                  style: TextStyle(color: AppColors.gray),
+                  decoration: InputDecoration(
+                    labelText: "Received amount",
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: AppColors.grey600),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: AppColors.grayBorder),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                      borderSide: BorderSide(color: AppColors.primary),
+                    ),
+                    labelStyle: TextStyle(
+                      color: AppColors.black900,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    hintText: "0.00",
+                    hintStyle: Theme.of(context).textTheme.labelSmall!.copyWith(
+                      fontSize: 14,
+                      color: AppColors.grey600,
+                    ),
+                  ),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
+                  validator: (v) {
+                    if (choice != PaymentChoice.Cash) return null;
+                    if (v == null || v.trim().isEmpty)
+                      return "Amount is required";
+                    final d = double.tryParse(v.replaceAll(',', '.'));
+                    if (d == null || d <= 0) return "Enter a valid amount";
+                    return null;
+                  },
                 ),
 
                 const SizedBox(height: 16),
@@ -294,18 +335,18 @@ Future<PaymentResult?> showPaymentMethodDialog(BuildContext context) async {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          if (choice == PaymentChoice.cash) {
-                            if (!formKey.currentState!.validate()) return;
-                            final amount = double.parse(
-                              amountCtrl.text.replaceAll(',', '.'),
-                            );
+                          if (!formKey.currentState!.validate()) return;
+                          final amount = double.parse(
+                            amountCtrl.text.replaceAll(',', '.'),
+                          );
+                          if (choice == PaymentChoice.Cash) {
                             Navigator.of(ctx).pop(
-                              PaymentResult(PaymentChoice.cash, amount: amount),
+                              PaymentResult(PaymentChoice.Cash, amount: amount),
                             );
                           } else {
-                            Navigator.of(
-                              ctx,
-                            ).pop(PaymentResult(PaymentChoice.skip));
+                            Navigator.of(ctx).pop(
+                              PaymentResult(PaymentChoice.SkipCash, amount: amount),
+                            );
                           }
                         },
                         child: const Text("Confirm"),
@@ -388,7 +429,7 @@ Future<void> showPaymentReceivedDialog({
   final notifier = ref.read(myOrdersControllerProvider.notifier);
 
   final amountCtrl = TextEditingController();
-  PaymentChoice? choice = PaymentChoice.cash; // default on Cash
+  PaymentChoice? choice = PaymentChoice.Cash; // default on Cash
   final formKey = GlobalKey<FormState>();
 
   await showDialog<void>(
@@ -397,7 +438,7 @@ Future<void> showPaymentReceivedDialog({
     builder: (ctx) {
       return StatefulBuilder(
         builder: (ctx, setState) {
-          final isCash = choice == PaymentChoice.cash;
+          final isCash = choice == PaymentChoice.Cash;
 
           return Dialog(
             insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -419,43 +460,40 @@ Future<void> showPaymentReceivedDialog({
 
                     // choices
                     RadioListTile<PaymentChoice>(
-                      value: PaymentChoice.cash,
+                      value: PaymentChoice.Cash,
                       groupValue: choice,
                       onChanged: (v) => setState(() => choice = v),
                       title: const Text("Cash"),
                     ),
-                    if (isCash) ...[
-                      const SizedBox(height: 8),
-                      TextFormField(
-                        controller: amountCtrl,
-                        keyboardType: const TextInputType.numberWithOptions(
-                          decimal: true,
-                        ),
-                        decoration: const InputDecoration(
-                          labelText: "Received amount",
-                          hintText: "0.00",
-                        ),
-                        validator: (v) {
-                          if (!isCash) return null;
-                          if (v == null || v.trim().isEmpty)
-                            return "Amount is required";
-                          final parsed = double.tryParse(
-                            v.replaceAll(',', '.'),
-                          );
-                          if (parsed == null || parsed <= 0)
-                            return "Enter a valid amount";
-                          return null;
-                        },
-                      ),
-                      const SizedBox(height: 12),
-                    ],
+                    // if (isCash) ...[
+
+                    // ],
                     RadioListTile<PaymentChoice>(
-                      value: PaymentChoice.skip,
+                      value: PaymentChoice.SkipCash,
                       groupValue: choice,
                       onChanged: (v) => setState(() => choice = v),
                       title: const Text("Skip Cash"),
                     ),
-
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: amountCtrl,
+                      keyboardType: const TextInputType.numberWithOptions(
+                        decimal: true,
+                      ),
+                      decoration: const InputDecoration(
+                        labelText: "Received amount",
+                        hintText: "0.00",
+                      ),
+                      validator: (v) {
+                        if (!isCash) return null;
+                        if (v == null || v.trim().isEmpty)
+                          return "Amount is required";
+                        final parsed = double.tryParse(v.replaceAll(',', '.'));
+                        if (parsed == null || parsed <= 0)
+                          return "Enter a valid amount";
+                        return null;
+                      },
+                    ),
                     const SizedBox(height: 20),
                     Row(
                       children: [
@@ -469,44 +507,47 @@ Future<void> showPaymentReceivedDialog({
                         Expanded(
                           child: ElevatedButton(
                             onPressed: () async {
-                              if (choice == PaymentChoice.cash) {
-                                if (!formKey.currentState!.validate()) return;
-                              }
+                              // if (choice == PaymentChoice.Cash) {
+                              if (!formKey.currentState!.validate()) return;
+                              // }
 
                               // call your APIs with a single loader
                               await withBlockingLoader(ctx, () async {
-                                if (choice == PaymentChoice.cash) {
-                                  final amount = double.parse(
-                                    amountCtrl.text.replaceAll(',', '.'),
-                                  );
+                                // if (choice == PaymentChoice.Cash) {
+                                final amount = double.parse(
+                                  amountCtrl.text.replaceAll(',', '.'),
+                                );
 
-                                  // TODO: replace with your real endpoint:
-                                  // await notifier.completeOrderWithCash(
-                                  //   appointmentID: appointmentID,
-                                  //   amount: amount,
-                                  // );
+                                // TODO: replace with your real endpoint:
+                                // await notifier.completeOrderWithCash(
+                                //   appointmentID: appointmentID,
+                                //   amount: amount,
+                                // );
 
-                                  // placeholder: advance to Completed
-                                  await notifier.updateStatusOrder(
-                                    appointmentID: appointmentID,
-                                  );
-                                  await notifier.updateStatusOrder(
-                                    appointmentID: appointmentID,
-                                  );
-                                } else {
-                                  // TODO: replace with your real endpoint:
-                                  // await notifier.completeOrderSkipCash(
-                                  //   appointmentID: appointmentID,
-                                  // );
+                                // placeholder: advance to Completed
+                                await notifier.updateStatusOrder(
+                                  appointmentID: appointmentID,
+                                  amount: amount.toString(),
+                                  paymentMethod: choice?.name,
+                                );
+                                // await notifier.updateStatusOrder(
+                                //   appointmentID: appointmentID,
+                                // );
+                                // } else {
+                                // TODO: replace with your real endpoint:
+                                // await notifier.completeOrderSkipCash(
+                                //   appointmentID: appointmentID,
+                                // );
 
-                                  // placeholder: advance to Completed
-                                  await notifier.updateStatusOrder(
-                                    appointmentID: appointmentID,
-                                  );
-                                  await notifier.updateStatusOrder(
-                                    appointmentID: appointmentID,
-                                  );
-                                }
+                                // placeholder: advance to Completed
+                                // await notifier.updateStatusOrder(
+                                //   appointmentID: appointmentID,
+                                //    paymentMethod: choice?.name
+                                // );
+                                // await notifier.updateStatusOrder(
+                                //   appointmentID: appointmentID,
+                                // );
+                                // }
                               });
 
                               if (ctx.mounted) Navigator.of(ctx).pop();
@@ -514,8 +555,8 @@ Future<void> showPaymentReceivedDialog({
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
                                     content: Text(
-                                      choice == PaymentChoice.cash
-                                          ? "Order completed (cash)."
+                                      choice == PaymentChoice.Cash
+                                          ? "Order completed (Cash)."
                                           : "Order completed.",
                                     ),
                                   ),
@@ -538,46 +579,46 @@ Future<void> showPaymentReceivedDialog({
   );
 }
 
-Future<void> startPaymentFlow({
-  required BuildContext context,
-  required WidgetRef ref,
-  required String appointmentID,
-}) async {
-  // 1) Show the “Waiting for payment → Payment received” info
-  await showPaymentStatusDialog(context);
+// Future<void> startPaymentFlow({
+//   required BuildContext context,
+//   required WidgetRef ref,
+//   required String appointmentID,
+// }) async {
+//   // 1) Show the “Waiting for payment → Payment received” info
+//   await showPaymentStatusDialog(context);
 
-  // 2) Ask how to complete the order
-  final action = await showPaymentMethodDialog(context);
-  if (action == null) return; // user closed dialog
+//   // 2) Ask how to complete the order
+//   final action = await showPaymentMethodDialog(context);
+//   if (action == null) return; // user closed dialog
 
-  final notifier = ref.read(myOrdersControllerProvider.notifier);
+//   final notifier = ref.read(myOrdersControllerProvider.notifier);
 
-  if (action == PaymentAction.cash) {
-    final amount = await showCashAmountDialog(context);
-    if (amount == null) return; // user canceled
-    await withBlockingLoader(context, () async {
-      // TODO: replace with your real API call
-      // e.g. await notifier.completeOrderWithCash(appointmentID: appointmentID, amount: amount);
-      await notifier.updateStatusOrder(
-        appointmentID: appointmentID,
-      ); // placeholder
-    });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("Order completed with cash.")));
-  } else {
-    await withBlockingLoader(context, () async {
-      // TODO: replace with your real API call for skipping cash
-      // e.g. await notifier.completeOrderSkipCash(appointmentID: appointmentID);
-      await notifier.updateStatusOrder(
-        appointmentID: appointmentID,
-      ); // placeholder
-    });
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text("Order completed.")));
-  }
-}
+//   if (action == PaymentAction.Cash) {
+//     final amount = await showCashAmountDialog(context);
+//     if (amount == null) return; // user canceled
+//     await withBlockingLoader(context, () async {
+//       // TODO: replace with your real API call
+//       // e.g. await notifier.completeOrderWithCash(appointmentID: appointmentID, amount: amount);
+//       await notifier.updateStatusOrder(
+//         appointmentID: appointmentID,
+//       ); // placeholder
+//     });
+//     ScaffoldMessenger.of(
+//       context,
+//     ).showSnackBar(const SnackBar(content: Text("Order completed with cash.")));
+//   } else {
+//     await withBlockingLoader(context, () async {
+//       // TODO: replace with your real API call for skipping cash
+//       // e.g. await notifier.completeOrderSkipCash(appointmentID: appointmentID);
+//       await notifier.updateStatusOrder(
+//         appointmentID: appointmentID,
+//       ); // placeholder
+//     });
+//     ScaffoldMessenger.of(
+//       context,
+//     ).showSnackBar(const SnackBar(content: Text("Order completed.")));
+//   }
+// }
 
 Dialog choicePaymentMethod(
   BuildContext context, {

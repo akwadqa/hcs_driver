@@ -43,9 +43,13 @@ Orders _$OrdersFromJson(Map<String, dynamic> json) => Orders(
   status: json['status'] as String,
   postingDate: json['posting_date'] as String,
   serviceType: json['service_type'] as String,
-  totalNetAmount: (json['total_net_amount'] as num).toInt(),
-  outstandingAmount: (json['outstanding_amount'] as num).toInt(),
-  receivedAmount: (json['received_amount'] as num).toInt(),
+  totalNetAmount: (json['total_net_amount'] as num).toDouble(),
+  outstandingAmount: (json['outstanding_amount'] as num).toDouble(),
+  receivedAmount: (json['received_amount'] as num).toDouble(),
+  supervisorName: json['supervisor_name'] as String,
+  customerName: json['customer_name'] as String,
+  totalVisitsNumber: (json['total_number_of_visits'] as num?)?.toInt(),
+  visitNumber: json['visit_number'] as String?,
 );
 
 Map<String, dynamic> _$OrdersToJson(Orders instance) => <String, dynamic>{
@@ -56,18 +60,22 @@ Map<String, dynamic> _$OrdersToJson(Orders instance) => <String, dynamic>{
   'total_net_amount': instance.totalNetAmount,
   'outstanding_amount': instance.outstandingAmount,
   'received_amount': instance.receivedAmount,
+  'supervisor_name': instance.supervisorName,
+  'customer_name': instance.customerName,
+  'total_number_of_visits': instance.totalVisitsNumber,
+  'visit_number': instance.visitNumber,
 };
 
 Totals _$TotalsFromJson(Map<String, dynamic> json) => Totals(
-  totalOutstandingAmount: (json['total_outstanding_amount'] as num).toInt(),
-  totalNetAmount: (json['total_net_amount'] as num).toInt(),
-  totalReceivedAmount: (json['total_received_amount'] as num).toInt(),
+  totalOutstandingAmount: (json['outstanding_amount'] as num).toDouble(),
+  totalNetAmount: (json['total_net_amount'] as num).toDouble(),
+  totalReceivedAmount: (json['received_amount'] as num).toDouble(),
 );
 
 Map<String, dynamic> _$TotalsToJson(Totals instance) => <String, dynamic>{
-  'total_outstanding_amount': instance.totalOutstandingAmount,
   'total_net_amount': instance.totalNetAmount,
-  'total_received_amount': instance.totalReceivedAmount,
+  'outstanding_amount': instance.totalOutstandingAmount,
+  'received_amount': instance.totalReceivedAmount,
 };
 
 Pagination _$PaginationFromJson(Map<String, dynamic> json) => Pagination(

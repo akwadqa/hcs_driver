@@ -1,5 +1,6 @@
 // home_repository.dart
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/order_details_share.dart';
@@ -125,12 +126,14 @@ class MyOrdersRepository {
   Future<UpdatedStatus> updateStatusOrder({
     required String appointmentID,
     String? amount,
+    String? paymentMethod,
   }) async {
     var data = FormData.fromMap({'staff_appointment_log': appointmentID});
     final response = await _networkService.post(
       ApiConstance.updateStatusOrder,
       {
         'staff_appointment_log': appointmentID,
+       if(paymentMethod!=null) 'payment_method': paymentMethod,
 
         if (amount != null) "amount": amount,
       },
@@ -145,20 +148,26 @@ class MyOrdersRepository {
 
   Future<AppointmentModel> getAppontments({
     required int page,
-    required String orderId,
+    // required String orderId,
     String? dateType,
+    String? date,
   }) async {
     final response = await _networkService.get(
       ApiConstance.appontmentsLogs(),
-      queryParameters: {'page': page, 'date_type': dateType},
-      data: FormData.fromMap({'order_id': orderId}),
+      queryParameters: {
+        'page': page,
+        if(dateType!=null)'date_type': dateType,
+        if(date!=null)'date': date,
+        "action": "driver",
+      },
 
+      // data: FormData.fromMap({'order_id': orderId}),
     );
 
     if (response.statusCode == 200) {
-      print('----------------');
-      print(dateType);
-      print('----------------');
+      debugPrint('----------------');
+      debugPrint(dateType);
+      debugPrint('----------------');
       return AppointmentModel.fromJson(response.data);
     } else {
       throw Exception(response.message ?? 'Failed to get Appontments');

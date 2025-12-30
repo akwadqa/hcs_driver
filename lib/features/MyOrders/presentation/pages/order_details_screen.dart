@@ -215,8 +215,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                                 await showPaymentMethodDialog(
                                                                   context,
                                                                 );
-                                                            if (res == null)
+                                                            if (res == null) {
                                                               return; // user canceled
+                                                            }
 
                                                             // 2) Call the correct API(s) based on the choice
                                                             await withBlockingLoader(context, () async {
@@ -226,45 +227,48 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                                         .notifier,
                                                                   );
 
-                                                              if (res.choice ==
-                                                                  PaymentChoice
-                                                                      .cash) {
-                                                                await ref
-                                                                    .read(
-                                                                      myOrdersControllerProvider
-                                                                          .notifier,
-                                                                    )
-                                                                    .updateStatusOrder(
-                                                                      appointmentID:
-                                                                          widget
-                                                                              .appointmentID,
-                                                                      amount: res
-                                                                          .amount
-                                                                          .toString(),
-                                                                    );
-                                                                // TODO: call your real endpoint:
-                                                                // await notifier.completeOrderWithCash(
-                                                                //   appointmentID: widget.appointmentID,
-                                                                //   amount: res.amount!,
-                                                                // );
-                                                                // If your backend needs status progression steps, do them here
-                                                                // (but only AFTER the choice was made).
-                                                              } else {
-                                                                await ref
-                                                                    .read(
-                                                                      myOrdersControllerProvider
-                                                                          .notifier,
-                                                                    )
-                                                                    .updateStatusOrder(
-                                                                      appointmentID:
-                                                                          widget
-                                                                              .appointmentID,
-                                                                    );
-                                                                // TODO: call your real endpoint:
-                                                                // await notifier.completeOrderSkipCash(
-                                                                //   appointmentID: widget.appointmentID,
-                                                                // );
-                                                              }
+                                                              // if (res.choice ==
+                                                              //     PaymentChoice
+                                                              //         .cash) {
+                                                              await ref
+                                                                  .read(
+                                                                    myOrdersControllerProvider
+                                                                        .notifier,
+                                                                  )
+                                                                  .updateStatusOrder(
+                                                                    appointmentID:
+                                                                        widget
+                                                                            .appointmentID,
+                                                                    paymentMethod: res
+                                                                        .choice
+                                                                        .name,
+                                                                    amount: res
+                                                                        .amount
+                                                                        .toString(),
+                                                                  );
+                                                              // TODO: call your real endpoint:
+                                                              // await notifier.completeOrderWithCash(
+                                                              //   appointmentID: widget.appointmentID,
+                                                              //   amount: res.amount!,
+                                                              // );
+                                                              // If your backend needs status progression steps, do them here
+                                                              // (but only AFTER the choice was made).
+                                                              // } else {
+                                                              //   await ref
+                                                              //       .read(
+                                                              //         myOrdersControllerProvider
+                                                              //             .notifier,
+                                                              //       )
+                                                              //       .updateStatusOrder(
+                                                              //         appointmentID:
+                                                              //             widget
+                                                              //                 .appointmentID,
+                                                              //       );
+                                                              //   // TODO: call your real endpoint:
+                                                              //   // await notifier.completeOrderSkipCash(
+                                                              //   //   appointmentID: widget.appointmentID,
+                                                              //   // );
+                                                              // }
                                                             });
 
                                                             // optional toast
@@ -277,7 +281,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                                 content: Text(
                                                                   res.choice ==
                                                                           PaymentChoice
-                                                                              .cash
+                                                                              .Cash
                                                                       ? "Order completed (cash)."
                                                                       : "Order completed.",
                                                                 ),

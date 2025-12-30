@@ -2,6 +2,20 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'services_orders_model.g.dart';
 
+// {"status_code":200
+//"error":0,
+//"message":"Service Orders retrieved successfully."
+//,"pagination":{"page":1,"limit":10,"total_items":2,"total_pages":1},
+//"data":{
+//"totals":{
+//"total_net_amount":120.0,
+//"outstanding_amount":0.0,
+//"received_amount":0.0},
+//"orders":[
+//{"service_order_id":"OC-25-10-0557",
+//"status":"Approved",
+//"posting_date":"2025-10-16",
+//"service_type":"Daily","method_of_payment":"Cash","total_net_amount":0.0,"outstanding_amount":0.0,"received_amount":0.0},{"service_order_id":"OC-25-10-0556","status":"Approved","posting_date":"2025-10-16","service_type":"Daily","method_of_payment":"Cash","total_net_amount":120.0,"outstanding_amount":0.0,"received_amount":0.0}]}}
 @JsonSerializable(explicitToJson: true)
 class ServicesOrders {
   @JsonKey(name: 'status_code')
@@ -30,10 +44,7 @@ class Data {
   final List<Orders> orders;
   final Totals totals;
 
-  Data({
-    required this.orders,
-    required this.totals,
-  });
+  Data({required this.orders, required this.totals});
 
   factory Data.fromJson(Map<String, dynamic> json) => _$DataFromJson(json);
 
@@ -50,11 +61,21 @@ class Orders {
   @JsonKey(name: 'service_type')
   final String serviceType;
   @JsonKey(name: 'total_net_amount')
-  final int totalNetAmount;
+  final double totalNetAmount;
   @JsonKey(name: 'outstanding_amount')
-  final int outstandingAmount;
+  final double outstandingAmount;
   @JsonKey(name: 'received_amount')
-  final int receivedAmount;
+  final double receivedAmount;
+  @JsonKey(name: 'supervisor_name')
+  final String supervisorName;
+  @JsonKey(name: 'customer_name')
+  final String customerName;
+
+  @JsonKey(name: 'total_number_of_visits')
+  final int? totalVisitsNumber;
+
+  @JsonKey(name: 'visit_number')
+  final String? visitNumber;
 
   Orders({
     required this.serviceOrderId,
@@ -64,22 +85,25 @@ class Orders {
     required this.totalNetAmount,
     required this.outstandingAmount,
     required this.receivedAmount,
+    required this.supervisorName,
+    required this.customerName,
+    required this.totalVisitsNumber,
+    required this.visitNumber,
   });
 
-  factory Orders.fromJson(Map<String, dynamic> json) =>
-      _$OrdersFromJson(json);
+  factory Orders.fromJson(Map<String, dynamic> json) => _$OrdersFromJson(json);
 
   Map<String, dynamic> toJson() => _$OrdersToJson(this);
 }
 
 @JsonSerializable()
 class Totals {
-  @JsonKey(name: 'total_outstanding_amount')
-  final int totalOutstandingAmount;
   @JsonKey(name: 'total_net_amount')
-  final int totalNetAmount;
-  @JsonKey(name: 'total_received_amount')
-  final int totalReceivedAmount;
+  final double totalNetAmount;
+  @JsonKey(name: 'outstanding_amount')
+  final double totalOutstandingAmount;
+  @JsonKey(name: 'received_amount')
+  final double totalReceivedAmount;
 
   Totals({
     required this.totalOutstandingAmount,
@@ -87,8 +111,7 @@ class Totals {
     required this.totalReceivedAmount,
   });
 
-  factory Totals.fromJson(Map<String, dynamic> json) =>
-      _$TotalsFromJson(json);
+  factory Totals.fromJson(Map<String, dynamic> json) => _$TotalsFromJson(json);
 
   Map<String, dynamic> toJson() => _$TotalsToJson(this);
 }

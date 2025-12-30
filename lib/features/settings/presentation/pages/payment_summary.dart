@@ -154,15 +154,15 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
 
                       return GestureDetector(
                         onTap: () {
-                          Navigator.of(context).push(
-                            //TODO: 
-                            MaterialPageRoute(
-                              builder: (m) => AppoinmentScreen(
-                                serviceOrderID: order.serviceOrderId,
-                                dateType: '',
-                              ),
-                            ),
-                          );
+                          // Navigator.of(context).push(
+                          //   //TODO: 
+                          //   MaterialPageRoute(
+                          //     builder: (m) => AppoinmentScreen(
+                          //       serviceOrderID: order.serviceOrderId,
+                          //       dateType: '',
+                          //     ),
+                          //   ),
+                          // );
                           //  context.pushRoute(
                           //       AppoinmentRoute(
                           //         serviceOrderID:

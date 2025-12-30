@@ -1,6 +1,8 @@
 class ApiConstance {
-  static const String baseUrl = "https://highclass.akwad.qa/api/method";
-  static const String baseDomain = "highclass";
+  static const String devBaseUrl = "https://highclass.akwad.qa/api/method";
+  static const String prodBaseUrl = "https://erp.hcs.qa/api/method";
+  static const String baseUrl = prodBaseUrl;
+    static const String baseDomain = "highclass";
   static const String baseImageUrl = 'https://$baseDomain.akwad.qa/';
 
   static String imageUrl(String? path) {
