@@ -130,8 +130,9 @@ final order = ordersState.customOrders[index];
     onTap: () {
          context.pushRoute(
         OrderDetailsRoute(
-          serviceOrderID: order.serviceOrderId,
-          appointmentID: order.logId,
+          staffAppointments: order,
+          
+          // appointmentID: order.logId,
         ),
       );
     },

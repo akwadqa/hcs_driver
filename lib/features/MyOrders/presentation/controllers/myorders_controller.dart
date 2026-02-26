@@ -3,6 +3,7 @@ import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.da
 import 'package:hcs_driver/features/MyOrders/data/repositories/myorders_repository.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
 import 'package:hcs_driver/src/core/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/shift_type_enum.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'myorders_controller.g.dart';
@@ -77,6 +78,7 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
+  // ? Yesterday
   Future<void> fetchYesterdayOrders() async {
     state = state.copyWith(approvedOrdersStates: RequestStates.loading);
 
@@ -108,6 +110,7 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
+  // ? Custom Data
   Future<void> fetchOrdersForDate(String yyyymmdd) async {
     state = state.copyWith(
       customOrdersState: RequestStates.loading,
@@ -119,6 +122,7 @@ class MyOrdersController extends _$MyOrdersController {
         page: 1,
         // dateType: '',
         date: yyyymmdd, // <— pass the specific date
+        shiftType: state.selectedShiftType,
       );
 
       // final next = resp.pagination.totalPages > 1 ? 2 : null;
@@ -151,6 +155,7 @@ class MyOrdersController extends _$MyOrdersController {
         page: nextPage,
         // dateType: '',
         date: state.lastCustomDate,
+        shiftType: state.selectedShiftType,
       );
       final next = resp.pagination.totalPages > resp.pagination.page
           ? resp.pagination.page + 1
@@ -205,6 +210,7 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'today',
+        shiftType: state.selectedShiftType,
       );
 
       int? nextPage;
@@ -234,6 +240,7 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: state.currentTodayOrdersPage!,
         dateType: 'today',
+        shiftType: state.selectedShiftType,
       );
 
       int? nextPage;
@@ -245,7 +252,10 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentTodayOrdersPage: nextPage,
-        todayOrders: [...state.todayOrders, ...ordersData.data.staffAppointments],
+        todayOrders: [
+          ...state.todayOrders,
+          ...ordersData.data.staffAppointments,
+        ],
         todayOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -265,6 +275,7 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'tomorrow',
+        shiftType: state.selectedShiftType,
       );
 
       int? nextPage;
@@ -275,8 +286,8 @@ class MyOrdersController extends _$MyOrdersController {
         nextPage = null;
       }
       state = state.copyWith(
-        currentTodayOrdersPage: nextPage,
-        todayOrders: ordersData.data.staffAppointments,
+        currentTomorrowOrdersPage: nextPage,
+        tomorrowOrders: ordersData.data.staffAppointments,
         tomorrowOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -294,6 +305,7 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: state.currentTodayOrdersPage!,
         dateType: 'tomorrow',
+        shiftType: state.selectedShiftType,
       );
 
       int? nextPage;
@@ -305,7 +317,8 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentAppointmentsPage: nextPage,
-        tomorrowOrders: [...state.todayOrders, ...ordersData.data.staffAppointments],
+      tomorrowOrders: [...state.tomorrowOrders, ...ordersData.data.staffAppointments],
+
         tomorrowOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -400,7 +413,7 @@ class MyOrdersController extends _$MyOrdersController {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final statusOrders = await myOrdersRepo.updateStatusOrder(
         appointmentID: appointmentID,
-        paymentMethod:paymentMethod,
+        paymentMethod: paymentMethod,
         amount: amount,
       );
 
@@ -420,12 +433,19 @@ class MyOrdersController extends _$MyOrdersController {
         statusOrderStates: RequestStates.loaded,
         statusOrderMessage: '',
       );
+      refreshAllOrdersList();
     } catch (e) {
       state = state.copyWith(
         statusOrderStates: RequestStates.error,
         statusOrderMessage: e.toString(),
       );
     }
+  }
+
+  Future<void> refreshAllOrdersList() async {
+    fetchTomorrowOrders();
+    fetchTodayOrders();
+    refetchCustomDate();
   }
 
   Future<void> fetchAppontments({
@@ -441,7 +461,6 @@ class MyOrdersController extends _$MyOrdersController {
         page: 1,
         // orderId: serviceOrderID,
       );
-
 
       int? nextPage;
       //if there is a second page ?
@@ -475,6 +494,7 @@ class MyOrdersController extends _$MyOrdersController {
         page: state.currentAppointmentsPage!,
         // orderId: serviceOrderID,
         dateType: dateType,
+        shiftType: state.selectedShiftType,
       );
 
       int? nextPage;
@@ -565,6 +585,28 @@ class MyOrdersController extends _$MyOrdersController {
         orderCancelltionStates: RequestStates.error,
         orderCancelltionMessage: e.toString(),
       );
+    }
+  }
+
+  void setShiftType(ShiftTypeEnum? shiftType) {
+    state = state.copyWith(selectedShiftType: shiftType);
+  }
+
+  void clearShiftType() {
+  state = state.copyWith(clearShiftType: true);
+  }
+
+  Future<void> applyShiftFilter({required int tabIndex}) async {
+    switch (tabIndex) {
+      case 0:
+        await refetchCustomDate();
+        break;
+      case 1:
+        await fetchTodayOrders();
+        break;
+      case 2:
+        await fetchTomorrowOrders();
+        break;
     }
   }
 }

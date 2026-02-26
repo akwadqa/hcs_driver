@@ -110,8 +110,8 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
     onTap: () {
       context.pushRoute(
         OrderDetailsRoute(
-          serviceOrderID: order.serviceOrderId,
-          appointmentID: order.logId,
+          staffAppointments: order,
+          // appointmentID: order.logId,
         ),
       );
     },

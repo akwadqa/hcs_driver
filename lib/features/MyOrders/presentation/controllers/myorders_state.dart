@@ -5,6 +5,7 @@ import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
 import 'package:hcs_driver/src/core/enums/request_state.dart';
+import 'package:hcs_driver/src/core/enums/shift_type_enum.dart';
 
 // List<Appointment> dummyData = [
 //   Appointment(name: '1111111'),
@@ -64,6 +65,8 @@ class MyOrdersState extends Equatable {
   final int? currentCompletedOrdersPage;
   final String? searchKey;
 
+  final ShiftTypeEnum? selectedShiftType;
+
   const MyOrdersState({
     //orders
     this.currentApprovedOrdersPage,
@@ -104,6 +107,7 @@ class MyOrdersState extends Equatable {
     this.completedOrdersStates = RequestStates.init,
     this.currentCompletedOrdersPage,
     this.searchKey = '',
+    this.selectedShiftType,
   });
   MyOrdersState copyWith({
     int? currentApprovedOrdersPage,
@@ -137,6 +141,9 @@ class MyOrdersState extends Equatable {
     RequestStates? completedOrdersStates,
     int? currentCompletedOrdersPage,
     String? searchKey,
+    ShiftTypeEnum? selectedShiftType,
+      bool clearShiftType = false,
+
   }) {
     return MyOrdersState(
       currentApprovedOrdersPage:
@@ -152,8 +159,7 @@ class MyOrdersState extends Equatable {
       currentCustomOrdersPage:
           currentCustomOrdersPage ?? this.currentCustomOrdersPage,
       tomorrowOrders: tomorrowOrders ?? this.tomorrowOrders,
-      tomorrowOrdersStates:
-          tomorrowOrdersStates ?? this.tomorrowOrdersStates,
+      tomorrowOrdersStates: tomorrowOrdersStates ?? this.tomorrowOrdersStates,
       ordersMessage: ordersMessage ?? this.ordersMessage,
       ordersDetails: ordersDetails ?? this.ordersDetails,
       ordersDetailsStates: ordersDetailsStates ?? this.ordersDetailsStates,
@@ -167,8 +173,7 @@ class MyOrdersState extends Equatable {
       nextDriverStatus: nextDriverStatus ?? this.nextDriverStatus,
       statusOrderStates: statusOrderStates ?? this.statusOrderStates,
       statusOrderMessage: statusOrderMessage ?? this.statusOrderMessage,
-      currentAppointmentsPage:
-          currentAppointmentsPage ,
+      currentAppointmentsPage: currentAppointmentsPage,
       ordersAppointments: ordersAppointments ?? this.ordersAppointments,
       appointmentsStates: appointmentsStates ?? this.appointmentsStates,
       customOrdersState: customOrdersState ?? this.customOrdersState,
@@ -180,6 +185,9 @@ class MyOrdersState extends Equatable {
       currentCompletedOrdersPage:
           currentCompletedOrdersPage ?? this.currentCompletedOrdersPage,
       searchKey: searchKey ?? this.searchKey,
+     selectedShiftType: clearShiftType
+        ? null
+        : selectedShiftType ?? this.selectedShiftType,
     );
   }
 
@@ -189,11 +197,11 @@ class MyOrdersState extends Equatable {
     currentApprovedOrdersPage,
     approvedOrders,
     currentTodayOrdersPage,
-   todayOrders,
+    todayOrders,
     currentTomorrowOrdersPage,
     tomorrowOrders,
     approvedOrdersStates,
-   todayOrdersStates,
+    todayOrdersStates,
     tomorrowOrdersStates,
     ordersMessage,
 
@@ -222,5 +230,6 @@ class MyOrdersState extends Equatable {
     completedOrdersStates,
     currentCompletedOrdersPage,
     searchKey,
+    selectedShiftType,
   ];
 }

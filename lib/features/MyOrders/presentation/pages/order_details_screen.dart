@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/info_row.dart';
@@ -23,13 +24,14 @@ import 'package:hcs_driver/src/theme/app_colors.dart';
 
 @RoutePage()
 class OrderDetailsScreen extends ConsumerStatefulWidget {
-  final String serviceOrderID;
-  final String appointmentID;
+  // final String serviceOrderID;
+  final StaffAppointments staffAppointments;
   // final String status;
   const OrderDetailsScreen({
     super.key,
-    required this.serviceOrderID,
-    required this.appointmentID,
+    // required this.serviceOrderID,
+    required this.staffAppointments,
+    // required this.appointmentID,
     // required this.status,
   });
 
@@ -45,7 +47,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       () => ref
           .read(myOrdersControllerProvider.notifier)
           //todo here we should use appointment Id not serviceOrderID
-          .fetchOrdersDetails(staffAppointmentLog: widget.appointmentID),
+          .fetchOrdersDetails(staffAppointmentLog: widget.staffAppointments.logId),
     );
   }
 
@@ -66,31 +68,47 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       myOrdersControllerProvider.select((value) => value.ordersDetailsStates),
     );
     return Scaffold(
-      body: orderStatus == RequestStates.loaded
-          ? _buildContent(details, days)
-          : orderStatus == RequestStates.loading
-          ? Center(child: const FadeCircleLoadingIndicator())
-          : orderStatus == RequestStates.error
-          ? AppErrorWidget(
-              onTap: () => Future(
-                () => ref
-                    .read(myOrdersControllerProvider.notifier)
-                    //todo here we should use appointment Id not serviceOrderID
-                    .fetchOrdersDetails(
-                      staffAppointmentLog: widget.appointmentID,
-                    ),
-              ),
-            )
-          : SizedBox.shrink(),
+      body: switch (orderStatus) {
+        RequestStates.loaded => _buildContent(details, days),
+        RequestStates.loading ||
+        RequestStates.init => const Center(child: FadeCircleLoadingIndicator()),
+        RequestStates.error => AppErrorWidget(
+          onTap: () => Future(
+            () => ref
+                .read(myOrdersControllerProvider.notifier)
+                //todo here we should use appointment Id not serviceOrderID
+                .fetchOrdersDetails(staffAppointmentLog: widget.staffAppointments.logId),
+          ),
+        ),
+      },
+
+      // orderStatus == RequestStates.loaded
+      //     ? _buildContent(details, days)
+      //     : orderStatus == RequestStates.loading
+      //     ? Center(child: const FadeCircleLoadingIndicator())
+      //     : orderStatus == RequestStates.error
+      //     ? AppErrorWidget(
+      //         onTap: () => Future(
+      //           () => ref
+      //               .read(myOrdersControllerProvider.notifier)
+      //               //todo here we should use appointment Id not serviceOrderID
+      //               .fetchOrdersDetails(
+      //                 staffAppointmentLog: widget.staffAppointments.logId,
+      //               ),
+      //         ),
+      //       )
+      //     : SizedBox.shrink(),
       appBar: CustomAppbar(
         hasBackArrow: true,
+
         title: context.tr(AppStrings.orderDetails),
         withTabs: false,
         actions: orderStatus == RequestStates.loaded
             ? [
                 ShareToWhatsApp(
-                  serviceOrderId: widget.serviceOrderID,
+                  serviceOrderId: widget.staffAppointments.serviceOrderId,
                   orderDetails: details,
+                  staffAppointments: widget.staffAppointments,
                   isOrderShare: false,
                 ),
               ]
@@ -130,7 +148,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
             padding: EdgeInsets.symmetric(vertical: 18.h),
             child: Center(
               child: Text(
-                widget.serviceOrderID,
+                widget.staffAppointments.serviceOrderId,
                 style: Theme.of(context).textTheme.displayMedium!.copyWith(
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w600,
@@ -145,7 +163,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
               onTap: () => context.pushRoute(
                 OrderStatusRoute(
                   statusOrderType: details?.status ?? "",
-                  appointmentID: widget.appointmentID,
+                  appointmentID: widget.staffAppointments.logId,
                 ),
               ),
               child: _wrapWithCard(
@@ -208,6 +226,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                       // statusOrders.last.status !=
                                                       //     currentDriverStatus
                                                       ? () async {
+                                                          // ref.invalidate(myOrdersControllerProvider);
+
                                                           if (nextDriverStatus ==
                                                               "Payment Received") {
                                                             // 1) Ask how to handle payment (no status change yet)
@@ -237,8 +257,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                                   )
                                                                   .updateStatusOrder(
                                                                     appointmentID:
-                                                                        widget
-                                                                            .appointmentID,
+                                                                        widget.staffAppointments
+                                                                            .logId,
                                                                     paymentMethod: res
                                                                         .choice
                                                                         .name,
@@ -248,7 +268,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                                   );
                                                               // TODO: call your real endpoint:
                                                               // await notifier.completeOrderWithCash(
-                                                              //   appointmentID: widget.appointmentID,
+                                                              //   appointmentID: widget.staffAppointments.logId,
                                                               //   amount: res.amount!,
                                                               // );
                                                               // If your backend needs status progression steps, do them here
@@ -266,7 +286,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                               //       );
                                                               //   // TODO: call your real endpoint:
                                                               //   // await notifier.completeOrderSkipCash(
-                                                              //   //   appointmentID: widget.appointmentID,
+                                                              //   //   appointmentID: widget.staffAppointments.logId,
                                                               //   // );
                                                               // }
                                                             });
@@ -296,8 +316,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                                                                 )
                                                                 .updateStatusOrder(
                                                                   appointmentID:
-                                                                      widget
-                                                                          .appointmentID,
+                                                                      widget.staffAppointments
+                                                                          .logId,
                                                                 );
                                                           }
                                                         }
@@ -393,7 +413,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       //                       )
                       //                       .updateStatusOrder(
                       //                         serviceOrderID:
-                      //                             widget.serviceOrderID,
+                      //                             widget.staffAppointments.serviceOrderId,
                       //                       )
                       //                 : null,
                       //             child: Text(
@@ -431,7 +451,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                       //         onTap: () => context.pushRoute(
                       //           OrderStatusRoute(
                       //             statusOrderType: details!.status,
-                      //             serviceOrderID: widget.serviceOrderID,
+                      //             serviceOrderID: widget.staffAppointments.serviceOrderId,
                       //           ),
                       //         ),
                       //       ),
@@ -446,7 +466,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                           onTap: () => ref
                               .watch(myOrdersControllerProvider.notifier)
                               .updateStatusOrder(
-                                appointmentID: widget.appointmentID,
+                                appointmentID: widget.staffAppointments.logId,
                               ),
                         );
                     }
@@ -488,8 +508,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
                     ),
                   ),
                 ),
-
-                InfoRow("Area", value: details?.customer.location),
+                InfoRow(
+                  "Employees name",
+                  value: (details.staffAppointment as List?)?.join(',\n') ?? '',important: true
+                ),
+                InfoRow("Area", value: details?.customer.location,important: true,),
                 InfoRow("Zone", value: details?.customer.zone),
                 InfoRow(
                   "Location",
@@ -520,10 +543,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           _wrapWithCard(
             Column(
               children: [
-                InfoRow(
-                  "Employees name",
-                  value: (details.staffAppointment as List?)?.join(',\n') ?? '',
-                ),
+                // InfoRow(
+                //   "Employees name",
+                //   value: (details.staffAppointment as List?)?.join(',\n') ?? '',
+                // ),
                 InfoRow(
                   "Supervisor name",
                   value: details.supervisor?.supervisorName,

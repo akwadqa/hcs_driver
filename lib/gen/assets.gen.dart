@@ -30,6 +30,9 @@ class $AssetsFontsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/1.jpg
+  AssetGenImage get a1 => const AssetGenImage('assets/images/1.jpg');
+
   /// File path: assets/images/background.png
   AssetGenImage get background =>
       const AssetGenImage('assets/images/background.png');
@@ -132,9 +135,9 @@ class $AssetsImagesGen {
   SvgGenImage get settingsUnselected =>
       const SvgGenImage('assets/images/settings_unselected.svg');
 
-  /// File path: assets/images/splash_logo.png
-  AssetGenImage get splashLogo =>
-      const AssetGenImage('assets/images/splash_logo.png');
+  /// File path: assets/images/splash_logo2.jpg
+  AssetGenImage get splashLogo2 =>
+      const AssetGenImage('assets/images/splash_logo2.jpg');
 
   /// File path: assets/images/successful.svg
   SvgGenImage get successful =>
@@ -145,6 +148,7 @@ class $AssetsImagesGen {
 
   /// List of all assets
   List<dynamic> get values => [
+    a1,
     background,
     byebye,
     calendar,
@@ -173,7 +177,7 @@ class $AssetsImagesGen {
     serviceType,
     settingsSelected,
     settingsUnselected,
-    splashLogo,
+    splashLogo2,
     successful,
     userIcon,
   ];

@@ -7,6 +7,7 @@ import 'package:hcs_driver/features/MyOrders/data/models/order_details_share.dar
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/services_orders_model.dart';
 import 'package:hcs_driver/src/constants/api_constance.dart';
+import 'package:hcs_driver/src/core/enums/shift_type_enum.dart';
 import 'package:hcs_driver/src/network/network_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -151,6 +152,7 @@ class MyOrdersRepository {
     // required String orderId,
     String? dateType,
     String? date,
+    ShiftTypeEnum? shiftType,
   }) async {
     final response = await _networkService.get(
       ApiConstance.appontmentsLogs(),
@@ -158,6 +160,7 @@ class MyOrdersRepository {
         'page': page,
         if(dateType!=null)'date_type': dateType,
         if(date!=null)'date': date,
+        if(shiftType!=null)'shift_type': shiftType.apiValue,
         "action": "driver",
       },
 

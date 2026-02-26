@@ -113,7 +113,7 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
               }
             }
       
-  final order = ordersState.todayOrders[index];
+  final order = ordersState.tomorrowOrders[index];
 
   return OrderCard(
     order: order,
@@ -121,8 +121,8 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
     onTap: () {
       context.pushRoute(
         OrderDetailsRoute(
-          serviceOrderID: order.serviceOrderId,
-          appointmentID: order.logId,
+                  staffAppointments: order,
+
         ),
       );
     },

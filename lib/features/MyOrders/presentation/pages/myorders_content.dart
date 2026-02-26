@@ -33,6 +33,9 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
       vsync: this,
       initialIndex: 1,
     ); // Today
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -82,10 +85,13 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
       appBar: CustomAppbar(
         hasBackArrow: false,
         isHome: true,
+        withFilter: true,
+
         title: context.tr(AppStrings.myOrders),
         withTabs: true,
         onTabTap: _handleTabTap,
         tabController: _tabController,
+        currentTabIndex: _tabController.index,
       ),
       body: TabBarView(
         controller: _tabController,

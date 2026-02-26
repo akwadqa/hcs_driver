@@ -15,6 +15,8 @@ import 'package:hcs_driver/features/app/intro_screen.dart' as _i2;
 import 'package:hcs_driver/features/app/main_screen.dart' as _i4;
 import 'package:hcs_driver/features/Auth/presentation/pages/login_screen.dart'
     as _i3;
+import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart'
+    as _i13;
 import 'package:hcs_driver/features/MyOrders/presentation/pages/appointment_screen.dart'
     as _i1;
 import 'package:hcs_driver/features/MyOrders/presentation/pages/myorders_content.dart'
@@ -180,15 +182,13 @@ class MyOrdersRoute extends _i11.PageRouteInfo<void> {
 class OrderDetailsRoute extends _i11.PageRouteInfo<OrderDetailsRouteArgs> {
   OrderDetailsRoute({
     _i12.Key? key,
-    required String serviceOrderID,
-    required String appointmentID,
+    required _i13.StaffAppointments staffAppointments,
     List<_i11.PageRouteInfo>? children,
   }) : super(
          OrderDetailsRoute.name,
          args: OrderDetailsRouteArgs(
            key: key,
-           serviceOrderID: serviceOrderID,
-           appointmentID: appointmentID,
+           staffAppointments: staffAppointments,
          ),
          initialChildren: children,
        );
@@ -201,43 +201,33 @@ class OrderDetailsRoute extends _i11.PageRouteInfo<OrderDetailsRouteArgs> {
       final args = data.argsAs<OrderDetailsRouteArgs>();
       return _i7.OrderDetailsScreen(
         key: args.key,
-        serviceOrderID: args.serviceOrderID,
-        appointmentID: args.appointmentID,
+        staffAppointments: args.staffAppointments,
       );
     },
   );
 }
 
 class OrderDetailsRouteArgs {
-  const OrderDetailsRouteArgs({
-    this.key,
-    required this.serviceOrderID,
-    required this.appointmentID,
-  });
+  const OrderDetailsRouteArgs({this.key, required this.staffAppointments});
 
   final _i12.Key? key;
 
-  final String serviceOrderID;
-
-  final String appointmentID;
+  final _i13.StaffAppointments staffAppointments;
 
   @override
   String toString() {
-    return 'OrderDetailsRouteArgs{key: $key, serviceOrderID: $serviceOrderID, appointmentID: $appointmentID}';
+    return 'OrderDetailsRouteArgs{key: $key, staffAppointments: $staffAppointments}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! OrderDetailsRouteArgs) return false;
-    return key == other.key &&
-        serviceOrderID == other.serviceOrderID &&
-        appointmentID == other.appointmentID;
+    return key == other.key && staffAppointments == other.staffAppointments;
   }
 
   @override
-  int get hashCode =>
-      key.hashCode ^ serviceOrderID.hashCode ^ appointmentID.hashCode;
+  int get hashCode => key.hashCode ^ staffAppointments.hashCode;
 }
 
 /// generated route for

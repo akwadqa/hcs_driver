@@ -91,6 +91,7 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
         actions: [
           ShareToWhatsApp(
             serviceOrderId: widget.serviceOrderID,
+            staffAppointments: null,
             orderDetails: null,
             isOrderShare: true,
           ),
@@ -163,9 +164,9 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (m) => OrderDetailsScreen(
-                      serviceOrderID: widget.serviceOrderID,
-                      appointmentID:
-                          ordersState.ordersAppointments[index].logId,
+                      // serviceOrderID: widget.serviceOrderID,
+                      staffAppointments:
+                          ordersState.ordersAppointments[index],
                     ),
                   ),
                 );

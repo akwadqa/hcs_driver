@@ -63,7 +63,8 @@ class OrderCard extends StatelessWidget {
                     ),
                     Flexible(
                       flex: 2,
-                      child: _ChipStatus(text: order.driverStatus ?? "")),
+                      child: _ChipStatus(text: order.driverStatus ?? ""),
+                    ),
                   ],
                 ),
                 16.verticalSpace,
@@ -85,53 +86,54 @@ class OrderCard extends StatelessWidget {
                 //----------------------------------------------------------
                 // CUSTOMER + PHONE
                 //----------------------------------------------------------
-                     _LabeledRichText(
-                      label: "Customer: ",
-                      value: order.customerName ?? "",
-                      withSpace: true,
-                    ),
-                    12.verticalSpace,
+                _LabeledRichText(
+                  label: "Customer: ",
+                  value: order.customerName ?? "",
+                  withSpace: true,
+                ),
+                12.verticalSpace,
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-               
-                    
                     _LabeledRichText(
                       label: "Phone :   ",
                       value: order.customerPhone ?? "",
                     ),
-                       CustomButtonWidget(
-                  height: 0,
-                  width: 100,
-                  
-                  isFiled: true,
-                  backgroundColor: AppColors.lightGray,
-                  radius: 18,
-                  text: "Location",
+                    CustomButtonWidget(
+                      height: 0,
+                      width: 100,
 
-                  child: Row(
-                    children: [
-                      2.horizontalSpace,
+                      isFiled: true,
+                      backgroundColor: AppColors.lightGray,
+                      radius: 18,
+                      text: "Location",
 
-                      Icon(Icons.location_on_rounded, color: Colors.red,size: 20,),
-                      2.horizontalSpace,
-                      Text(
-                        " Location",
-                        style: Theme.of(context).textTheme.displaySmall!
-                            .copyWith(
-                              fontSize: 15,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w500,
-                            ),
-                      ),
-                    ],
-                  ).allPadding(8),
-          
-                  onTap: () {
-                    openMapLink(order.customerLocation ?? "");
-                  },
-                ),
+                      child: Row(
+                        children: [
+                          2.horizontalSpace,
 
+                          Icon(
+                            Icons.location_on_rounded,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                          2.horizontalSpace,
+                          Text(
+                            " Location",
+                            style: Theme.of(context).textTheme.displaySmall!
+                                .copyWith(
+                                  fontSize: 15,
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                          ),
+                        ],
+                      ).allPadding(8),
+
+                      onTap: () {
+                        openMapLink(order.customerLocation ?? "");
+                      },
+                    ),
                   ],
                 ),
                 // 12.verticalSpace,
@@ -142,7 +144,7 @@ class OrderCard extends StatelessWidget {
                 // CustomButtonWidget(
                 //   height: 0,
                 //   width: 100,
-                  
+
                 //   isFiled: true,
                 //   backgroundColor: AppColors.lightGray,
                 //   radius: 18,
@@ -165,7 +167,7 @@ class OrderCard extends StatelessWidget {
                 //       ),
                 //     ],
                 //   ).allPadding(8),
-          
+
                 //   onTap: () {
                 //     openMapLink(order.customerLocation ?? "");
                 //   },
@@ -403,7 +405,7 @@ class _ChipStatus extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-      final status = parseJobStatus(text);
+    final status = parseJobStatus(text);
     final bgColor = status.color.withOpacity(0.15);
 
     return Container(
