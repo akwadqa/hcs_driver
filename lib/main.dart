@@ -15,7 +15,7 @@ Future<void> main() async {
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-  ]);
+  ]);     
   runApp(
     ScreenUtilInit(
       designSize: const Size(393, 852),
