@@ -13,9 +13,8 @@ String _$appRouterHash() => r'ccde8baa9931259ce70cb1e422bda7d5a0116ccb';
 final appRouterProvider = Provider<AppRouter>.internal(
   appRouter,
   name: r'appRouterProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$appRouterHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appRouterHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

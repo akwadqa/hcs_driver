@@ -35,14 +35,14 @@ String _$deviceTokenControllerHash() =>
 @ProviderFor(DeviceTokenController)
 final deviceTokenControllerProvider =
     AutoDisposeAsyncNotifierProvider<DeviceTokenController, void>.internal(
-      DeviceTokenController.new,
-      name: r'deviceTokenControllerProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$deviceTokenControllerHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  DeviceTokenController.new,
+  name: r'deviceTokenControllerProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$deviceTokenControllerHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$DeviceTokenController = AutoDisposeAsyncNotifier<void>;
 // ignore_for_file: type=lint

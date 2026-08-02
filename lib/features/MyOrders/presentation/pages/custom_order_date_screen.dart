@@ -15,8 +15,7 @@ import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart
 import 'package:hcs_driver/src/theme/app_colors.dart';
 
 class CustomDateOrdersScreen extends ConsumerStatefulWidget {
-  const 
-  CustomDateOrdersScreen({super.key});
+  const CustomDateOrdersScreen({super.key});
 
   @override
   ConsumerState<CustomDateOrdersScreen> createState() =>
@@ -122,27 +121,27 @@ class _CustomDateOrdersScreenState
             }
           }
 
-final order = ordersState.customOrders[index];
+          final order = ordersState.customOrders[index];
 
-            return OrderCard(
-    order: order,
-    // parentContext: context,
-    onTap: () {
-         context.pushRoute(
-        OrderDetailsRoute(
-          staffAppointments: order,
-          
-          // appointmentID: order.logId,
-        ),
-      );
-    },
-    onDismissedConfirm: () => showAcceptCancelOrder(
-      context: context,
-      orderID: order.serviceOrderId,
-      cancelAppointmentLog: false,
-      ref: ref,
-    ),
-  );
+          return OrderCard(
+            order: order,
+            // parentContext: context,
+            onTap: () {
+              context.pushRoute(
+                OrderDetailsRoute(
+                  staffAppointments: order,
+
+                  // appointmentID: order.logId,
+                ),
+              );
+            },
+            onDismissedConfirm: () => showAcceptCancelOrder(
+              context: context,
+              orderID: order.serviceOrderId,
+              cancelAppointmentLog: false,
+              ref: ref,
+            ),
+          );
           // final o = ordersState.customOrders[index];
 
           // return GestureDetector(
@@ -227,7 +226,6 @@ final order = ordersState.customOrders[index];
           //     ),
           //   ),
           // );
-       
         },
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 extension ConvertToMaterial on Color {
@@ -24,4 +25,18 @@ extension AssetsPath on String {
 
 extension BoolConditions on bool? {
   bool get isNullOrFalse => this == null || this == false;
+}
+
+extension DateFormatterExtension on String {
+  String toFormattedEventDate() {
+    try {
+      final parsedDate = DateTime.parse(this);
+      final dayName =
+          DateFormat('EEEE', 'en').format(parsedDate).substring(0, 2);
+      final datePart = DateFormat('dd-MM-yyyy', 'en').format(parsedDate);
+      return '$dayName, $datePart';
+    } catch (e) {
+      return this; // في حال كان النص المدخل غير صالح للتاريخ نرجع النص كما هو
+    }
+  }
 }

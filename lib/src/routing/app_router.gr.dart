@@ -41,14 +41,14 @@ class AppoinmentRoute extends _i11.PageRouteInfo<AppoinmentRouteArgs> {
     required String dateType,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-         AppoinmentRoute.name,
-         args: AppoinmentRouteArgs(
-           key: key,
-           serviceOrderID: serviceOrderID,
-           dateType: dateType,
-         ),
-         initialChildren: children,
-       );
+          AppoinmentRoute.name,
+          args: AppoinmentRouteArgs(
+            key: key,
+            serviceOrderID: serviceOrderID,
+            dateType: dateType,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'AppoinmentRoute';
 
@@ -101,7 +101,7 @@ class AppoinmentRouteArgs {
 /// [_i2.IntroScreen]
 class IntroRoute extends _i11.PageRouteInfo<void> {
   const IntroRoute({List<_i11.PageRouteInfo>? children})
-    : super(IntroRoute.name, initialChildren: children);
+      : super(IntroRoute.name, initialChildren: children);
 
   static const String name = 'IntroRoute';
 
@@ -117,7 +117,7 @@ class IntroRoute extends _i11.PageRouteInfo<void> {
 /// [_i3.LoginScreen]
 class LoginRoute extends _i11.PageRouteInfo<void> {
   const LoginRoute({List<_i11.PageRouteInfo>? children})
-    : super(LoginRoute.name, initialChildren: children);
+      : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
@@ -133,7 +133,7 @@ class LoginRoute extends _i11.PageRouteInfo<void> {
 /// [_i4.MainScreen]
 class MainRoute extends _i11.PageRouteInfo<void> {
   const MainRoute({List<_i11.PageRouteInfo>? children})
-    : super(MainRoute.name, initialChildren: children);
+      : super(MainRoute.name, initialChildren: children);
 
   static const String name = 'MainRoute';
 
@@ -149,7 +149,7 @@ class MainRoute extends _i11.PageRouteInfo<void> {
 /// [_i5.MyOrdersContentScreen]
 class MyOrdersContentRoute extends _i11.PageRouteInfo<void> {
   const MyOrdersContentRoute({List<_i11.PageRouteInfo>? children})
-    : super(MyOrdersContentRoute.name, initialChildren: children);
+      : super(MyOrdersContentRoute.name, initialChildren: children);
 
   static const String name = 'MyOrdersContentRoute';
 
@@ -165,7 +165,7 @@ class MyOrdersContentRoute extends _i11.PageRouteInfo<void> {
 /// [_i6.MyOrdersScreen]
 class MyOrdersRoute extends _i11.PageRouteInfo<void> {
   const MyOrdersRoute({List<_i11.PageRouteInfo>? children})
-    : super(MyOrdersRoute.name, initialChildren: children);
+      : super(MyOrdersRoute.name, initialChildren: children);
 
   static const String name = 'MyOrdersRoute';
 
@@ -185,13 +185,13 @@ class OrderDetailsRoute extends _i11.PageRouteInfo<OrderDetailsRouteArgs> {
     required _i13.StaffAppointments staffAppointments,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-         OrderDetailsRoute.name,
-         args: OrderDetailsRouteArgs(
-           key: key,
-           staffAppointments: staffAppointments,
-         ),
-         initialChildren: children,
-       );
+          OrderDetailsRoute.name,
+          args: OrderDetailsRouteArgs(
+            key: key,
+            staffAppointments: staffAppointments,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'OrderDetailsRoute';
 
@@ -239,14 +239,14 @@ class OrderStatusRoute extends _i11.PageRouteInfo<OrderStatusRouteArgs> {
     required String appointmentID,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-         OrderStatusRoute.name,
-         args: OrderStatusRouteArgs(
-           key: key,
-           statusOrderType: statusOrderType,
-           appointmentID: appointmentID,
-         ),
-         initialChildren: children,
-       );
+          OrderStatusRoute.name,
+          args: OrderStatusRouteArgs(
+            key: key,
+            statusOrderType: statusOrderType,
+            appointmentID: appointmentID,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'OrderStatusRoute';
 
@@ -299,7 +299,7 @@ class OrderStatusRouteArgs {
 /// [_i9.PaymentSummaryScreen]
 class PaymentSummaryRoute extends _i11.PageRouteInfo<void> {
   const PaymentSummaryRoute({List<_i11.PageRouteInfo>? children})
-    : super(PaymentSummaryRoute.name, initialChildren: children);
+      : super(PaymentSummaryRoute.name, initialChildren: children);
 
   static const String name = 'PaymentSummaryRoute';
 
@@ -315,7 +315,7 @@ class PaymentSummaryRoute extends _i11.PageRouteInfo<void> {
 /// [_i10.SettingsScreen]
 class SettingsRoute extends _i11.PageRouteInfo<void> {
   const SettingsRoute({List<_i11.PageRouteInfo>? children})
-    : super(SettingsRoute.name, initialChildren: children);
+      : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 

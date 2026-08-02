@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:auto_route/annotations.dart';
 import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -7,11 +9,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/widgets/customer_card_widget.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/info_row.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/map_button.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/widgets/order_details_card.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whatsapp.dart';
 import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
+import 'package:hcs_driver/src/manager/extensions.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
@@ -47,7 +52,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       () => ref
           .read(myOrdersControllerProvider.notifier)
           //todo here we should use appointment Id not serviceOrderID
-          .fetchOrdersDetails(staffAppointmentLog: widget.staffAppointments.logId),
+          .fetchOrdersDetails(
+              staffAppointmentLog:
+                  widget.staffAppointments.serviceOrderId ?? '',
+              date: widget.staffAppointments.date ?? '',
+              shift: widget.staffAppointments.shiftType ?? ''),
     );
   }
 
@@ -71,36 +80,23 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
       body: switch (orderStatus) {
         RequestStates.loaded => _buildContent(details, days),
         RequestStates.loading ||
-        RequestStates.init => const Center(child: FadeCircleLoadingIndicator()),
+        RequestStates.init =>
+          const Center(child: FadeCircleLoadingIndicator()),
         RequestStates.error => AppErrorWidget(
-          onTap: () => Future(
-            () => ref
-                .read(myOrdersControllerProvider.notifier)
-                //todo here we should use appointment Id not serviceOrderID
-                .fetchOrdersDetails(staffAppointmentLog: widget.staffAppointments.logId),
+            onTap: () => Future(
+              () => ref
+                  .read(myOrdersControllerProvider.notifier)
+                  //todo here we should use appointment Id not serviceOrderID
+                  .fetchOrdersDetails(
+                      staffAppointmentLog:
+                          widget.staffAppointments.serviceOrderId ?? '',
+                      date: widget.staffAppointments.date ?? '',
+                      shift: widget.staffAppointments.shiftType ?? ''),
+            ),
           ),
-        ),
       },
-
-      // orderStatus == RequestStates.loaded
-      //     ? _buildContent(details, days)
-      //     : orderStatus == RequestStates.loading
-      //     ? Center(child: const FadeCircleLoadingIndicator())
-      //     : orderStatus == RequestStates.error
-      //     ? AppErrorWidget(
-      //         onTap: () => Future(
-      //           () => ref
-      //               .read(myOrdersControllerProvider.notifier)
-      //               //todo here we should use appointment Id not serviceOrderID
-      //               .fetchOrdersDetails(
-      //                 staffAppointmentLog: widget.staffAppointments.logId,
-      //               ),
-      //         ),
-      //       )
-      //     : SizedBox.shrink(),
       appBar: CustomAppbar(
         hasBackArrow: true,
-
         title: context.tr(AppStrings.orderDetails),
         withTabs: false,
         actions: orderStatus == RequestStates.loaded
@@ -117,480 +113,424 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     );
   }
 
-  Widget _wrapWithCard(Widget child) {
-    return Column(
-      children: [
-        Card(
-          color: Colors.white,
-          // elevation: 2,
-          shadowColor: Colors.transparent,
-          elevation: 0,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 18.h, horizontal: 17.w),
-            child: child,
-          ),
-        ),
-        18.verticalSpace,
-      ],
-    );
-  }
-
   Widget _buildContent(Details? details, List<String> days) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 17.h, horizontal: 9.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 18.h),
-            child: Center(
-              child: Text(
-                widget.staffAppointments.serviceOrderId,
-                style: Theme.of(context).textTheme.displayMedium!.copyWith(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.blueTitle,
+          SizedBox(width: double.infinity),
+          OrderCard(
+            staffAppointments: widget.staffAppointments,
+            details: details,
+          ),
+          18.verticalSpace,
+          // 18.verticalSpace,
+          CustomerDetailsCard(
+            details: details!,
+            parentContext: context,
+          ),
+
+          12.verticalSpace,
+          OrderDetailsCards(
+            details: details,
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class OrderCard extends StatelessWidget {
+  const OrderCard({Key? key, required this.staffAppointments, this.details})
+      : super(key: key);
+  final StaffAppointments staffAppointments;
+  final Details? details;
+
+  // دالة لاختيار الأيقونة المناسبة بناءً على النص
+  IconData _getShiftIcon(String shiftText) {
+    final lowerText = shiftText.toLowerCase();
+
+    if (lowerText.contains('morning')) {
+      return Icons.wb_sunny_outlined; // أيقونة شمس الصباح
+    } else if (lowerText.contains('evening')) {
+      return Icons
+          .dark_mode_outlined; // أيقونة هلال للمساء (يمكنك استخدام nights_stay_outlined أيضاً)
+    } else if (lowerText.contains('over time') ||
+        lowerText.contains('overtime')) {
+      return Icons.more_time; // أيقونة وقت إضافي
+    } else if (lowerText.contains('full day')) {
+      return Icons
+          .light_mode_outlined; // أيقونة شمس ساطعة لليوم الكامل (أو يمكن استخدام access_time)
+    }
+
+    return Icons.schedule; // أيقونة افتراضية في حال أتى نص غير معروف
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    // جلب الـ TextTheme العام للتطبيق
+    final textTheme = Theme.of(context).textTheme;
+
+    return Container(
+      width: 353.w,
+      padding: const EdgeInsets.symmetric(horizontal: 13, vertical: 18),
+      decoration: BoxDecoration(
+        color: AppColors.white, // أو Colors.white إذا لم يتوفر في AppColors
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // 1. Header Row (العنوان + حالة الطلب)
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // 1. Order ID
+              Flexible(
+                child: FittedBox(
+                  child: Text(
+                    staffAppointments.serviceOrderId,
+                    style: textTheme.titleMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      fontSize: 17,
+                      color: AppColors.primary,
+                    ),
+                  ),
                 ),
+              ),
+
+              const SizedBox(width: 8), // مسافة صغيرة بين المعرف والحالة
+
+              // 2. Order status tag
+              Flexible(
+                // أضفنا Flexible هنا لكي لا يتجاوز الصندوق حدود الشاشة إذا كان النص طويلاً جداً
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: AppColors.getDriverStatusBgColor(
+                        details?.driver.currentDriverStatus ?? 'status'),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Row(
+                    mainAxisSize:
+                        MainAxisSize.min, // يأخذ المساحة التي يحتاجها فقط
+                    children: [
+                      Container(
+                        width: 8,
+                        height: 8,
+                        decoration: BoxDecoration(
+                          color: AppColors.getDriverStatusTextColor(
+                              details?.driver.currentDriverStatus ?? 'status'),
+                          shape: BoxShape.circle,
+                        ),
+                      ),
+                      const SizedBox(width: 3),
+                      Flexible(
+                        // أضفنا Flexible هنا لإجبار النص على الالتزام بالمساحة وتصغيره
+                        child: FittedBox(
+                          fit: BoxFit
+                              .scaleDown, // هذه الخاصية تقوم بتصغير النص بدلاً من قطعه
+                          alignment: Alignment.center,
+                          child: Text(
+                            details?.driver.currentDriverStatus ?? 'status',
+                            style: textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: AppColors.getDriverStatusTextColor(
+                                  details?.driver.currentDriverStatus ??
+                                      'status'),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          const SizedBox(height: 10),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5),
+            decoration: BoxDecoration(
+              color: AppColors.getServiceTypeColor(
+                  staffAppointments.serviceType ?? 'serviceType'), // #E4DAFF
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: Text(
+              staffAppointments.serviceType ?? 'serviceType',
+              style: textTheme.bodySmall?.copyWith(
+                fontWeight: FontWeight.w500,
+                fontSize: 14,
+                color: AppColors.getServiceTypeTextColor(
+                    staffAppointments.serviceType ?? 'serviceType'), // #6F46DB
               ),
             ),
           ),
-          18.verticalSpace,
+          const SizedBox(height: 10),
+
+          // 2. Middle Row (العلامة البنفسجية + الوقت + التاريخ)
+          IntrinsicHeight(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Shift/Sun info (مع حدود جانبية)
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5),
+                    decoration: const BoxDecoration(
+                      border: Border(
+                          // left: BorderSide(
+                          //     color: AppColors.borderGrey, width: 1), // #A1A1A1
+                          // right: BorderSide(color: AppColors.borderGrey, width: 1),
+                          ),
+                    ),
+                    child: FittedBox(
+                      child: Row(
+                        children: [
+                          Icon(
+                            _getShiftIcon(
+                                staffAppointments.shiftType ?? 'serviceShift'),
+                            size: 16,
+                            color: Colors.black,
+                          ),
+                          const SizedBox(width: 5),
+                          Text(
+                            staffAppointments.shiftType ?? 'serviceShift',
+                            style: textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                VerticalDivider(
+                  color: AppColors.borderGrey, // #A1A1A1
+                  thickness: 1,
+                  // width: 20, // المسافة بين العمودين
+                ),
+                // const SizedBox(width: 13),
+
+                // Date info
+                Expanded(
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.calendar_today_outlined,
+                        size: 14,
+                        color: AppColors.grey600, // #767676
+                      ),
+                      const SizedBox(width: 3),
+                      Expanded(
+                        child: FittedBox(
+                          child: Text(
+                            staffAppointments.date.toFormattedEventDate(),
+                            style: textTheme.bodySmall?.copyWith(
+                              fontWeight: FontWeight.w400,
+                              fontSize: 14,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          const SizedBox(height: 10),
+
+          // Divider Line
+          const Divider(
+            color: AppColors.dividerGrey, // #D8D8D8
+            thickness: 1,
+            height: 1,
+          ),
+
+          const SizedBox(height: 10),
           if (details?.logStatus != "Cancelled")
             InkWell(
               onTap: () => context.pushRoute(
                 OrderStatusRoute(
                   statusOrderType: details?.status ?? "",
-                  appointmentID: widget.staffAppointments.logId,
+                  appointmentID: staffAppointments.serviceOrderId ?? '',
                 ),
               ),
-              child: _wrapWithCard(
-                Consumer(
-                  builder: (context, ref, child) {
-                    var currentDriverStatus = ref.watch(
-                      myOrdersControllerProvider.select(
-                        (value) => value.currentDriverStatus,
-                      ),
-                    );
-                    var nextDriverStatus = ref.watch(
-                      myOrdersControllerProvider.select(
-                        (value) => value.nextDriverStatus,
-                      ),
-                    );
-                    var statusOrderStates = ref.watch(
-                      myOrdersControllerProvider.select(
-                        (value) => value.statusOrderStates,
-                      ),
-                    );
-                    switch (statusOrderStates) {
-                      case RequestStates.init:
-                      case RequestStates.loaded:
-                        return Column(
-                          children: [
-                            InfoRow("Status", value: currentDriverStatus),
-                            nextDriverStatus == null
-                                ? 10.verticalSpace
-                                : 0.verticalSpace,
-                            currentDriverStatus != "Completed"
-                                ? nextDriverStatus != null
-                                      ? InfoRow(
-                                          "Next status",
-                                          value: nextDriverStatus,
-                                          widget:
-                                              (details?.logStatus == "Canceled")
-                                              ? Chip(
-                                                  label: Text(
-                                                    "Canceled",
-                                                    style: TextStyle(
-                                                      color: Colors.red,
-                                                      fontSize: 12.sp,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ),
-                                                  ),
-                                                  backgroundColor:
-                                                      Colors.red.shade50,
-                                                  padding: EdgeInsets.symmetric(
-                                                    horizontal: 6.w,
-                                                  ),
-                                                )
-                                              : CustomButton(
-                                                  title: nextDriverStatus,
-
-                                                  onPressed:
-                                                      statusOrderStates !=
-                                                          RequestStates.loading
-                                                      //     &&
-                                                      // statusOrders.last.status !=
-                                                      //     currentDriverStatus
-                                                      ? () async {
-                                                          // ref.invalidate(myOrdersControllerProvider);
-
-                                                          if (nextDriverStatus ==
-                                                              "Payment Received") {
-                                                            // 1) Ask how to handle payment (no status change yet)
-                                                            final res =
-                                                                await showPaymentMethodDialog(
-                                                                  context,
-                                                                );
-                                                            if (res == null) {
-                                                              return; // user canceled
-                                                            }
-
-                                                            // 2) Call the correct API(s) based on the choice
-                                                            await withBlockingLoader(context, () async {
-                                                              final notifier =
-                                                                  ref.read(
-                                                                    myOrdersControllerProvider
-                                                                        .notifier,
-                                                                  );
-
-                                                              // if (res.choice ==
-                                                              //     PaymentChoice
-                                                              //         .cash) {
-                                                              await ref
-                                                                  .read(
-                                                                    myOrdersControllerProvider
-                                                                        .notifier,
-                                                                  )
-                                                                  .updateStatusOrder(
-                                                                    appointmentID:
-                                                                        widget.staffAppointments
-                                                                            .logId,
-                                                                    paymentMethod: res
-                                                                        .choice
-                                                                        .name,
-                                                                    amount: res
-                                                                        .amount
-                                                                        .toString(),
-                                                                  );
-                                                              // TODO: call your real endpoint:
-                                                              // await notifier.completeOrderWithCash(
-                                                              //   appointmentID: widget.staffAppointments.logId,
-                                                              //   amount: res.amount!,
-                                                              // );
-                                                              // If your backend needs status progression steps, do them here
-                                                              // (but only AFTER the choice was made).
-                                                              // } else {
-                                                              //   await ref
-                                                              //       .read(
-                                                              //         myOrdersControllerProvider
-                                                              //             .notifier,
-                                                              //       )
-                                                              //       .updateStatusOrder(
-                                                              //         appointmentID:
-                                                              //             widget
-                                                              //                 .appointmentID,
-                                                              //       );
-                                                              //   // TODO: call your real endpoint:
-                                                              //   // await notifier.completeOrderSkipCash(
-                                                              //   //   appointmentID: widget.staffAppointments.logId,
-                                                              //   // );
-                                                              // }
-                                                            });
-
-                                                            // optional toast
-                                                            if (!mounted)
-                                                              return;
-                                                            ScaffoldMessenger.of(
-                                                              context,
-                                                            ).showSnackBar(
-                                                              SnackBar(
-                                                                content: Text(
-                                                                  res.choice ==
-                                                                          PaymentChoice
-                                                                              .Cash
-                                                                      ? "Order completed (cash)."
-                                                                      : "Order completed.",
-                                                                ),
-                                                              ),
-                                                            );
-                                                          } else {
-                                                            // normal path for other next statuses
-                                                            await ref
-                                                                .read(
-                                                                  myOrdersControllerProvider
-                                                                      .notifier,
-                                                                )
-                                                                .updateStatusOrder(
-                                                                  appointmentID:
-                                                                      widget.staffAppointments
-                                                                          .logId,
-                                                                );
-                                                          }
-                                                        }
-                                                      : null,
-                                                ),
-                                        )
-                                      : Text(
-                                          "Order Completed ✓",
-                                          overflow: TextOverflow.ellipsis,
-                                          style: Theme.of(context)
-                                              .textTheme
-                                              .displayMedium!
-                                              .copyWith(
-                                                color: AppColors.greenText,
-                                              ),
-                                        )
-                                : Text(
-                                    "Order Completed ✓",
-                                    overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .displayMedium!
-                                        .copyWith(color: AppColors.greenText),
-                                  ),
-                          ],
-                        );
-
-                      // Padding(
-                      //   padding: EdgeInsets.symmetric(vertical: 8.h),
-                      //   child: Row(
-                      //     crossAxisAlignment: CrossAxisAlignment.center,
-                      //     children: [
-                      //       Text(
-                      //         "Status",
-                      //         overflow: TextOverflow.ellipsis,
-                      //         style: Theme.of(context).textTheme.displayMedium!
-                      //             .copyWith(
-                      //               color: AppColors.blueText,
-                      //               fontWeight: FontWeight.w600,
-                      //             ),
-                      //       ),
-                      //       SizedBox(width: 10.w),
-                      //       Expanded(
-                      //         child: Container(
-                      //           padding: EdgeInsets.symmetric(
-                      //             horizontal: 8.w,
-
-                      //             vertical: 6.h,
-                      //           ),
-                      //           alignment: Alignment.centerLeft,
-                      //           decoration: BoxDecoration(
-                      //             borderRadius: BorderRadius.circular(10.r),
-                      //             border: Border.all(color: AppColors.grayBorder),
-                      //           ),
-                      //           child: Text(
-                      //             currentDriverStatus,
-                      //             overflow: TextOverflow.ellipsis,
-                      //             textAlign: TextAlign.start,
-                      //             style: Theme.of(
-                      //               context,
-                      //             ).textTheme.displayMedium!.copyWith(),
-                      //           ),
-                      //         ),
-                      //       ),
-                      //       SizedBox(width: 10.w),
-                      //       Consumer(
-                      //         builder: (context, ref, child) {
-                      //           var statusOrderStates = ref.watch(
-                      //             myOrdersControllerProvider.select(
-                      //               (value) => value.statusOrderStates,
-                      //             ),
-                      //           );
-
-                      //           var statusOrders = ref.watch(
-                      //             myOrdersControllerProvider.select(
-                      //               (value) => value.statusOrders,
-                      //             ),
-                      //           );
-                      //           var currentDriverStatus = ref.watch(
-                      //             myOrdersControllerProvider.select(
-                      //               (value) => value.currentDriverStatus,
-                      //             ),
-                      //           );
-                      //           return InkWell(
-                      //             onTap:
-                      //                 statusOrderStates !=
-                      //                         RequestStates.loading &&
-                      //                     statusOrders.last.status !=
-                      //                         currentDriverStatus
-                      //                 ? () => ref
-                      //                       .watch(
-                      //                         myOrdersControllerProvider.notifier,
-                      //                       )
-                      //                       .updateStatusOrder(
-                      //                         serviceOrderID:
-                      //                             widget.staffAppointments.serviceOrderId,
-                      //                       )
-                      //                 : null,
-                      //             child: Text(
-                      //               "Change",
-                      //               overflow: TextOverflow.ellipsis,
-                      //               style: Theme.of(context)
-                      //                   .textTheme
-                      //                   .displayMedium!
-                      //                   .copyWith(
-                      //                     decoration: TextDecoration.underline,
-                      //                     color: AppColors.blueText,
-                      //                   ),
-                      //             ),
-                      //           );
-                      //         },
-                      //       ),
-                      //       SizedBox(width: 5.w),
-                      //       InkWell(
-                      //         child: Container(
-                      //           height: 27.w,
-                      //           width: 27.w,
-
-                      //           alignment: Alignment.center,
-                      //           decoration: BoxDecoration(
-                      //             shape: BoxShape.circle,
-                      //             color: AppColors.primary,
-                      //           ),
-
-                      //           child: Assets.images.rightArrow.svg(
-                      //             height: 10.sp,
-                      //             width: 10.sp,
-                      //             fit: BoxFit.fill,
-                      //           ),
-                      //         ),
-                      //         onTap: () => context.pushRoute(
-                      //           OrderStatusRoute(
-                      //             statusOrderType: details!.status,
-                      //             serviceOrderID: widget.staffAppointments.serviceOrderId,
-                      //           ),
-                      //         ),
-                      //       ),
-                      //     ],
-                      //   ),
-                      // );
-
-                      case RequestStates.loading:
-                        return Center(child: FadeCircleLoadingIndicator());
-                      case RequestStates.error:
-                        return SimpleErrorWidget(
-                          onTap: () => ref
-                              .watch(myOrdersControllerProvider.notifier)
-                              .updateStatusOrder(
-                                appointmentID: widget.staffAppointments.logId,
-                              ),
-                        );
-                    }
-                  },
-                ),
-              ),
-            ),
-          18.verticalSpace,
-          _wrapWithCard(
-            Column(
-              children: [
-                InfoRow("Customer", value: details?.customer.customerName),
-                InkWell(
-                  onTap: () {
-                    showContactActionsSheet(
-                      context,
-                      rawPhone: details.customer.phoneNumber,
-                      defaultCountryCode: "+974", // set your market’s code
-                    );
-                  },
-                  child: InfoRow(
-                    "Phone",
-                    value: details?.customer.phoneNumber,
-                    widget: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            details!.customer.phoneNumber,
-                            softWrap: true,
-
-                            // textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.displayMedium
-                                ?.copyWith(color: AppColors.blueText),
-                          ),
-                        ),
-                        10.horizontalSpace,
-                        Icon(Icons.phone, color: AppColors.blueText),
-                      ],
+              child: Consumer(
+                builder: (context, ref, child) {
+                  var currentDriverStatus = ref.watch(
+                    myOrdersControllerProvider.select(
+                      (value) => value.currentDriverStatus,
                     ),
-                  ),
-                ),
-                InfoRow(
-                  "Employees name",
-                  value: (details.staffAppointment as List?)?.join(',\n') ?? '',important: true
-                ),
-                InfoRow("Area", value: details?.customer.location,important: true,),
-                InfoRow("Zone", value: details?.customer.zone),
-                InfoRow(
-                  "Location",
-                  widget: details?.customer?.locationUrl != null
-                      ? MapPreviewCard(
-                          lcoationUrl: details!.customer!.locationUrl!,
-                          locationName: details.customer!.location!,
-                        )
-                      : null,
-                ),
-              ],
-            ),
-          ),
+                  );
+                  var nextDriverStatus = ref.watch(
+                    myOrdersControllerProvider.select(
+                      (value) => value.nextDriverStatus,
+                    ),
+                  );
+                  var statusOrderStates = ref.watch(
+                    myOrdersControllerProvider.select(
+                      (value) => value.statusOrderStates,
+                    ),
+                  );
+                  switch (statusOrderStates) {
+                    case RequestStates.init:
+                    case RequestStates.loaded:
+                      return Column(
+                        children: [
+                          // InfoRow("status".tr(), value: currentDriverStatus),
+                          nextDriverStatus == null
+                              ? 10.verticalSpace
+                              : 0.verticalSpace,
+                          currentDriverStatus != "Completed"
+                              ? nextDriverStatus != null
+                                  ? InfoRow(
+                                      "nextStatus".tr(),
+                                      value: nextDriverStatus,
+                                      widget: (details?.logStatus == "Canceled")
+                                          ? Chip(
+                                              label: Text(
+                                                "canceled".tr(),
+                                                style: TextStyle(
+                                                  color: Colors.red,
+                                                  fontSize: 12.sp,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  Colors.red.shade50,
+                                              padding: EdgeInsets.symmetric(
+                                                horizontal: 6.w,
+                                              ),
+                                            )
+                                          : CustomButton(
+                                              title: nextDriverStatus,
+                                              onPressed: statusOrderStates !=
+                                                      RequestStates.loading
+                                                  //     &&
+                                                  // statusOrders.last.status !=
+                                                  //     currentDriverStatus
+                                                  ? () async {
+                                                      // ref.invalidate(myOrdersControllerProvider);
 
-          _wrapWithCard(
-            Column(
-              children: [
-                InfoRow("Service type", value: details?.serviceType),
-                InfoRow("Shift type", value: details?.shiftType),
-                InfoRow("Date", value: details!.date),
-                // days.isNotEmpty
-                //     ? InfoRow("Work Days", value: days.join(', '))
-                //     : SizedBox.shrink(),
-              ],
-            ),
-          ),
+                                                      if (nextDriverStatus ==
+                                                          "Payment Received") {
+                                                        // 1) Ask how to handle payment (no status change yet)
+                                                        final res =
+                                                            await showPaymentMethodDialog(
+                                                          context,
+                                                        );
+                                                        if (res == null) {
+                                                          return; // user canceled
+                                                        }
 
-          _wrapWithCard(
-            Column(
-              children: [
-                // InfoRow(
-                //   "Employees name",
-                //   value: (details.staffAppointment as List?)?.join(',\n') ?? '',
-                // ),
-                InfoRow(
-                  "Supervisor name",
-                  value: details.supervisor?.supervisorName,
-                ),
-                InfoRow("Driver name", value: details.driver?.driverName),
-              ],
-            ),
-          ),
+                                                        // 2) Call the correct API(s) based on the choice
+                                                        await withBlockingLoader(
+                                                            context, () async {
+                                                          final notifier =
+                                                              ref.read(
+                                                            myOrdersControllerProvider
+                                                                .notifier,
+                                                          );
 
-          _wrapWithCard(
-            Column(
-              children: [
-                InfoRow("Discount Type", value: details.discountType),
-                InfoRow(
-                  "Discount Percentage",
-                  value: details.discountPercentage.toString(),
-                ),
-                InfoRow("Payment Method", value: details.methodOfPayment),
-              ],
-            ),
-          ),
+                                                          // if (res.choice ==
+                                                          //     PaymentChoice
+                                                          //         .cash) {
+                                                          await ref
+                                                              .read(
+                                                                myOrdersControllerProvider
+                                                                    .notifier,
+                                                              )
+                                                              .updateStatusOrder(
+                                                                appointmentID:
+                                                                    details?.staffAppointmentLog ??
+                                                                        '',
+                                                                paymentMethod:
+                                                                    res.choice
+                                                                        .name,
+                                                                amount: res
+                                                                    .amount
+                                                                    .toString(),
+                                                              );
+                                                        });
 
-          _wrapWithCard(
-            Column(
-              children: [
-                InfoRow(
-                  "Cleaning supply",
-                  value: details.withCleaningSupplies == 0 ? "No" : "Yes",
-                ),
-                InfoRow("Note", value: details.note),
-              ],
-            ),
-          ),
-          24.verticalSpace,
-          Center(
-            child: Text(
-              "QR ${details.totalNetAmount}",
-              style: TextStyle(
-                fontSize: 20.sp,
-                color: AppColors.green,
-                fontWeight: FontWeight.bold,
+                                                        // optional toast
+                                                        // if (!mounted) return;
+                                                        ScaffoldMessenger.of(
+                                                          context,
+                                                        ).showSnackBar(
+                                                          SnackBar(
+                                                            content: Text(
+                                                              res.choice ==
+                                                                      PaymentChoice
+                                                                          .Cash
+                                                                  ? "Order completed (cash)."
+                                                                  : "Order completed.",
+                                                            ),
+                                                          ),
+                                                        );
+                                                      } else {
+                                                        // normal path for other next statuses
+                                                        await ref
+                                                            .read(
+                                                              myOrdersControllerProvider
+                                                                  .notifier,
+                                                            )
+                                                            .updateStatusOrder(
+                                                              appointmentID:
+                                                                  details?.staffAppointmentLog ??
+                                                                      '',
+                                                            );
+                                                      }
+                                                    }
+                                                  : null,
+                                            ),
+                                    )
+                                  : Text(
+                                      "Order Completed ✓",
+                                      overflow: TextOverflow.ellipsis,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .displayMedium!
+                                          .copyWith(
+                                            color: AppColors.greenText,
+                                          ),
+                                    )
+                              : Text(
+                                  "Order Completed ✓",
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .displayMedium!
+                                      .copyWith(color: AppColors.greenText),
+                                ),
+                        ],
+                      );
+
+                    case RequestStates.loading:
+                      return Center(child: FadeCircleLoadingIndicator());
+                    case RequestStates.error:
+                      return SimpleErrorWidget(
+                        onTap: () => ref
+                            .watch(myOrdersControllerProvider.notifier)
+                            .updateStatusOrder(
+                              appointmentID: details?.staffAppointmentLog ?? '',
+                            ),
+                      );
+                  }
+                },
               ),
             ),
-          ),
         ],
       ),
     );

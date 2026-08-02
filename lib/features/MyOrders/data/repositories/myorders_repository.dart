@@ -51,12 +51,19 @@ class MyOrdersRepository {
   Future<OrdersDetails> getServicesOrderDetails({
     // required String serviceOrderId,
     required String staffAppointmentLog,
+    required String date,
+    required String shift,
   }) async {
     final response = await _networkService.get(
       ApiConstance.getServiceOrderDetails(
         // serviceOrderId: serviceOrderId,
-        staffAppointmentLog: staffAppointmentLog,
+        // staffAppointmentLog: staffAppointmentLog,
       ),
+      data: {
+        'service_order_id' : staffAppointmentLog,
+        'date' : date,
+        'shift' : shift,
+      }
     );
 
     if (response.statusCode == 200) {
@@ -88,13 +95,12 @@ class MyOrdersRepository {
     required String? cancelMsg,
   }) async {
     var data = FormData.fromMap({'service_order_id': serviceOrderId});
-    final response = await _networkService
-        .post(ApiConstance.orderCancelltion(), {
-          'service_order_id': serviceOrderId,
-
-          if (cancelMsg != null || cancelMsg!.isNotEmpty)
-            "cancellation_reason": cancelMsg,
-        });
+    final response =
+        await _networkService.post(ApiConstance.orderCancelltion(), {
+      'service_order_id': serviceOrderId,
+      if (cancelMsg != null || cancelMsg!.isNotEmpty)
+        "cancellation_reason": cancelMsg,
+    });
 
     if (response.statusCode == 200) {
       return true;
@@ -108,12 +114,12 @@ class MyOrdersRepository {
     required String? cancelMsg,
   }) async {
     // var data = FormData.fromMap({'staff_appointment_log': appoinmentLog});
-    final response = await _networkService
-        .post(ApiConstance.cancelAppointmentLog, {
-          'staff_appointment_log': appoinmentLog,
-          if (cancelMsg != null || cancelMsg!.isNotEmpty)
-            "cancellation_reason": cancelMsg,
-        });
+    final response =
+        await _networkService.post(ApiConstance.cancelAppointmentLog, {
+      'staff_appointment_log': appoinmentLog,
+      if (cancelMsg != null || cancelMsg!.isNotEmpty)
+        "cancellation_reason": cancelMsg,
+    });
 
     if (response.statusCode == 200) {
       return true;
@@ -134,8 +140,7 @@ class MyOrdersRepository {
       ApiConstance.updateStatusOrder,
       {
         'staff_appointment_log': appointmentID,
-       if(paymentMethod!=null) 'payment_method': paymentMethod,
-
+        if (paymentMethod != null) 'payment_method': paymentMethod,
         if (amount != null) "amount": amount,
       },
     );
@@ -158,9 +163,9 @@ class MyOrdersRepository {
       ApiConstance.appontmentsLogs(),
       queryParameters: {
         'page': page,
-        if(dateType!=null)'date_type': dateType,
-        if(date!=null)'date': date,
-        if(shiftType!=null)'shift_type': shiftType.apiValue,
+        if (dateType != null) 'date_type': dateType,
+        if (date != null) 'date': date,
+        if (shiftType != null) 'shift': shiftType.apiValue,
         "action": "driver",
       },
 
@@ -169,6 +174,8 @@ class MyOrdersRepository {
 
     if (response.statusCode == 200) {
       debugPrint('----------------');
+      debugPrint(shiftType?.apiValue);
+      debugPrint(shiftType?.label);
       debugPrint(dateType);
       debugPrint('----------------');
       return AppointmentModel.fromJson(response.data);

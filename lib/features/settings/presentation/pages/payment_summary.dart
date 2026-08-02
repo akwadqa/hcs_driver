@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:auto_route/auto_route.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -11,6 +12,7 @@ import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/routing/app_router.gr.dart';
 import 'package:hcs_driver/src/shared_widgets/app_dialogs.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
+import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart';
 
@@ -80,7 +82,11 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
     var ordersState = ref.watch(myOrdersControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(title: const Text("Payment Summary")),
+      appBar: CustomAppbar(
+        hasBackArrow: true,
+        title: context.tr('payment_summary'),
+        withTabs: false,
+      ),
       body: Column(
         children: [
           // 🔍 Search Bar
@@ -90,7 +96,7 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
               controller: _searchController,
               onChanged: _onSearchChanged,
               decoration: InputDecoration(
-                hintText: "Search by name or phone...",
+                hintText: context.tr('search_by_name_or_phone'),
                 prefixIcon: const Icon(Icons.search),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
@@ -155,7 +161,7 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
                       return GestureDetector(
                         onTap: () {
                           // Navigator.of(context).push(
-                          //   //TODO: 
+                          //   //TODO:
                           //   MaterialPageRoute(
                           //     builder: (m) => AppoinmentScreen(
                           //       serviceOrderID: order.serviceOrderId,
@@ -220,7 +226,9 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
                               8.verticalSpace,
                               Text(
                                 order.serviceType,
-                                style: Theme.of(context).textTheme.bodyMedium!
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium!
                                     .copyWith(
                                       fontSize: 12.sp,
                                       color: AppColors.greyText,

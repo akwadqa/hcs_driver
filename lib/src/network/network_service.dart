@@ -57,7 +57,7 @@ Dio dio(Ref ref) {
     DioAppInterceptors(
       languageCode: languageCode,
       token: userData?.$1,
-      ref:ref,
+      ref: ref,
       onUnauthorized: () {},
     ),
   });
@@ -87,40 +87,44 @@ class DioNetworkService implements NetworkService<Response> {
     dynamic data,
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
-  }) => _dio.get(
-    endpoint,
-    data: data,
-    queryParameters: queryParameters,
-    cancelToken: cancelToken,
-  );
+  }) =>
+      _dio.get(
+        endpoint,
+        data: data,
+        queryParameters: queryParameters,
+        cancelToken: cancelToken,
+      );
 
   @override
   Future<Response> post(
     String endpoint, [
     dynamic data,
     Map<String, dynamic>? queryParameters,
-  ]) => _dio.post(endpoint, data: data, queryParameters: queryParameters);
+  ]) =>
+      _dio.post(endpoint, data: data, queryParameters: queryParameters);
 
   @override
   Future<Response> put(
     String endpoint,
     dynamic data, [
     Map<String, dynamic>? queryParameters,
-  ]) => _dio.put(endpoint, data: data, queryParameters: queryParameters);
+  ]) =>
+      _dio.put(endpoint, data: data, queryParameters: queryParameters);
 
   @override
   Future<Response> delete(
     String endpoint, {
     dynamic data,
     Map<String, dynamic>? queryParameters,
-  }) => _dio.delete(endpoint, data: data, queryParameters: queryParameters);
+  }) =>
+      _dio.delete(endpoint, data: data, queryParameters: queryParameters);
 }
 
 class DioAppInterceptors extends Interceptor {
   final String languageCode;
   final String? token;
   final void Function() onUnauthorized;
-final Ref ref;
+  final Ref ref;
   DioAppInterceptors({
     required this.languageCode,
     required this.token,
@@ -133,11 +137,14 @@ final Ref ref;
     if (token != null) {
       options.headers['Authorization'] = 'token $token';
     }
-      // options.headers['Authorization'] = 'token 049cd06055b57ac:fcab89611347807';
+    // options.headers['Authorization'] = 'token 049cd06055b57ac:fcab89611347807';
 
     options.queryParameters['sl'] = languageCode;
+    options.headers['Accept-Language'] = languageCode;
+
     super.onRequest(options, handler);
   }
+
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     debugPrint("🟢 [DIO RESPONSE]");
@@ -146,25 +153,29 @@ final Ref ref;
 
     handler.next(response);
   }
+
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     if (err.response != null) {
       debugPrint(err.response!.data.toString());
     }
-        final request = err.requestOptions;
-
+    final request = err.requestOptions;
 
     debugPrint("🔴 [DIO ERROR]");
     debugPrint("⛔️ ${err.type} for ${request.method} ${request.uri}");
     debugPrint("📥 Response data: ${_prettyJson(err.response?.data)}");
     final String? message = err.response?.data['message'];
-    
+
     final statusCode = err.response?.statusCode;
     final responseData = err.response?.data;
-       // ✅ تحقق من إذا كان Unauthorized
+    // ✅ تحقق من إذا كان Unauthorized
     final isUnauthorized = statusCode == 401 ||
         (responseData is Map &&
-            responseData['message']?.toString().toLowerCase().contains("unauthorized") == true);
+            responseData['message']
+                    ?.toString()
+                    .toLowerCase()
+                    .contains("unauthorized") ==
+                true);
 
     if (isUnauthorized) {
       debugPrint("🚪 Session expired → redirect to Login");
@@ -214,7 +225,8 @@ final Ref ref;
     }
     return handler.next(err);
   }
-    String _prettyJson(dynamic data) {
+
+  String _prettyJson(dynamic data) {
     try {
       if (data is Map || data is List) {
         return const JsonEncoder.withIndent('  ').convert(data);
@@ -228,7 +240,7 @@ final Ref ref;
 
 class ApiException extends DioException {
   ApiException(RequestOptions requestOptions, [this.customMessage])
-    : super(requestOptions: requestOptions, error: customMessage);
+      : super(requestOptions: requestOptions, error: customMessage);
 
   final String? customMessage;
 

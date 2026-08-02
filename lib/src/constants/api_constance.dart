@@ -90,9 +90,14 @@ class ApiConstance {
       // '$baseUrl/$baseDomain.api.service_order.service_orders?page=$page&limit=10&status=$status';
       '$baseUrl/$baseDomain.api.service_order.service_orders';
 
-  static String getServiceOrderDetails({required String staffAppointmentLog}) =>
+  static String getServiceOrderDetails() =>
       // 'https://highclass.akwad.qa/api/method/highclass.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=SAL-59593-2025&';
-      '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=$staffAppointmentLog';
+      '$baseUrl/$baseDomain.api.service_order.service_order_details';
+
+      //TODO : This the old log details :
+  // static String getServiceOrderDetails({required String staffAppointmentLog}) =>
+  //     // 'https://highclass.akwad.qa/api/method/highclass.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=SAL-59593-2025&';
+  //     '$baseUrl/$baseDomain.api.staff_appointment_log.staff_appointment_log_details?staff_appointment_log=$staffAppointmentLog';
 
   static String orderCancelltion() =>
       '$baseUrl/$baseDomain.api.service_order.cancel_service_order';

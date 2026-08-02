@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
@@ -75,28 +76,25 @@ Future<void> showOrderFilterMenu(
                           mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              "Shift Type",
+                            Text(
+                              "shiftType".tr(),
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
                             ),
                             const SizedBox(height: 8),
-
                             ...ShiftTypeEnum.values.map((shift) {
                               return _radioItem<ShiftTypeEnum>(
                                 title: shift.label,
                                 value: shift,
-                                groupValue: selectedShift ,
+                                groupValue: selectedShift,
                                 onChanged: (value) {
                                   controller.setShiftType(value);
                                 },
                               );
                             }),
-
                             const SizedBox(height: 16),
-
                             Row(
                               children: [
                                 Expanded(
@@ -110,13 +108,13 @@ Future<void> showOrderFilterMenu(
 
                                       // Navigator.pop(context);
                                     },
-                                    child: const Text("Clear"),
+                                    child: Text("clear".tr()),
                                   ),
                                 ),
                                 Expanded(
                                   flex: 2,
                                   child: CustomButton(
-                                    title: "Apply",
+                                    title: "apply".tr(),
                                     onPressed: () {
                                       controller.applyShiftFilter(
                                         tabIndex: tabIndex,

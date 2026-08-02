@@ -50,7 +50,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
               children: [
                 _buildMenuItem(
                   context,
-                  "Payment Summary",
+                  "payment_summary".tr(),
                   onTap: () {
                     Navigator.of(context).push(
                       MaterialPageRoute(builder: (_) => PaymentSummaryScreen()),
@@ -88,15 +88,14 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   child: Text(
                     tr(context: context, AppStrings.goodBye),
                     style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30.sp,
-                    ),
+                          fontWeight: FontWeight.bold,
+                          fontSize: 30.sp,
+                        ),
                   ),
                 ),
               ],
             ),
           ),
-
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 26.w, vertical: 25.h),
             child: CustomButton(

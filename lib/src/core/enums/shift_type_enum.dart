@@ -1,3 +1,5 @@
+import 'package:easy_localization/easy_localization.dart';
+
 enum ShiftTypeEnum {
   fullDay,
   morningShift,
@@ -12,12 +14,16 @@ extension ShiftTypeEnumX on ShiftTypeEnum {
     switch (this) {
       case ShiftTypeEnum.fullDay:
         return "Full Day";
+        // return "fullDay".tr();
       case ShiftTypeEnum.morningShift:
         return "Morning Shift";
+        // return "morningShift".tr();
       case ShiftTypeEnum.eveningShift:
         return "Evening Shift";
+        // return "eveningShift".tr();
       case ShiftTypeEnum.overTime:
         return "Over Time";
+        // return "overTime".tr();
     }
   }
 

@@ -28,7 +28,6 @@ class AppointmentModel {
 
   Map<String, dynamic> toJson() => _$AppointmentModelToJson(this);
 }
-
 @JsonSerializable()
 class StaffAppointmentsData {
   @JsonKey(name: "logs")
@@ -44,75 +43,87 @@ class StaffAppointmentsData {
 
 @JsonSerializable()
 class StaffAppointments {
-  @JsonKey(name: "log_id")
-  final String logId;
   @JsonKey(name: "service_order_id")
   final String serviceOrderId;
+  
   @JsonKey(name: "status")
   final String status;
-  @JsonKey(name: "driver_status")
-  final String? driverStatus;
-  @JsonKey(name: "method_of_payment")
-  final String paymentMethod;
-  @JsonKey(name: "total_net_amount")
-  final double totalNetAmount;
-  @JsonKey(name: "outstanding_amount")
-  final double outstandingAmount;
-  // @JsonKey(name: "employee")
-  // final String employee;
+  
   @JsonKey(name: "posting_date")
   final String postingDate;
-  @JsonKey(name: "date")
-  final String date;
-  @JsonKey(name: "service_type")
-  final String serviceType;
-  @JsonKey(name: "service_shift")
-  final String serviceShift;
+  
   @JsonKey(name: "shift_type")
   final String shiftType;
-
-  // @JsonKey(name: "log_status")
-  // final String logStatus;
-  // @JsonKey(name: "creation")
-  // final String? creation;
-  // @JsonKey(name: "employee_name")
-  // final String employeeName;
+  
+  @JsonKey(name: "date")
+  final String date;
+  
+  @JsonKey(name: "driver_status")
+  final String? driverStatus;
+  
+  @JsonKey(name: "service_type")
+  final String? serviceType;
+  
+  @JsonKey(name: "method_of_payment")
+  final String paymentMethod;
+  
+  @JsonKey(name: "total_net_amount")
+  final double totalNetAmount;
+  
+  @JsonKey(name: "outstanding_amount")
+  final double outstandingAmount;
+  
+  @JsonKey(name: "received_amount")
+  final double receivedAmount;
+  
   @JsonKey(name: "supervisor_name")
   final String? supervisorName;
+  
   @JsonKey(name: "customer_name")
   final String? customerName;
+  
   @JsonKey(name: "customer_phone_number")
   final String? customerPhone;
+  
   @JsonKey(name: "customer_location")
   final String? customerLocation;
-  @JsonKey(name: 'number_of_cleaners')
-  final int? numberOfCleaners;
-  @JsonKey(name: 'total_number_of_visits')
-  final int ? totalVisitsNumber;
-
-  @JsonKey(name: 'visit_number')
+  
+  @JsonKey(name: "customer_location_url")
+  final String? customerLocationUrl;
+  
+  @JsonKey(name: "total_number_of_visits")
+  final int? totalVisitsNumber;
+  
+  @JsonKey(name: "visit_number")
   final String? visitNumber;
+  
+  @JsonKey(name: "staff_appointment")
+  final List<String>? staffAppointmentNames;
+  
+  @JsonKey(name: "number_of_cleaners")
+  final int? numberOfCleaners;
+
   StaffAppointments({
-    required this.logId,
-    // required this.employee,
-    required this.date,
-    required this.serviceType,
-    required this.serviceShift,
-    required this.supervisorName,
     required this.serviceOrderId,
     required this.status,
+    required this.postingDate,
+    required this.shiftType,
+    required this.date,
+    this.driverStatus,
+    this.serviceType,
     required this.paymentMethod,
     required this.totalNetAmount,
     required this.outstandingAmount,
-    required this.postingDate,
-    required this.shiftType,
-    this.driverStatus,
+    required this.receivedAmount,
+    this.supervisorName,
     this.customerName,
     this.customerPhone,
     this.customerLocation,
-    required this.numberOfCleaners,
-    required this.totalVisitsNumber,
-    required this.visitNumber,
+    this.customerLocationUrl,
+    this.totalVisitsNumber,
+    this.visitNumber,
+    this.staffAppointmentNames,
+    this.numberOfCleaners,
   });
 
   factory StaffAppointments.fromJson(Map<String, dynamic> json) =>

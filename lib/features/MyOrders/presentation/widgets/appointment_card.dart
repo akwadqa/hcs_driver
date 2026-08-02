@@ -37,7 +37,7 @@ class AppointmentCard extends ConsumerWidget {
     return Stack(
       children: [
         Dismissible(
-          key: ValueKey(appointmentData.logId), // stable key
+          key: ValueKey(appointmentData.serviceOrderId), // stable key
           background: Container(
             margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 24.w),
             padding: EdgeInsets.symmetric(vertical: 13.h, horizontal: 22.w),
@@ -46,11 +46,11 @@ class AppointmentCard extends ConsumerWidget {
             child: Center(child: Icon(Icons.delete, color: Colors.white)),
           ),
           confirmDismiss: (direction) async {
-            if (appointmentData.serviceType != "Daily" ) {
+            if (appointmentData.shiftType != "Daily" ) {
               final ok = await showAcceptCancelOrder(
                 context: context,
                 orderID: orderId,
-                logId: appointmentData.logId,
+                logId: appointmentData.serviceOrderId,
                 cancelAppointmentLog: true,
                 ref: ref,
               );
@@ -100,12 +100,12 @@ class AppointmentCard extends ConsumerWidget {
                   // ),
                   AppoinmentInfoRow(
                     'Driver Status:',
-                    value: appointmentData.driverStatus,
+                    value: appointmentData.status,
                     image: Assets.images.driverStatus.path,
                   ),
                   AppoinmentInfoRow(
                     'Service type:',
-                    value: appointmentData.serviceType,
+                    value: appointmentData.shiftType,
                     image: Assets.images.serviceType.path,
                   ),
                   AppoinmentInfoRow(

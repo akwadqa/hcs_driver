@@ -15,26 +15,25 @@ class CustomButton extends ElevatedButton {
     Color? buttonColor,
     Color? fontColor,
   }) : super(
-         style:
-             style ??
-             ElevatedButton.styleFrom(
-               backgroundColor: buttonColor ?? AppColors.primary,
-               fixedSize:
-                   fixedSize?.resolve({}) ??
-                   Size(
-                     AppSizes.authButtonWidth.w,
-                     AppSizes.authButtonHeight.h,
-                   ),
-               shadowColor: Colors.transparent,
-             ),
-         child: Text(
-           title,
-           style: TextStyle(
-             fontSize: textSize ?? 16.sp,
-             fontWeight: FontWeight.w700,
-             color: fontColor ?? AppColors.white,
-             fontFamily: FontFamily.instrumentSan,
-           ),
-         ),
-       );
+          style: style ??
+              ElevatedButton.styleFrom(
+                backgroundColor: buttonColor ?? AppColors.primary,
+                fixedSize: fixedSize?.resolve({}) ??
+                    Size(
+                      AppSizes.authButtonWidth.w,
+                      AppSizes.authButtonHeight.h,
+                    ),
+                shadowColor: Colors.transparent,
+              ),
+          child: Text(
+            title,
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: textSize ?? 16.sp,
+              fontWeight: FontWeight.w700,
+              color: fontColor ?? AppColors.white,
+              fontFamily: FontFamily.instrumentSan,
+            ),
+          ),
+        );
 }

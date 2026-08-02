@@ -53,6 +53,14 @@ class $AssetsImagesGen {
   SvgGenImage get creditCard =>
       const SvgGenImage('assets/images/credit_card.svg');
 
+  /// File path: assets/images/customer_call_ic.svg
+  SvgGenImage get customerCallIc =>
+      const SvgGenImage('assets/images/customer_call_ic.svg');
+
+  /// File path: assets/images/customer_ic.svg
+  SvgGenImage get customerIc =>
+      const SvgGenImage('assets/images/customer_ic.svg');
+
   /// File path: assets/images/date.svg
   SvgGenImage get date => const SvgGenImage('assets/images/date.svg');
 
@@ -105,12 +113,51 @@ class $AssetsImagesGen {
   AssetGenImage get noDataMin =>
       const AssetGenImage('assets/images/no_data_min.png');
 
+  /// File path: assets/images/number_of_cleaner_ic.svg
+  SvgGenImage get numberOfCleanerIc =>
+      const SvgGenImage('assets/images/number_of_cleaner_ic.svg');
+
   /// File path: assets/images/number_vector.svg
   SvgGenImage get numberVector =>
       const SvgGenImage('assets/images/number_vector.svg');
 
+  /// File path: assets/images/order_card_loaction_ic.svg
+  SvgGenImage get orderCardLoactionIc =>
+      const SvgGenImage('assets/images/order_card_loaction_ic.svg');
+
+  /// File path: assets/images/order_cleaning_supply_ic.svg
+  SvgGenImage get orderCleaningSupplyIc =>
+      const SvgGenImage('assets/images/order_cleaning_supply_ic.svg');
+
+  /// File path: assets/images/order_discount_percintage_ic.svg
+  SvgGenImage get orderDiscountPercintageIc =>
+      const SvgGenImage('assets/images/order_discount_percintage_ic.svg');
+
+  /// File path: assets/images/order_driver_ic.svg
+  SvgGenImage get orderDriverIc =>
+      const SvgGenImage('assets/images/order_driver_ic.svg');
+
+  /// File path: assets/images/order_employees_ic.svg
+  SvgGenImage get orderEmployeesIc =>
+      const SvgGenImage('assets/images/order_employees_ic.svg');
+
+  /// File path: assets/images/order_location_blue_ic.svg
+  SvgGenImage get orderLocationBlueIc =>
+      const SvgGenImage('assets/images/order_location_blue_ic.svg');
+
+  /// File path: assets/images/order_payment_method_ic.svg
+  SvgGenImage get orderPaymentMethodIc =>
+      const SvgGenImage('assets/images/order_payment_method_ic.svg');
+
+  /// File path: assets/images/order_total_price_ic.svg
+  SvgGenImage get orderTotalPriceIc =>
+      const SvgGenImage('assets/images/order_total_price_ic.svg');
+
   /// File path: assets/images/pending.svg
   SvgGenImage get pending => const SvgGenImage('assets/images/pending.svg');
+
+  /// File path: assets/images/phone_ic.svg
+  SvgGenImage get phoneIc => const SvgGenImage('assets/images/phone_ic.svg');
 
   /// File path: assets/images/red_successful.svg
   SvgGenImage get redSuccessful =>
@@ -143,44 +190,61 @@ class $AssetsImagesGen {
   SvgGenImage get successful =>
       const SvgGenImage('assets/images/successful.svg');
 
+  /// File path: assets/images/supervisor_ic.svg
+  SvgGenImage get supervisorIc =>
+      const SvgGenImage('assets/images/supervisor_ic.svg');
+
   /// File path: assets/images/user_icon.svg
   SvgGenImage get userIcon => const SvgGenImage('assets/images/user_icon.svg');
 
   /// List of all assets
   List<dynamic> get values => [
-    a1,
-    background,
-    byebye,
-    calendar,
-    cash,
-    check,
-    creditCard,
-    date,
-    driverStatus,
-    dummycard,
-    employeeName,
-    emptyCheck,
-    error404Min,
-    errorX,
-    greenSuccessful,
-    homeSelected,
-    homeUnselected,
-    logo,
-    luckIcon,
-    myordersSelected,
-    noDataMin,
-    numberVector,
-    pending,
-    redSuccessful,
-    rightArrow,
-    search,
-    serviceType,
-    settingsSelected,
-    settingsUnselected,
-    splashLogo2,
-    successful,
-    userIcon,
-  ];
+        a1,
+        background,
+        byebye,
+        calendar,
+        cash,
+        check,
+        creditCard,
+        customerCallIc,
+        customerIc,
+        date,
+        driverStatus,
+        dummycard,
+        employeeName,
+        emptyCheck,
+        error404Min,
+        errorX,
+        greenSuccessful,
+        homeSelected,
+        homeUnselected,
+        logo,
+        luckIcon,
+        myordersSelected,
+        noDataMin,
+        numberOfCleanerIc,
+        numberVector,
+        orderCardLoactionIc,
+        orderCleaningSupplyIc,
+        orderDiscountPercintageIc,
+        orderDriverIc,
+        orderEmployeesIc,
+        orderLocationBlueIc,
+        orderPaymentMethodIc,
+        orderTotalPriceIc,
+        pending,
+        phoneIc,
+        redSuccessful,
+        rightArrow,
+        search,
+        serviceType,
+        settingsSelected,
+        settingsUnselected,
+        splashLogo2,
+        successful,
+        supervisorIc,
+        userIcon
+      ];
 }
 
 class $AssetsTranslationsGen {
@@ -271,8 +335,15 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({AssetBundle? bundle, String? package}) {
-    return AssetImage(_assetName, bundle: bundle, package: package);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
   }
 
   String get path => _assetName;
@@ -293,11 +364,17 @@ class AssetGenImageAnimation {
 }
 
 class SvgGenImage {
-  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}})
-    : _isVecFormat = false;
+  const SvgGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  }) : _isVecFormat = false;
 
-  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}})
-    : _isVecFormat = true;
+  const SvgGenImage.vec(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  }) : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -353,8 +430,7 @@ class SvgGenImage {
       placeholderBuilder: placeholderBuilder,
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
-      colorFilter:
-          colorFilter ??
+      colorFilter: colorFilter ??
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,

@@ -72,7 +72,7 @@ class Orders {
   final String customerName;
 
   @JsonKey(name: 'total_number_of_visits')
-  final int? totalVisitsNumber;
+  final String? totalVisitsNumber;
 
   @JsonKey(name: 'visit_number')
   final String? visitNumber;

@@ -13,9 +13,8 @@ String _$dioHash() => r'1c129bdc54680b3a1f868d1f9f03f71f3e685370';
 final dioProvider = Provider<Dio>.internal(
   dio,
   name: r'dioProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$dioHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$dioHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -56,15 +55,21 @@ class NetworkServiceFamily extends Family<NetworkService> {
   const NetworkServiceFamily();
 
   /// See also [networkService].
-  NetworkServiceProvider call([Dio? dio]) {
-    return NetworkServiceProvider(dio);
+  NetworkServiceProvider call([
+    Dio? dio,
+  ]) {
+    return NetworkServiceProvider(
+      dio,
+    );
   }
 
   @override
   NetworkServiceProvider getProviderOverride(
     covariant NetworkServiceProvider provider,
   ) {
-    return call(provider.dio);
+    return call(
+      provider.dio,
+    );
   }
 
   static const Iterable<ProviderOrFamily>? _dependencies = null;
@@ -85,19 +90,24 @@ class NetworkServiceFamily extends Family<NetworkService> {
 /// See also [networkService].
 class NetworkServiceProvider extends Provider<NetworkService> {
   /// See also [networkService].
-  NetworkServiceProvider([Dio? dio])
-    : this._internal(
-        (ref) => networkService(ref as NetworkServiceRef, dio),
-        from: networkServiceProvider,
-        name: r'networkServiceProvider',
-        debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-            ? null
-            : _$networkServiceHash,
-        dependencies: NetworkServiceFamily._dependencies,
-        allTransitiveDependencies:
-            NetworkServiceFamily._allTransitiveDependencies,
-        dio: dio,
-      );
+  NetworkServiceProvider([
+    Dio? dio,
+  ]) : this._internal(
+          (ref) => networkService(
+            ref as NetworkServiceRef,
+            dio,
+          ),
+          from: networkServiceProvider,
+          name: r'networkServiceProvider',
+          debugGetCreateSourceHash:
+              const bool.fromEnvironment('dart.vm.product')
+                  ? null
+                  : _$networkServiceHash,
+          dependencies: NetworkServiceFamily._dependencies,
+          allTransitiveDependencies:
+              NetworkServiceFamily._allTransitiveDependencies,
+          dio: dio,
+        );
 
   NetworkServiceProvider._internal(
     super._createNotifier, {
@@ -162,6 +172,5 @@ class _NetworkServiceProviderElement extends ProviderElement<NetworkService>
   @override
   Dio? get dio => (origin as NetworkServiceProvider).dio;
 }
-
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

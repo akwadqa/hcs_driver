@@ -363,7 +363,7 @@ class MyOrdersController extends _$MyOrdersController {
   //   }
   // }
 
-  Future<void> fetchOrdersDetails({required String staffAppointmentLog}) async {
+  Future<void> fetchOrdersDetails({required String staffAppointmentLog, required String date, required String shift}) async {
     state = state.copyWith(
       ordersDetailsStates: RequestStates.loading,
       orderCancelltionStates: RequestStates.init,
@@ -374,6 +374,8 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersDetails = await myOrdersRepo.getServicesOrderDetails(
         // serviceOrderId: serviceOrderID,
         staffAppointmentLog: staffAppointmentLog,
+        date: date,
+        shift: shift,
       );
 
       DriverStatus? nextStatusElement = ordersDetails
