@@ -65,7 +65,7 @@ class MyOrdersState extends Equatable {
   final int? currentCompletedOrdersPage;
   final String? searchKey;
 
-  final ShiftTypeEnum? selectedShiftType;
+final List<ShiftTypeEnum> selectedShiftTypes;
 
   const MyOrdersState({
     //orders
@@ -107,7 +107,7 @@ class MyOrdersState extends Equatable {
     this.completedOrdersStates = RequestStates.init,
     this.currentCompletedOrdersPage,
     this.searchKey = '',
-    this.selectedShiftType,
+    this.selectedShiftTypes = const [],
   });
   MyOrdersState copyWith({
     int? currentApprovedOrdersPage,
@@ -141,7 +141,7 @@ class MyOrdersState extends Equatable {
     RequestStates? completedOrdersStates,
     int? currentCompletedOrdersPage,
     String? searchKey,
-    ShiftTypeEnum? selectedShiftType,
+    List<ShiftTypeEnum>? selectedShiftTypes,
       bool clearShiftType = false,
 
   }) {
@@ -185,9 +185,9 @@ class MyOrdersState extends Equatable {
       currentCompletedOrdersPage:
           currentCompletedOrdersPage ?? this.currentCompletedOrdersPage,
       searchKey: searchKey ?? this.searchKey,
-     selectedShiftType: clearShiftType
-        ? null
-        : selectedShiftType ?? this.selectedShiftType,
+     selectedShiftTypes: clearShiftType
+        ? []
+        : selectedShiftTypes ?? this.selectedShiftTypes,
     );
   }
 
@@ -230,6 +230,6 @@ class MyOrdersState extends Equatable {
     completedOrdersStates,
     currentCompletedOrdersPage,
     searchKey,
-    selectedShiftType,
+    selectedShiftTypes,
   ];
 }

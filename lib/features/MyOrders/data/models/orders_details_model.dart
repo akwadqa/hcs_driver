@@ -91,6 +91,8 @@ class Details {
   @JsonKey(name: "days")
   final List<dynamic>? days;
 
+  
+
   Details({
     required this.status,
     this.logId,
@@ -114,6 +116,57 @@ class Details {
     this.staffAppointmentLog, // حقل جديد
     this.days, // حقل جديد
   });
+
+  
+  Details copyWith({
+    String? status,
+    String? logId,
+    String? logStatus,
+    Supervisor? supervisor,
+    Customer? customer,
+    Driver? driver,
+    String? date,
+    String? serviceType,
+    String? shiftType,
+    int? withCleaningSupplies,
+    dynamic discountType,
+    double? discountPercentage,
+    double? totalNetAmount,
+    double? outstandingAmount,
+    String? methodOfPayment,
+    String? skipCashLink,
+    List<String>? staffAppointment,
+    List<dynamic>? serviceItems,
+    dynamic note,
+    String? staffAppointmentLog,
+    List<dynamic>? days,
+  }) {
+    return Details(
+      status: status ?? this.status,
+      logId: logId ?? this.logId,
+      logStatus: logStatus ?? this.logStatus,
+      supervisor: supervisor ?? this.supervisor,
+      customer: customer ?? this.customer,
+      driver: driver ?? this.driver,
+      date: date ?? this.date,
+      serviceType: serviceType ?? this.serviceType,
+      shiftType: shiftType ?? this.shiftType,
+      withCleaningSupplies:
+          withCleaningSupplies ?? this.withCleaningSupplies,
+      discountType: discountType ?? this.discountType,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      totalNetAmount: totalNetAmount ?? this.totalNetAmount,
+      outstandingAmount: outstandingAmount ?? this.outstandingAmount,
+      methodOfPayment: methodOfPayment ?? this.methodOfPayment,
+      skipCashLink: skipCashLink ?? this.skipCashLink,
+      staffAppointment: staffAppointment ?? this.staffAppointment,
+      serviceItems: serviceItems ?? this.serviceItems,
+      note: note ?? this.note,
+      staffAppointmentLog: staffAppointmentLog ?? this.staffAppointmentLog,
+      days: days ?? this.days,
+    );
+  }
+
 
   factory Details.fromJson(Map<String, dynamic> json) =>
       _$DetailsFromJson(json);

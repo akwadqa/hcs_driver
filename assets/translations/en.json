@@ -110,7 +110,9 @@
   "apply" : "Apply",
   "totalPrice"  : "Total Price",
   "payment_summary" : "Payment Summary",
-  "search_by_name_or_phone" : "Search by name or phone..."
+  "search_by_name_or_phone" : "Search by name or phone...",
+  "show_less" : "Show Less",
+  "show_more" : "Show More"
 
 
 }

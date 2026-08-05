@@ -63,6 +63,9 @@
   "apply": "تطبيق",
   "totalPrice": "السعر الإجمالي",
   "payment_summary": "ملخص الدفع",
-  "search_by_name_or_phone" : "البحث بالاسم أو الهاتف..."
+  "search_by_name_or_phone" : "البحث بالاسم أو الهاتف...",
+  "orderStatus" : "حالة الطلب",
+  "show_less" : "عرض أقل",
+  "show_more" : "عرض المزيد"
   
 }

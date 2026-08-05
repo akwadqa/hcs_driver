@@ -55,16 +55,15 @@ class MyOrdersRepository {
     required String shift,
   }) async {
     final response = await _networkService.get(
-      ApiConstance.getServiceOrderDetails(
-        // serviceOrderId: serviceOrderId,
-        // staffAppointmentLog: staffAppointmentLog,
-      ),
-      data: {
-        'service_order_id' : staffAppointmentLog,
-        'date' : date,
-        'shift' : shift,
-      }
-    );
+        ApiConstance.getServiceOrderDetails(
+            // serviceOrderId: serviceOrderId,
+            // staffAppointmentLog: staffAppointmentLog,
+            ),
+        data: {
+          'service_order_id': staffAppointmentLog,
+          'date': date,
+          'shift': shift,
+        });
 
     if (response.statusCode == 200) {
       return OrdersDetails.fromJson(response.data);
@@ -157,16 +156,20 @@ class MyOrdersRepository {
     // required String orderId,
     String? dateType,
     String? date,
-    ShiftTypeEnum? shiftType,
+    List<ShiftTypeEnum>? shiftType,
   }) async {
     final response = await _networkService.get(
       ApiConstance.appontmentsLogs(),
+      data: {
+        if (shiftType != null && shiftType.isNotEmpty)
+          'shift': shiftType.map((s) => s.apiValue).join(','),
+        "action": "driver",
+      },
       queryParameters: {
         'page': page,
         if (dateType != null) 'date_type': dateType,
         if (date != null) 'date': date,
-        if (shiftType != null) 'shift': shiftType.apiValue,
-        "action": "driver",
+        // "action": "driver",
       },
 
       // data: FormData.fromMap({'order_id': orderId}),
@@ -174,8 +177,8 @@ class MyOrdersRepository {
 
     if (response.statusCode == 200) {
       debugPrint('----------------');
-      debugPrint(shiftType?.apiValue);
-      debugPrint(shiftType?.label);
+      debugPrint(shiftType?.map((s) => s.apiValue).join(','));
+      debugPrint(shiftType?.map((s) => s.label).join(','));
       debugPrint(dateType);
       debugPrint('----------------');
       return AppointmentModel.fromJson(response.data);

@@ -76,9 +76,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     var orderStatus = ref.watch(
       myOrdersControllerProvider.select((value) => value.ordersDetailsStates),
     );
+    var currentDriverStatus = ref.watch(
+      myOrdersControllerProvider.select(
+        (value) => value.currentDriverStatus,
+      ),
+    );
     return Scaffold(
       body: switch (orderStatus) {
-        RequestStates.loaded => _buildContent(details, days),
+        RequestStates.loaded =>
+          _buildContent(details, days, currentDriverStatus),
         RequestStates.loading ||
         RequestStates.init =>
           const Center(child: FadeCircleLoadingIndicator()),
@@ -113,7 +119,8 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
     );
   }
 
-  Widget _buildContent(Details? details, List<String> days) {
+  Widget _buildContent(
+      Details? details, List<String> days, String currentDriverStatus) {
     return SingleChildScrollView(
       padding: EdgeInsets.symmetric(vertical: 17.h, horizontal: 9.w),
       child: Column(
@@ -123,6 +130,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           OrderCard(
             staffAppointments: widget.staffAppointments,
             details: details,
+            currentDriverStatus: currentDriverStatus,
           ),
           18.verticalSpace,
           // 18.verticalSpace,
@@ -142,10 +150,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 }
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({Key? key, required this.staffAppointments, this.details})
+  const OrderCard(
+      {Key? key,
+      required this.staffAppointments,
+      this.details,
+      this.currentDriverStatus})
       : super(key: key);
   final StaffAppointments staffAppointments;
   final Details? details;
+  final String? currentDriverStatus;
 
   // دالة لاختيار الأيقونة المناسبة بناءً على النص
   IconData _getShiftIcon(String shiftText) {
@@ -211,7 +224,7 @@ class OrderCard extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: AppColors.getDriverStatusBgColor(
-                        details?.driver.currentDriverStatus ?? 'status'),
+                        currentDriverStatus ?? 'status'),
                     borderRadius: BorderRadius.circular(16),
                   ),
                   child: Row(
@@ -223,7 +236,7 @@ class OrderCard extends StatelessWidget {
                         height: 8,
                         decoration: BoxDecoration(
                           color: AppColors.getDriverStatusTextColor(
-                              details?.driver.currentDriverStatus ?? 'status'),
+                              currentDriverStatus ?? 'status'),
                           shape: BoxShape.circle,
                         ),
                       ),
@@ -235,13 +248,12 @@ class OrderCard extends StatelessWidget {
                               .scaleDown, // هذه الخاصية تقوم بتصغير النص بدلاً من قطعه
                           alignment: Alignment.center,
                           child: Text(
-                            details?.driver.currentDriverStatus ?? 'status',
+                            currentDriverStatus ?? 'status',
                             style: textTheme.bodySmall?.copyWith(
                               fontWeight: FontWeight.w500,
                               fontSize: 14,
                               color: AppColors.getDriverStatusTextColor(
-                                  details?.driver.currentDriverStatus ??
-                                      'status'),
+                                  currentDriverStatus ?? 'status'),
                             ),
                           ),
                         ),
@@ -415,6 +427,15 @@ class OrderCard extends StatelessWidget {
                                             )
                                           : CustomButton(
                                               title: nextDriverStatus,
+                                              fixedSize: nextDriverStatus ==
+                                                      'Awaiting Cash Payment'
+                                                  ? WidgetStateProperty.all(
+                                                      Size(
+                                                        150.w,
+                                                        80.h,
+                                                      ),
+                                                    )
+                                                  : null,
                                               onPressed: statusOrderStates !=
                                                       RequestStates.loading
                                                   //     &&

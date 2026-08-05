@@ -103,6 +103,9 @@ class StaffAppointments {
   @JsonKey(name: "number_of_cleaners")
   final int? numberOfCleaners;
 
+  @JsonKey(name: "note")
+  final String? note;
+
   StaffAppointments({
     required this.serviceOrderId,
     required this.status,
@@ -123,7 +126,8 @@ class StaffAppointments {
     this.totalVisitsNumber,
     this.visitNumber,
     this.staffAppointmentNames,
-    this.numberOfCleaners,
+    this.numberOfCleaners, 
+  required this.note,
   });
 
   factory StaffAppointments.fromJson(Map<String, dynamic> json) =>

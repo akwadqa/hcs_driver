@@ -17,7 +17,6 @@ Future<void> showOrderFilterMenu(
     context: context,
     barrierDismissible: true,
     barrierLabel: "",
-    // barrierColor: Colors.black.withOpacity(0.2),
     transitionDuration: const Duration(milliseconds: 250),
     pageBuilder: (_, __, ___) => const SizedBox.shrink(),
     transitionBuilder: (context, animation, secondary, child) {
@@ -59,9 +58,10 @@ Future<void> showOrderFilterMenu(
                       myOrdersControllerProvider.notifier,
                     );
 
-                    final selectedShift = ref.watch(
+                    // استدعاء القائمة المختارة بدلاً من العنصر الفردي
+                    final selectedShifts = ref.watch(
                       myOrdersControllerProvider.select(
-                        (s) => s.selectedShiftType,
+                        (s) => s.selectedShiftTypes,
                       ),
                     );
 
@@ -78,35 +78,32 @@ Future<void> showOrderFilterMenu(
                           children: [
                             Text(
                               "shiftType".tr(),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
                             ),
                             const SizedBox(height: 8),
+
+                            /// تحويل الخيارات إلى Checkbox
                             ...ShiftTypeEnum.values.map((shift) {
-                              return _radioItem<ShiftTypeEnum>(
+                              final isSelected = selectedShifts.contains(shift);
+                              return _checkboxItem(
                                 title: shift.label,
-                                value: shift,
-                                groupValue: selectedShift,
-                                onChanged: (value) {
-                                  controller.setShiftType(value);
+                                isSelected: isSelected,
+                                onChanged: (_) {
+                                  controller.toggleShiftType(shift);
                                 },
                               );
                             }),
+
                             const SizedBox(height: 16),
                             Row(
                               children: [
                                 Expanded(
                                   child: TextButton(
-                                    onPressed: () async {
+                                    onPressed: () {
                                       controller.clearShiftType();
-
-                                      // await controller.applyShiftFilter(
-                                      //   tabIndex: tabIndex,
-                                      // );
-
-                                      // Navigator.pop(context);
                                     },
                                     child: Text("clear".tr()),
                                   ),
@@ -140,19 +137,23 @@ Future<void> showOrderFilterMenu(
   );
 }
 
-Widget _radioItem<T>({
+/// ويدجت الـ Checkbox المخصصة
+Widget _checkboxItem({
   required String title,
-  required T value,
-  required T? groupValue,
-  required ValueChanged<T?> onChanged,
+  required bool isSelected,
+  required ValueChanged<bool?> onChanged,
 }) {
   return InkWell(
-    onTap: () => onChanged(value),
+    onTap: () => onChanged(!isSelected),
     child: Padding(
-      padding: const EdgeInsets.symmetric(vertical: 6),
+      padding: const EdgeInsets.symmetric(vertical: 2),
       child: Row(
         children: [
-          Radio<T>(value: value, groupValue: groupValue, onChanged: onChanged),
+          Checkbox(
+            value: isSelected,
+            onChanged: onChanged,
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+          ),
           Expanded(
             child: Text(
               title,

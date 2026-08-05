@@ -64,6 +64,7 @@ StaffAppointments _$StaffAppointmentsFromJson(Map<String, dynamic> json) =>
           ?.map((e) => e as String)
           .toList(),
       numberOfCleaners: (json['number_of_cleaners'] as num?)?.toInt(),
+      note: json['note'] as String?,
     );
 
 Map<String, dynamic> _$StaffAppointmentsToJson(StaffAppointments instance) =>
@@ -88,6 +89,7 @@ Map<String, dynamic> _$StaffAppointmentsToJson(StaffAppointments instance) =>
       'visit_number': instance.visitNumber,
       'staff_appointment': instance.staffAppointmentNames,
       'number_of_cleaners': instance.numberOfCleaners,
+      'note': instance.note,
     };
 
 Pagination _$PaginationFromJson(Map<String, dynamic> json) => Pagination(

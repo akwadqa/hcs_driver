@@ -9,6 +9,7 @@ import 'features/app/app.dart';
 Future<void> main() async {
   await AppInitializer.init();
 
+
   final container = await initializeProviders();
 
   await handleSplashScreen(container);

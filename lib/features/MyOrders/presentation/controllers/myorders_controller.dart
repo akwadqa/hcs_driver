@@ -122,7 +122,10 @@ class MyOrdersController extends _$MyOrdersController {
         page: 1,
         // dateType: '',
         date: yyyymmdd, // <— pass the specific date
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
 
       // final next = resp.pagination.totalPages > 1 ? 2 : null;
@@ -155,7 +158,10 @@ class MyOrdersController extends _$MyOrdersController {
         page: nextPage,
         // dateType: '',
         date: state.lastCustomDate,
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
       final next = resp.pagination.totalPages > resp.pagination.page
           ? resp.pagination.page + 1
@@ -210,7 +216,10 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'today',
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
 
       int? nextPage;
@@ -240,7 +249,10 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: state.currentTodayOrdersPage!,
         dateType: 'today',
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
 
       int? nextPage;
@@ -275,7 +287,10 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'tomorrow',
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
 
       int? nextPage;
@@ -305,7 +320,10 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: state.currentTodayOrdersPage!,
         dateType: 'tomorrow',
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
 
       int? nextPage;
@@ -317,8 +335,10 @@ class MyOrdersController extends _$MyOrdersController {
       }
       state = state.copyWith(
         currentAppointmentsPage: nextPage,
-      tomorrowOrders: [...state.tomorrowOrders, ...ordersData.data.staffAppointments],
-
+        tomorrowOrders: [
+          ...state.tomorrowOrders,
+          ...ordersData.data.staffAppointments
+        ],
         tomorrowOrdersStates: RequestStates.loaded,
         ordersMessage: '',
       );
@@ -363,7 +383,10 @@ class MyOrdersController extends _$MyOrdersController {
   //   }
   // }
 
-  Future<void> fetchOrdersDetails({required String staffAppointmentLog, required String date, required String shift}) async {
+  Future<void> fetchOrdersDetails(
+      {required String staffAppointmentLog,
+      required String date,
+      required String shift}) async {
     state = state.copyWith(
       ordersDetailsStates: RequestStates.loading,
       orderCancelltionStates: RequestStates.init,
@@ -379,11 +402,9 @@ class MyOrdersController extends _$MyOrdersController {
       );
 
       DriverStatus? nextStatusElement = ordersDetails
-          .details
-          .driver
-          .driverStatus
+          .details.driver.driverStatus
           .where((element) => element.active == false)
-          // .cast<DriverStatus?>()
+          .cast<DriverStatus?>()
           .firstOrNull;
 
       state = state.copyWith(
@@ -391,7 +412,7 @@ class MyOrdersController extends _$MyOrdersController {
         currentDriverStatus: ordersDetails.details.driver.currentDriverStatus,
         nextDriverStatus: state.currentDriverStatus != "Completed"
             ? nextStatusElement?.status
-            : null,
+            : '',
         statusOrders: ordersDetails.details.driver.driverStatus,
         ordersDetailsStates: RequestStates.loaded,
         ordersDetailsMessage: '',
@@ -428,7 +449,17 @@ class MyOrdersController extends _$MyOrdersController {
           .cast<DriverStatus?>()
           .firstOrNull;
 
+      print('currentDriverStatus: $currentDriverStatus');
+      print('------------------------------------');
+      print('nextStatusElement: ${nextStatusElement?.status}');
+
       state = state.copyWith(
+        // ordersDetails: state.ordersDetails?.copyWith(
+        //   driver: state.ordersDetails?.driver.copyWith(
+        //     currentDriverStatus: currentDriverStatus,
+        //     driverStatus: statusOrders.data,
+        //   ),
+        // ),
         statusOrders: statusOrders.data,
         currentDriverStatus: currentDriverStatus,
         nextDriverStatus: nextStatusElement?.status,
@@ -496,7 +527,10 @@ class MyOrdersController extends _$MyOrdersController {
         page: state.currentAppointmentsPage!,
         // orderId: serviceOrderID,
         dateType: dateType,
-        shiftType: state.selectedShiftType,
+        //TODO : Add list here:
+        shiftType: state.selectedShiftTypes.isNotEmpty
+            ? state.selectedShiftTypes
+            : null,
       );
 
       int? nextPage;
@@ -526,9 +560,7 @@ class MyOrdersController extends _$MyOrdersController {
 
   Future<void> orderCancelltion({
     required String serviceOrderID,
-
     required String cancelMsg,
-
     required int orderDate,
   }) async {
     state = state.copyWith(orderCancelltionStates: RequestStates.loading);
@@ -559,7 +591,6 @@ class MyOrdersController extends _$MyOrdersController {
     required String staffAppointmentLog,
     required String orderId,
     required String cancelMsg,
-
     required BuildContext context,
   }) async {
     state = state.copyWith(orderCancelltionStates: RequestStates.loading);
@@ -590,12 +621,20 @@ class MyOrdersController extends _$MyOrdersController {
     }
   }
 
-  void setShiftType(ShiftTypeEnum? shiftType) {
-    state = state.copyWith(selectedShiftType: shiftType);
+  void toggleShiftType(ShiftTypeEnum shiftType) {
+    final currentList = List<ShiftTypeEnum>.from(state.selectedShiftTypes);
+
+    if (currentList.contains(shiftType)) {
+      currentList.remove(shiftType); // إذا كان موجوداً يتم حذفه
+    } else {
+      currentList.add(shiftType); // إذا لم يكن موجوداً يتم إضافته
+    }
+
+    state = state.copyWith(selectedShiftTypes: currentList);
   }
 
   void clearShiftType() {
-  state = state.copyWith(clearShiftType: true);
+    state = state.copyWith(clearShiftType: true);
   }
 
   Future<void> applyShiftFilter({required int tabIndex}) async {

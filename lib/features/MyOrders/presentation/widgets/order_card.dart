@@ -27,14 +27,17 @@ class OrderCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final dummyNote = order.note;
+    // "يرجى العلم أن العميل طلب التركيز على نظافة المطبخ والزجاج الخارجي بشكل خاص، والتأكد من عدم استخدام أي مواد كيميائية حادة على الخشب.";
+
     return GestureDetector(
       onTap: onTap,
       child: Dismissible(
         key: ValueKey(order.serviceOrderId),
+        direction: DismissDirection.none,
         background: _deleteBackground(),
         confirmDismiss: (_) async => onDismissedConfirm?.call(),
         child: Container(
-          // width: 353.w,
           margin: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
           decoration: BoxDecoration(
             color: Colors.white,
@@ -162,8 +165,6 @@ class OrderCard extends StatelessWidget {
                           child: Container(
                             padding: EdgeInsets.symmetric(
                                 horizontal: 8.w, vertical: 5.h),
-                            // height: 25.h,
-                            // width: 110.w,
                             decoration: BoxDecoration(
                               color: AppColors.locationBg,
                               borderRadius: BorderRadius.circular(16.r),
@@ -220,7 +221,7 @@ class OrderCard extends StatelessWidget {
                 12.verticalSpace,
 
                 //----------------------------------------------------------
-                // CLEANERS COUNT & EMPLOYEE NAME + VIEW ALL
+                // CLEANERS COUNT & EMPLOYEE NAME
                 //----------------------------------------------------------
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -233,38 +234,41 @@ class OrderCard extends StatelessWidget {
                         value: order.numberOfCleaners.toString(),
                       ),
                     ),
-                    // الجزء الخاص باسم الموظف مع View All
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        Text(
-                          // غير اسم المتغير حسب الموديل لديك (مثل order.employeeName أو order.cleanerName)
-                          order.staffAppointmentNames?.first ?? '',
-                          style:
-                              Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                    color: const Color(0xFF27272A),
-                                    fontSize: 12.sp,
-                                    fontWeight: FontWeight.w500,
-                                  ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: AppColors.iconBg,
+                            borderRadius: BorderRadius.circular(16.r),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 8.w, vertical: 5.h),
+                          child: Text(
+                            order.staffAppointmentNames?.first ?? '',
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: AppColors.primary,
+                                      fontSize: 12.sp,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                          ),
                         ),
-                        20.verticalSpace, // Gap: 7px من الفيجما
-                        // InkWell(
-                        //   onTap: onViewAllEmployeesTap,
-                        //   child: Text(
-                        //     'view_all'.tr(),
-                        //     style:
-                        //         Theme.of(context).textTheme.bodyLarge!.copyWith(
-                        //               color: AppColors.primary, // #1E71A3
-                        //               fontSize: 10.sp,
-                        //               fontWeight: FontWeight.w500,
-                        //               decoration: TextDecoration.underline,
-                        //             ),
-                        //   ),
-                        // ),
                       ],
                     ),
                   ],
                 ),
+
+                //----------------------------------------------------------
+                // NOTE SECTION (القسم الجديد المضاف)
+                //----------------------------------------------------------
+                if (dummyNote?.isNotEmpty == true) ...[
+                  10.verticalSpace,
+                  const Divider(
+                      height: 1, thickness: 1, color: AppColors.dividerColor),
+                  10.verticalSpace,
+                  _ExpandableNoteTile(noteText: dummyNote),
+                ],
               ],
             ),
           ),
@@ -289,6 +293,120 @@ class OrderCard extends StatelessWidget {
 // =================================================================
 // REUSABLE SMALL WIDGETS
 // =================================================================
+
+/// ويدجت الملاحظة القابلة للتوسع بأناقة وأنيميشن
+class _ExpandableNoteTile extends StatefulWidget {
+  final String? noteText;
+
+  const _ExpandableNoteTile({required this.noteText});
+
+  @override
+  State<_ExpandableNoteTile> createState() => _ExpandableNoteTileState();
+}
+
+class _ExpandableNoteTileState extends State<_ExpandableNoteTile> {
+  bool _isExpanded = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final textStyle = Theme.of(context).textTheme.bodyLarge!.copyWith(
+          color: Colors.black,
+          fontSize: 12.sp,
+          fontWeight: FontWeight.w500,
+        );
+
+    return (widget.noteText != null && widget.noteText!.isNotEmpty)
+        ? Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 27.w,
+                height: 27.w,
+                padding: EdgeInsets.all(6.w),
+                decoration: const BoxDecoration(
+                  color: AppColors.iconBg,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.note_alt_outlined,
+                  size: 15.sp,
+                  color: AppColors.primary,
+                ),
+              ),
+              5.horizontalSpace,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'note'.tr(),
+                      style: Theme.of(context).textTheme.displaySmall!.copyWith(
+                            color: AppColors.labelGrey,
+                            fontSize: 12.sp,
+                            fontWeight: FontWeight.w600,
+                          ),
+                    ),
+                    7.verticalSpace,
+                    LayoutBuilder(
+                      builder: (context, constraints) {
+                        final span =
+                            TextSpan(text: widget.noteText, style: textStyle);
+                        final tp = TextPainter(
+                          text: span,
+                          maxLines: 2,
+                          textDirection: Directionality.of(context),
+                        );
+                        tp.layout(maxWidth: constraints.maxWidth);
+
+                        final bool isOverflowing = tp.didExceedMaxLines;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            AnimatedSize(
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                              child: Text(
+                                widget.noteText!,
+                                style: textStyle,
+                                maxLines: _isExpanded ? null : 2,
+                                overflow: _isExpanded
+                                    ? TextOverflow.visible
+                                    : TextOverflow.ellipsis,
+                              ),
+                            ),
+                            if (isOverflowing) ...[
+                              4.verticalSpace,
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isExpanded = !_isExpanded;
+                                  });
+                                },
+                                child: Text(
+                                  _isExpanded
+                                      ? 'show_less'.tr()
+                                      : 'show_more'.tr(),
+                                  style: TextStyle(
+                                    color: AppColors.primary,
+                                    fontSize: 11.sp,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          )
+        : SizedBox.shrink();
+  }
+}
 
 class _IconInfoTile extends StatelessWidget {
   final SvgGenImage icon;
@@ -415,24 +533,21 @@ class _ShiftChip extends StatelessWidget {
   final String text;
   const _ShiftChip({required this.text});
 
-  // دالة لاختيار الأيقونة المناسبة بناءً على النص
   IconData _getShiftIcon(String shiftText) {
     final lowerText = shiftText.toLowerCase();
 
     if (lowerText.contains('morning')) {
-      return Icons.wb_sunny_outlined; // أيقونة شمس الصباح
+      return Icons.wb_sunny_outlined;
     } else if (lowerText.contains('evening')) {
-      return Icons
-          .dark_mode_outlined; // أيقونة هلال للمساء (يمكنك استخدام nights_stay_outlined أيضاً)
+      return Icons.dark_mode_outlined;
     } else if (lowerText.contains('over time') ||
         lowerText.contains('overtime')) {
-      return Icons.more_time; // أيقونة وقت إضافي
+      return Icons.more_time;
     } else if (lowerText.contains('full day')) {
-      return Icons
-          .light_mode_outlined; // أيقونة شمس ساطعة لليوم الكامل (أو يمكن استخدام access_time)
+      return Icons.light_mode_outlined;
     }
 
-    return Icons.schedule; // أيقونة افتراضية في حال أتى نص غير معروف
+    return Icons.schedule;
   }
 
   @override
@@ -448,7 +563,6 @@ class _ShiftChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // استدعاء الدالة هنا وتمرير النص لها
           Icon(
             _getShiftIcon(text),
             size: 16.sp,
