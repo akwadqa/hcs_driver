@@ -79,6 +79,8 @@ class ApiConstance {
   static String getDrivers(String page) =>
       '$baseUrl/$baseDomain.api.driver.drivers?page=$page&limit=25';
 
+  static String getVersion = '$baseUrl/highclass.api.api.app_version';
+
   static String getDiscoutType() =>
       '$baseUrl/$baseDomain.api.discount_type.discount_types';
   ////////////////// *  SubmitService   /////////////////////
