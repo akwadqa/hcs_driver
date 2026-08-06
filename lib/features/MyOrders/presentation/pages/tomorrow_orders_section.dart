@@ -37,7 +37,8 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
 
   _onScroll() {
     final customerState = ref.read(myOrdersControllerProvider);
-    final hasMore = customerState.currentTomorrowOrdersPage != null;
+    final hasMore = customerState.currentTomorrowOrdersPage != null &&
+        customerState.currentTomorrowOrdersPage != -1;
 
     if (_scrollController.position.pixels >
             _scrollController.position.maxScrollExtent - 100 &&
@@ -74,7 +75,6 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
                 .read(myOrdersControllerProvider.notifier)
                 .fetchTomorrowOrders();
           },
-
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             children: [
@@ -92,13 +92,13 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
         },
         child: ListView.builder(
           physics: const AlwaysScrollableScrollPhysics(),
-
           controller: _scrollController,
           shrinkWrap: true,
           itemCount: ordersState.tomorrowOrders.length + 1,
           itemBuilder: (context, index) {
             if (index >= ordersState.tomorrowOrders.length) {
-              if (ordersState.currentTomorrowOrdersPage == null) {
+              if (ordersState.currentTomorrowOrdersPage == null ||
+                  ordersState.currentTomorrowOrdersPage == -1) {
                 return Center(
                   child: Text(
                     'No More Orders',
@@ -112,27 +112,26 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
                 );
               }
             }
-      
-  final order = ordersState.tomorrowOrders[index];
 
-  return OrderCard(
-    order: order,
-    // parentContext: context,
-    onTap: () {
-      context.pushRoute(
-        OrderDetailsRoute(
-                  staffAppointments: order,
+            final order = ordersState.tomorrowOrders[index];
 
-        ),
-      );
-    },
-    onDismissedConfirm: () => showAcceptCancelOrder(
-      context: context,
-      orderID: order.serviceOrderId,
-      cancelAppointmentLog: false,
-      ref: ref,
-    ),
-  );
+            return OrderCard(
+              order: order,
+              // parentContext: context,
+              onTap: () {
+                context.pushRoute(
+                  OrderDetailsRoute(
+                    staffAppointments: order,
+                  ),
+                );
+              },
+              onDismissedConfirm: () => showAcceptCancelOrder(
+                context: context,
+                orderID: order.serviceOrderId,
+                cancelAppointmentLog: false,
+                ref: ref,
+              ),
+            );
           },
         ),
       );

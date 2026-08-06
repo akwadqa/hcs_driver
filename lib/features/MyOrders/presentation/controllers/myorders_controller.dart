@@ -226,7 +226,7 @@ class MyOrdersController extends _$MyOrdersController {
       if (ordersData.pagination.totalPages > 1) {
         nextPage = 2;
       } else {
-        nextPage = null;
+        nextPage = -1;
       }
       state = state.copyWith(
         currentTodayOrdersPage: nextPage,
@@ -258,7 +258,7 @@ class MyOrdersController extends _$MyOrdersController {
       if (ordersData.pagination.totalPages > ordersData.pagination.page) {
         nextPage = ordersData.pagination.page + 1;
       } else {
-        nextPage = null;
+        nextPage = -1;
       }
       state = state.copyWith(
         currentTodayOrdersPage: nextPage,
@@ -285,7 +285,6 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'tomorrow',
-        //TODO : Add list here:
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
@@ -296,7 +295,7 @@ class MyOrdersController extends _$MyOrdersController {
       if (ordersData.pagination.totalPages > 1) {
         nextPage = 2;
       } else {
-        nextPage = null;
+        nextPage = -1;
       }
       state = state.copyWith(
         currentTomorrowOrdersPage: nextPage,
@@ -316,9 +315,8 @@ class MyOrdersController extends _$MyOrdersController {
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getAppontments(
-        page: state.currentTodayOrdersPage!,
+        page: state.currentTomorrowOrdersPage!,
         dateType: 'tomorrow',
-        //TODO : Add list here:
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
@@ -329,10 +327,10 @@ class MyOrdersController extends _$MyOrdersController {
       if (ordersData.pagination.totalPages > ordersData.pagination.page) {
         nextPage = ordersData.pagination.page + 1;
       } else {
-        nextPage = null;
+        nextPage = -1;
       }
       state = state.copyWith(
-        currentAppointmentsPage: nextPage,
+        currentTomorrowOrdersPage: nextPage,
         tomorrowOrders: [
           ...state.tomorrowOrders,
           ...ordersData.data.staffAppointments
@@ -342,7 +340,7 @@ class MyOrdersController extends _$MyOrdersController {
       );
     } catch (e) {
       state = state.copyWith(
-        todayOrdersStates: RequestStates.error,
+        tomorrowOrdersStates: RequestStates.error,
         ordersMessage: e.toString(),
       );
     }

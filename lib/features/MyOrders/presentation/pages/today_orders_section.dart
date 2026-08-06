@@ -37,7 +37,8 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
 
   _onScroll() {
     final customerState = ref.read(myOrdersControllerProvider);
-    final hasMore = customerState.currentTodayOrdersPage != null;
+    final hasMore = customerState.currentTodayOrdersPage != null &&
+        customerState.currentTodayOrdersPage != -1;
 
     if (_scrollController.position.pixels >
             _scrollController.position.maxScrollExtent - 100 &&
@@ -88,42 +89,41 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
               .fetchTodayOrders();
         },
         child: ListView.builder(
-          physics: const AlwaysScrollableScrollPhysics(),
-          controller: _scrollController,
-          shrinkWrap: true,
-          itemCount: ordersState.todayOrders.length + 1,
-    itemBuilder: (context, index) {
-  if (index >= ordersState.todayOrders.length) {
-    return ordersState.currentTodayOrdersPage == null
-        ? Center(child: Text('No More Orders'))
-        : const Padding(
-            padding: EdgeInsets.all(8),
-            child: Center(child: FadeCircleLoadingIndicator()),
-          );
-  }
+            physics: const AlwaysScrollableScrollPhysics(),
+            controller: _scrollController,
+            shrinkWrap: true,
+            itemCount: ordersState.todayOrders.length + 1,
+            itemBuilder: (context, index) {
+              if (index >= ordersState.todayOrders.length) {
+                return ordersState.currentTodayOrdersPage == -1
+                    ? Center(child: Text('No More Orders'))
+                    : const Padding(
+                        padding: EdgeInsets.all(8),
+                        child: Center(child: FadeCircleLoadingIndicator()),
+                      );
+              }
 
-  final order = ordersState.todayOrders[index];
+              final order = ordersState.todayOrders[index];
 
-  return OrderCard(
-    order: order,
-    // parentContext: context,
-    onTap: () {
-      context.pushRoute(
-        OrderDetailsRoute(
-          staffAppointments: order,
-          // appointmentID: order.logId,
-        ),
-      );
-    },
-    onDismissedConfirm: () => showAcceptCancelOrder(
-      context: context,
-      orderID: order.serviceOrderId,
-      cancelAppointmentLog: false,
-      ref: ref,
-    ),
-  );
-}
-    ),
+              return OrderCard(
+                order: order,
+                // parentContext: context,
+                onTap: () {
+                  context.pushRoute(
+                    OrderDetailsRoute(
+                      staffAppointments: order,
+                      // appointmentID: order.logId,
+                    ),
+                  );
+                },
+                onDismissedConfirm: () => showAcceptCancelOrder(
+                  context: context,
+                  orderID: order.serviceOrderId,
+                  cancelAppointmentLog: false,
+                  ref: ref,
+                ),
+              );
+            }),
       );
     } else if (ordersState.todayOrdersStates == RequestStates.error) {
       return AppErrorWidget(
