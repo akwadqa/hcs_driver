@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 extension ConvertToMaterial on Color {
@@ -14,16 +15,28 @@ extension ConvertToMaterial on Color {
       800: Color.fromRGBO(136, 14, 79, .9),
       900: Color.fromRGBO(136, 14, 79, 1),
     };
-    return MaterialColor(toARGB32() , values); //toARGB32() was value
+    return MaterialColor(toARGB32(), values); //toARGB32() was value
   }
 }
 
 extension AssetsPath on String {
-  
   String get imageAssetPath => 'assets/images/$this';
- 
 }
 
 extension BoolConditions on bool? {
   bool get isNullOrFalse => this == null || this == false;
+}
+
+extension DateFormatterExtension on String {
+  String toFormattedEventDate() {
+    try {
+      final parsedDate = DateTime.parse(this);
+      final dayName =
+          DateFormat('EEEE', 'en').format(parsedDate).substring(0, 2);
+      final datePart = DateFormat('dd-MM-yyyy', 'en').format(parsedDate);
+      return '$dayName, $datePart';
+    } catch (e) {
+      return this; // في حال كان النص المدخل غير صالح للتاريخ نرجع النص كما هو
+    }
+  }
 }

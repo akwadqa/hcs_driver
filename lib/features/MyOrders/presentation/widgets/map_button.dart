@@ -13,9 +13,7 @@ class MapPreviewCard extends StatelessWidget {
   });
 
   void _openMap() async {
-    final url = Uri.parse(
-      lcoationUrl,
-    );
+    final url = Uri.parse(lcoationUrl);
 
     if (await canLaunchUrl(url)) {
       try {

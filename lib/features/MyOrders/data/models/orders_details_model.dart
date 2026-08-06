@@ -39,10 +39,13 @@ class OrdersDetails {
 class Details {
   @JsonKey(name: "status")
   final String status;
+  
+  // تم تحويلها إلى Nullable لأنها لا تظهر في استجابة الـ JSON الحالية
   @JsonKey(name: "log_id")
-  final String logId;
+  final String? logId; 
   @JsonKey(name: "log_status")
-  final String logStatus;
+  final String? logStatus;
+
   @JsonKey(name: "supervisor")
   final Supervisor supervisor;
   @JsonKey(name: "customer")
@@ -59,21 +62,41 @@ class Details {
   final int withCleaningSupplies;
   @JsonKey(name: "discount_type")
   final dynamic discountType;
+  
+  // تم التعديل إلى double بناءً على الـ JSON (0.0)
   @JsonKey(name: "discount_percentage")
-  final int discountPercentage;
+  final double discountPercentage;
+  // تم التعديل إلى double بناءً على الـ JSON (1400.0)
   @JsonKey(name: "total_net_amount")
-  final int totalNetAmount;
+  final double totalNetAmount;
+  
+  // حقل جديد مضاف من الـ JSON
+  @JsonKey(name: "outstanding_amount")
+  final double outstandingAmount;
+  
   @JsonKey(name: "method_of_payment")
   final String methodOfPayment;
+  @JsonKey(name: "skipcash_link")
+  final String? skipCashLink;
   @JsonKey(name: "staff_appointment")
   final List<String> staffAppointment;
+  
+  // حقول جديدة مضافة من الـ JSON
+  @JsonKey(name: "service_items")
+  final List<dynamic>? serviceItems;
   @JsonKey(name: "note")
   final dynamic note;
+  @JsonKey(name: "staff_appointment_log")
+  final String? staffAppointmentLog;
+  @JsonKey(name: "days")
+  final List<dynamic>? days;
+
+  
 
   Details({
     required this.status,
-    required this.logId,
-    required this.logStatus,
+    this.logId,
+    this.logStatus,
     required this.supervisor,
     required this.customer,
     required this.driver,
@@ -81,15 +104,72 @@ class Details {
     required this.serviceType,
     required this.shiftType,
     required this.withCleaningSupplies,
-    required this.discountType,
+    this.discountType,
     required this.discountPercentage,
     required this.totalNetAmount,
+    required this.outstandingAmount, // حقل جديد
     required this.methodOfPayment,
+    this.skipCashLink,
     required this.staffAppointment,
-    required this.note,
+    this.serviceItems, // حقل جديد
+    this.note,
+    this.staffAppointmentLog, // حقل جديد
+    this.days, // حقل جديد
   });
 
-  factory Details.fromJson(Map<String, dynamic> json) => _$DetailsFromJson(json);
+  
+  Details copyWith({
+    String? status,
+    String? logId,
+    String? logStatus,
+    Supervisor? supervisor,
+    Customer? customer,
+    Driver? driver,
+    String? date,
+    String? serviceType,
+    String? shiftType,
+    int? withCleaningSupplies,
+    dynamic discountType,
+    double? discountPercentage,
+    double? totalNetAmount,
+    double? outstandingAmount,
+    String? methodOfPayment,
+    String? skipCashLink,
+    List<String>? staffAppointment,
+    List<dynamic>? serviceItems,
+    dynamic note,
+    String? staffAppointmentLog,
+    List<dynamic>? days,
+  }) {
+    return Details(
+      status: status ?? this.status,
+      logId: logId ?? this.logId,
+      logStatus: logStatus ?? this.logStatus,
+      supervisor: supervisor ?? this.supervisor,
+      customer: customer ?? this.customer,
+      driver: driver ?? this.driver,
+      date: date ?? this.date,
+      serviceType: serviceType ?? this.serviceType,
+      shiftType: shiftType ?? this.shiftType,
+      withCleaningSupplies:
+          withCleaningSupplies ?? this.withCleaningSupplies,
+      discountType: discountType ?? this.discountType,
+      discountPercentage: discountPercentage ?? this.discountPercentage,
+      totalNetAmount: totalNetAmount ?? this.totalNetAmount,
+      outstandingAmount: outstandingAmount ?? this.outstandingAmount,
+      methodOfPayment: methodOfPayment ?? this.methodOfPayment,
+      skipCashLink: skipCashLink ?? this.skipCashLink,
+      staffAppointment: staffAppointment ?? this.staffAppointment,
+      serviceItems: serviceItems ?? this.serviceItems,
+      note: note ?? this.note,
+      staffAppointmentLog: staffAppointmentLog ?? this.staffAppointmentLog,
+      days: days ?? this.days,
+    );
+  }
+
+
+  factory Details.fromJson(Map<String, dynamic> json) =>
+      _$DetailsFromJson(json);
 
   Map<String, dynamic> toJson() => _$DetailsToJson(this);
 }
@@ -101,20 +181,20 @@ class Customer {
   @JsonKey(name: "customer_name")
   final String customerName;
   @JsonKey(name: "location")
-  final String location;
+  final String? location;
   @JsonKey(name: "location_url")
-  final dynamic locationUrl;
+  final String? locationUrl; // تم التعديل من dynamic إلى String?
   @JsonKey(name: "zone")
-  final String zone;
+  final String? zone;
   @JsonKey(name: "phone_number")
   final String phoneNumber;
 
   Customer({
     required this.customerId,
     required this.customerName,
-    required this.location,
-    required this.locationUrl,
-    required this.zone,
+    this.location,
+    this.locationUrl,
+    this.zone,
     required this.phoneNumber,
   });
 
@@ -169,7 +249,7 @@ class Supervisor {
   @JsonKey(name: "supervisor_name")
   final String? supervisorName;
 
-  Supervisor({required this.supervisor, required this.supervisorName});
+  Supervisor({required this.supervisor, this.supervisorName});
 
   factory Supervisor.fromJson(Map<String, dynamic> json) =>
       _$SupervisorFromJson(json);

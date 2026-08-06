@@ -2,6 +2,7 @@ import 'package:auto_route/auto_route.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hcs_driver/features/app/presentation/controller/app_controller.dart';
 import 'package:hcs_driver/src/localization/current_language.dart';
 import 'package:hcs_driver/src/routing/app_router_provider.dart';
 import 'package:hcs_driver/src/theme/app_theme.dart';
@@ -17,9 +18,13 @@ class _AppState extends ConsumerState<App> {
   @override
   void initState() {
     Future(
-      () => ref
-          .read(currentLanguageProvider.notifier)
-          .changeLanguage(context, context.locale.languageCode),
+      () {
+        ref
+            .read(currentLanguageProvider.notifier)
+            .changeLanguage(context, context.locale.languageCode);
+
+        ref.read(appControllerProvider.notifier).checkAppVersion();
+      },
     );
 
     super.initState();
@@ -34,7 +39,6 @@ class _AppState extends ConsumerState<App> {
       routerDelegate: appRouter.delegate(
         deepLinkBuilder: (deepLink) => DeepLink.defaultPath,
       ),
-      
       routeInformationParser: appRouter.defaultRouteParser(),
       theme: ref.watch(appThemeProvider),
       onGenerateTitle: (context) => context.tr('appName'),

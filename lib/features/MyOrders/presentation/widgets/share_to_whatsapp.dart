@@ -1,15 +1,23 @@
-
-
+import 'package:auto_route/auto_route.dart';
+import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart';
+import 'package:hcs_driver/features/MyOrders/data/models/order_details_share.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/controllers/order_details_controller.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/controllers/order_details_notifier.dart';
+import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-
-class ShareToWhatsApp extends StatefulWidget {
+class ShareToWhatsApp extends ConsumerStatefulWidget {
   final String serviceOrderId;
   final Details? orderDetails;
+  final StaffAppointments? staffAppointments;
   final bool? isOrderShare;
 
   const ShareToWhatsApp({
@@ -17,82 +25,218 @@ class ShareToWhatsApp extends StatefulWidget {
     required this.serviceOrderId,
     required this.orderDetails,
     required this.isOrderShare,
+    required this.staffAppointments,
   });
 
   @override
-  State<ShareToWhatsApp> createState() => _ShareToWhatsAppState();
+  ConsumerState<ShareToWhatsApp> createState() => _ShareToWhatsAppState();
 }
 
-class _ShareToWhatsAppState extends State<ShareToWhatsApp> {
+class _ShareToWhatsAppState extends ConsumerState<ShareToWhatsApp> {
   bool _isSharing = false;
 
-Future<void> shareToWhatsApp({bool isOrderShare = false}) async {
-  if (_isSharing) return; // avoid double click
-  setState(() => _isSharing = true);
+  Future<void> shareToWhatsApp({OrderDetailsShare? orderDetails}) async {
+    if (widget.isOrderShare! && orderDetails != null) {
+      final cleanersList =
+          (orderDetails?.data?.staffAppointment as List?) ?? [];
+      // final cleaners = widget.isOrderShare!
+      //     ? cleanersList.join('\n') // each cleaner in new line
+      //     : cleanersList.join(' - '); // all in one line
+      final cleaners = cleanersList.join('\n');
 
-  final cleanersList = (widget.orderDetails?.staffAppointment as List?) ?? [];
-  final cleaners = isOrderShare
-      ? cleanersList.join('\n') // each cleaner in new line
-      : cleanersList.join(' - '); // all in one line
+      final cleaningSupplies = orderDetails?.data?.withCleaningSupplies == 0
+          ? "NO"
+          : "YES";
 
-  final cleaningSupplies =
-      widget.orderDetails?.withCleaningSupplies == 0 ? "NO" : "YES";
+      final note = (orderDetails?.data?.note?.isNotEmpty ?? false)
+          ? "\nNote: ${orderDetails?.data?.note}"
+          : "";
 
-  final note = (widget.orderDetails?.note?.isNotEmpty ?? false)
-      ? "\nNote: ${widget.orderDetails?.note}"
-      : "";
+      final paymentAmount = orderDetails?.data?.totalNetAmount ?? "";
+      final paymentMethod = orderDetails?.data?.methodOfPayment ?? "";
+      final orderAmount = "Order Amount: QR $paymentAmount\nBy $paymentMethod";
 
-  final paymentAmount = widget.orderDetails?.totalNetAmount ?? "";
-  final paymentMethod = widget.orderDetails?.methodOfPayment ?? "";
-  final orderAmount = "Order Amount: QR $paymentAmount\nBy $paymentMethod";
-
-  final String message = '''
+      final String message =
+          '''
 Booking Number: ${widget.serviceOrderId}
-Supervisor Name: ${widget.orderDetails?.supervisor.supervisorName}
+${widget.orderDetails?.supervisor.supervisorName != null ? 'Supervisor Name: ${widget.orderDetails?.supervisor.supervisorName} \n' : ''}
+Customer: ${orderDetails?.data?.customer?.customerName}
+Address: ${orderDetails?.data?.customer?.zone}, ${orderDetails?.data?.customer?.location}
+Mobile: ${orderDetails?.data?.customer?.phoneNumber}
 
-Customer: ${widget.orderDetails?.customer.customerName}
-Address: ${widget.orderDetails?.customer.zone}, ${widget.orderDetails?.customer.location}
-Mobile: ${widget.orderDetails?.customer.phoneNumber}
+${orderDetails?.data?.customer?.locationUrl != null ? '${orderDetails?.data?.customer?.locationUrl}\n' : ''}
+Date: ${orderDetails?.data?.date}
+Service Type: ${orderDetails?.data?.serviceType}
 
-${widget.orderDetails?.customer.locationUrl}
+Shift Type: ${orderDetails?.data?.shiftType}
+Duration: ${orderDetails?.data?.shiftType == "Full Day" ? "10 Hours" : "5 Hours"}
 
-Date: ${widget.orderDetails?.date}
-Service Type: ${widget.orderDetails?.serviceType}
+${(orderDetails.data?.staffAppointment != null && orderDetails.data!.staffAppointment!.length > 1) ? 'Names of Cleaners: \n$cleaners' : 'Names of Cleaners: $cleaners'}
 
-Shift Type: ${widget.orderDetails?.shiftType}
-Duration: ${widget.orderDetails?.shiftType == "Full Day" ? "10 Hours" : "5 Hours"}
-
-Names of Cleaners: $cleaners
 Cleaning Material: $cleaningSupplies$note
 
 $orderAmount
+${(orderDetails.data?.skipCashLink != null && orderDetails.data?.methodOfPayment == 'SkipCash') ? orderDetails.data!.skipCashLink : ''}
+
 ''';
 
-  final whatsappUrl =
-      Uri.parse("whatsapp://send?text=${Uri.encodeComponent(message)}");
-  final waWebUrl =
-      Uri.parse("https://wa.me/?text=${Uri.encodeComponent(message)}");
+      final whatsappUrl = Uri.parse(
+        "whatsapp://send?text=${Uri.encodeComponent(message)}",
+      );
+      final waWebUrl = Uri.parse(
+        "https://wa.me/?text=${Uri.encodeComponent(message)}",
+      );
 
-  try {
-    if (await canLaunchUrl(whatsappUrl)) {
-      await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
-    } else if (await canLaunchUrl(waWebUrl)) {
-      await launchUrl(waWebUrl, mode: LaunchMode.externalApplication);
+      try {
+        if (await canLaunchUrl(whatsappUrl)) {
+          await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+        } else if (await canLaunchUrl(waWebUrl)) {
+          await launchUrl(waWebUrl, mode: LaunchMode.externalApplication);
+        } else {
+          debugPrint("WhatsApp not installed!");
+        }
+      } catch (e) {
+        debugPrint("Error launching WhatsApp: $e");
+      }
+
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) setState(() => _isSharing = false);
+
+      // return;
     } else {
-      debugPrint("WhatsApp not installed!");
-    }
-  } catch (e) {
-    debugPrint("Error launching WhatsApp: $e");
-  }
+   final order = widget.orderDetails;
+final log = widget.staffAppointments;
 
-  await Future.delayed(const Duration(seconds: 1));
-  if (mounted) setState(() => _isSharing = false);
-}
+/// ===== FROM LOG =====
+final visitNumber = log?.visitNumber ?? "";
+final visitDate = log?.date ?? "";
+final shiftType = log?.shiftType ?? "";
+
+/// ===== FROM ORDER =====
+final bookingNumber = widget.serviceOrderId;
+final supervisorName =
+    order?.supervisor.supervisorName ?? "";
+final customerName =
+    order?.customer.customerName ?? "";
+final mobile =
+    order?.customer.phoneNumber ?? "";
+final driverName =
+    order?.driver?.driverName ?? "";
+final serviceType =
+    order?.serviceType ?? "";
+final duration =
+    order?.shiftType == "Full Day"
+        ? "10 Hours"
+        : "5 Hours";
+
+final cleanersList =
+    (order?.staffAppointment as List?) ?? [];
+final cleaners = cleanersList.join('\n');
+
+final cleaningMaterial =
+    order?.withCleaningSupplies == 0
+        ? "NO"
+        : "YES";
+
+final amount =
+    order?.totalNetAmount ?? "";
+final paymentMethod =
+    order?.methodOfPayment ?? "";
+
+final String message = '''
+Visit Details
+
+Visit Number : $visitNumber
+
+Booking Number: $bookingNumber
+Supervisor Name: $supervisorName
+Customer: $customerName
+
+Mobile: $mobile
+
+Driver: $driverName
+Date: $visitDate
+Service Type: $serviceType
+
+Shift Type: $shiftType
+Duration: $duration
+Service Type: $serviceType
+
+Name of Cleaner:
+$cleaners
+
+Cleaning Material: $cleaningMaterial
+
+Order Amount : $amount QR By $paymentMethod
+''';
+
+      final whatsappUrl = Uri.parse(
+        "whatsapp://send?text=${Uri.encodeComponent(message)}",
+      );
+      final waWebUrl = Uri.parse(
+        "https://wa.me/?text=${Uri.encodeComponent(message)}",
+      );
+
+      // try {
+      if (await canLaunchUrl(whatsappUrl)) {
+        await launchUrl(whatsappUrl, mode: LaunchMode.externalApplication);
+      } else
+      // if (await canLaunchUrl(waWebUrl))
+      {
+        await launchUrl(waWebUrl, mode: LaunchMode.externalApplication);
+        // } else {
+        //   debugPrint("WhatsApp not installed!");
+      }
+      // } catch (e) {
+      //   debugPrint("Error launching WhatsApp: $e");
+      // }
+
+      await Future.delayed(const Duration(seconds: 1));
+      if (mounted) setState(() => _isSharing = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
+    late BuildContext dialogContext;
+
+    ref.listen(orderDetailsNotifierProvider, (prev, next) {
+      next.whenOrNull(
+        loading: () {
+          showGeneralDialog(
+            context: context,
+            pageBuilder: (ctx, animation, secondaryAnimation) {
+              dialogContext = ctx;
+              return PopScope(
+                canPop: false,
+                child: const Center(child: CircularProgressIndicator()),
+              );
+            },
+          );
+        },
+        loaded: (order) {
+          dialogContext.pop();
+          if (order.data?.customer?.customerName != null) {
+            shareToWhatsApp(orderDetails: order);
+          }
+        },
+        error: (msg) {
+          dialogContext.pop();
+          BotToast.showText(text: msg);
+        },
+      );
+    });
+
     return InkWell(
-      onTap:()=> shareToWhatsApp(isOrderShare:widget. isOrderShare!),
+      onTap: () {
+        if (widget.isOrderShare!) {
+          ref
+              .read(orderDetailsNotifierProvider.notifier)
+              .getOrderDetails(widget.serviceOrderId);
+        } else {
+          shareToWhatsApp();
+        }
+      },
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Icon(Icons.share, size: 20.sp, color: AppColors.blueText),
@@ -100,8 +244,6 @@ $orderAmount
     );
   }
 }
-
-
 
 // class ShareToWhatsApp extends StatelessWidget {
 //   final String serviceOrderId;

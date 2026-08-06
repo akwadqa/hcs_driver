@@ -1,4 +1,3 @@
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,7 @@ abstract class AppInitializer {
   static Future<void> init() async {
     //-- Flutter init --
     WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-    
+
     // -- FIREBASE INIT -- //
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -23,27 +22,25 @@ abstract class AppInitializer {
     // -- Initialize Notifications -- //
     // Initialize the notification service (singleton)
     // await NotificationService().initialize();
-    
-    
+
     // Note: Socket and location services will be initialized when driver logs in
     // with their auth token and driver ID
-    
+
     //-- ENV FILE LOAD  --
     // await dotenv.load(fileName: '.env');
     // //-- Hive initialize --
     // await Hive.initFlutter();
     // await HiveInitializer.initialize();
-    
+
     //-- Load base URL's  --
     // ServicesUrls.init();
-    
+
     FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
     //-- Localization init  --
     await EasyLocalization.ensureInitialized();
   }
 }
-
 
 Future<ProviderContainer> initializeProviders() async {
   final container = ProviderContainer(observers: [RiverpodObserver()]);
@@ -52,10 +49,11 @@ Future<ProviderContainer> initializeProviders() async {
   await container.read(notificationsServiceProvider).init();
   // await NotificationService().initialize();
 
-    FirebaseAnalytics analytics = FirebaseAnalytics.instance;
+  FirebaseAnalytics analytics = FirebaseAnalytics.instance;
   analytics.setAnalyticsCollectionEnabled(true);
   return container;
 }
+
 Future<void> handleSplashScreen(ProviderContainer container) async {
   const minSplashDuration = 2000;
   final startTime = DateTime.now();

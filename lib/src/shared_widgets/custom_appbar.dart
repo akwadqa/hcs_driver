@@ -1,9 +1,13 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hcs_driver/features/Auth/application/auth_service.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_back_arrow_widget.dart';
 import 'package:hcs_driver/src/theme/app_colors.dart';
+
+import '../extenssions/widget_extensions.dart';
+import 'filter_status_menue.dart';
 
 class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   final bool hasBackArrow;
@@ -13,6 +17,10 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
   final TabController? tabController;
   final ValueChanged<int>? onTabTap;
+  final VoidCallback? onBakPressed;
+  final int? currentTabIndex;
+  final bool withFilter;
+
   const CustomAppbar({
     super.key,
     this.hasBackArrow = false,
@@ -22,6 +30,9 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.tabController,
     this.onTabTap,
+    this.onBakPressed,
+    this.currentTabIndex,
+    this.withFilter = false,
   });
 
   @override
@@ -31,8 +42,10 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
       leading: isHome
           ? null
           : hasBackArrow
-          ? const CustomBackArrowWidget()
-          : null,
+              ? CustomBackArrowWidget(
+                  onBakPressed: onBakPressed,
+                )
+              : null,
       centerTitle: true,
       backgroundColor: AppColors.white,
       elevation: 0,
@@ -51,8 +64,7 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                   unselectedLabelStyle: Theme.of(
                     context,
                   ).textTheme.displayMedium,
-
-                  tabs:const [
+                  tabs: [
                     Tab(
                       icon: SizedBox(
                         child: Icon(
@@ -64,14 +76,13 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
 
                     //? Dont forget it :
                     // Tab(text: 'Yesterday'),
-                    Tab(text: 'Today'),
-                    Tab(text: 'Tomorrow'),
+                    Tab(text: 'today'.tr()),
+                    Tab(text: 'tomorrow'.tr()),
                   ],
                 ),
               ),
             )
           : null,
-
       title: Consumer(
         builder: (context, ref, child) {
           final user = ref.watch(userDataProvider);
@@ -82,11 +93,12 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                     Row(
                       children: [
                         Icon(Icons.person, color: AppColors.blueTitle),
-
                         10.horizontalSpace,
                         Text(
                           user?.$2 ?? "driveer",
-                          style: Theme.of(context).textTheme.displaySmall!
+                          style: Theme.of(context)
+                              .textTheme
+                              .displaySmall!
                               .copyWith(
                                 fontSize: 16.sp,
                                 fontWeight: FontWeight.w600,
@@ -94,19 +106,41 @@ class CustomAppbar extends StatelessWidget implements PreferredSizeWidget {
                         ),
                       ],
                     ),
-             
                   ],
                 )
               : Text(
                   title,
                   style: Theme.of(context).textTheme.displaySmall!.copyWith(
-                    fontSize: 16.sp,
-                    fontWeight: FontWeight.w600,
-                  ),
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w600,
+                      ),
                 );
         },
       ),
-      actions: isHome ? null : actions,
+      actions: isHome
+          ? withFilter
+              ? [
+                  Consumer(
+                    builder: (context, ref, _) {
+                      return GestureDetector(
+                        onTap: () {
+                          showOrderFilterMenu(
+                            context,
+                            ref,
+                            currentTabIndex ?? 0,
+                          );
+                        },
+                        child: Icon(
+                          Icons.filter_alt_rounded,
+                          color: AppColors.primary,
+                          size: 33,
+                        ),
+                      ).onlyPadding(end: 8);
+                    },
+                  ),
+                ]
+              : null
+          : actions,
       actionsPadding: EdgeInsets.symmetric(horizontal: 31.w),
     );
   }

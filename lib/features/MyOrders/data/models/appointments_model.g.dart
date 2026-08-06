@@ -11,12 +11,10 @@ AppointmentModel _$AppointmentModelFromJson(Map<String, dynamic> json) =>
       statusCode: (json['status_code'] as num).toInt(),
       error: (json['error'] as num).toInt(),
       message: json['message'] as String,
-      pagination: Pagination.fromJson(
-        json['pagination'] as Map<String, dynamic>,
-      ),
-      data: (json['data'] as List<dynamic>)
-          .map((e) => Appointment.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      pagination:
+          Pagination.fromJson(json['pagination'] as Map<String, dynamic>),
+      data:
+          StaffAppointmentsData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$AppointmentModelToJson(AppointmentModel instance) =>
@@ -28,39 +26,78 @@ Map<String, dynamic> _$AppointmentModelToJson(AppointmentModel instance) =>
       'data': instance.data,
     };
 
-Appointment _$AppointmentFromJson(Map<String, dynamic> json) => Appointment(
-  logId: json['log_id'] as String,
-  employee: json['employee'] as String,
-  date: json['date'] as String,
-  serviceType: json['service_type'] as String,
-  serviceShift: json['service_shift'] as String,
-  driverStatus: json['driver_status'] as String?,
-  logStatus: json['log_status'] as String,
-  creation: json['creation'] as String?,
-  supervisorName: json['supervisor_name'] as String?,
-  employeeName: json['employee_name'] as String,
-);
+StaffAppointmentsData _$StaffAppointmentsDataFromJson(
+        Map<String, dynamic> json) =>
+    StaffAppointmentsData(
+      staffAppointments: (json['logs'] as List<dynamic>)
+          .map((e) => StaffAppointments.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
 
-Map<String, dynamic> _$AppointmentToJson(Appointment instance) =>
+Map<String, dynamic> _$StaffAppointmentsDataToJson(
+        StaffAppointmentsData instance) =>
     <String, dynamic>{
-      'log_id': instance.logId,
-      'employee': instance.employee,
+      'logs': instance.staffAppointments,
+    };
+
+StaffAppointments _$StaffAppointmentsFromJson(Map<String, dynamic> json) =>
+    StaffAppointments(
+      serviceOrderId: json['service_order_id'] as String,
+      status: json['status'] as String,
+      postingDate: json['posting_date'] as String,
+      shiftType: json['shift_type'] as String,
+      date: json['date'] as String,
+      driverStatus: json['driver_status'] as String?,
+      serviceType: json['service_type'] as String?,
+      paymentMethod: json['method_of_payment'] as String,
+      totalNetAmount: (json['total_net_amount'] as num).toDouble(),
+      outstandingAmount: (json['outstanding_amount'] as num).toDouble(),
+      receivedAmount: (json['received_amount'] as num).toDouble(),
+      supervisorName: json['supervisor_name'] as String?,
+      customerName: json['customer_name'] as String?,
+      customerPhone: json['customer_phone_number'] as String?,
+      customerLocation: json['customer_location'] as String?,
+      customerLocationUrl: json['customer_location_url'] as String?,
+      totalVisitsNumber: (json['total_number_of_visits'] as num?)?.toInt(),
+      visitNumber: json['visit_number'] as String?,
+      staffAppointmentNames: (json['staff_appointment'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
+      numberOfCleaners: (json['number_of_cleaners'] as num?)?.toInt(),
+      note: json['note'] as String?,
+    );
+
+Map<String, dynamic> _$StaffAppointmentsToJson(StaffAppointments instance) =>
+    <String, dynamic>{
+      'service_order_id': instance.serviceOrderId,
+      'status': instance.status,
+      'posting_date': instance.postingDate,
+      'shift_type': instance.shiftType,
       'date': instance.date,
-      'service_type': instance.serviceType,
-      'service_shift': instance.serviceShift,
       'driver_status': instance.driverStatus,
-      'log_status': instance.logStatus,
-      'creation': instance.creation,
-      'employee_name': instance.employeeName,
+      'service_type': instance.serviceType,
+      'method_of_payment': instance.paymentMethod,
+      'total_net_amount': instance.totalNetAmount,
+      'outstanding_amount': instance.outstandingAmount,
+      'received_amount': instance.receivedAmount,
       'supervisor_name': instance.supervisorName,
+      'customer_name': instance.customerName,
+      'customer_phone_number': instance.customerPhone,
+      'customer_location': instance.customerLocation,
+      'customer_location_url': instance.customerLocationUrl,
+      'total_number_of_visits': instance.totalVisitsNumber,
+      'visit_number': instance.visitNumber,
+      'staff_appointment': instance.staffAppointmentNames,
+      'number_of_cleaners': instance.numberOfCleaners,
+      'note': instance.note,
     };
 
 Pagination _$PaginationFromJson(Map<String, dynamic> json) => Pagination(
-  page: (json['page'] as num).toInt(),
-  limit: (json['limit'] as num).toInt(),
-  totalItems: (json['total_items'] as num).toInt(),
-  totalPages: (json['total_pages'] as num).toInt(),
-);
+      page: (json['page'] as num).toInt(),
+      limit: (json['limit'] as num).toInt(),
+      totalItems: (json['total_items'] as num).toInt(),
+      totalPages: (json['total_pages'] as num).toInt(),
+    );
 
 Map<String, dynamic> _$PaginationToJson(Pagination instance) =>
     <String, dynamic>{

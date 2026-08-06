@@ -46,14 +46,13 @@ String _$userDataHash() => r'e29adc3a63ead058c71549ee13a311193a490e47';
 @ProviderFor(UserData)
 final userDataProvider =
     NotifierProvider<UserData, (String, String, String)?>.internal(
-      UserData.new,
-      name: r'userDataProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$userDataHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  UserData.new,
+  name: r'userDataProvider',
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$userDataHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$UserData = Notifier<(String, String, String)?>;
 // ignore_for_file: type=lint

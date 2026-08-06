@@ -13,9 +13,8 @@ String _$appThemeHash() => r'38ebf774cad57a5b3d2a309fed694a93e0a3aab1';
 final appThemeProvider = Provider<ThemeData>.internal(
   appTheme,
   name: r'appThemeProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$appThemeHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$appThemeHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

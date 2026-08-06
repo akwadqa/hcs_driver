@@ -15,6 +15,8 @@ import 'package:hcs_driver/features/app/intro_screen.dart' as _i2;
 import 'package:hcs_driver/features/app/main_screen.dart' as _i4;
 import 'package:hcs_driver/features/Auth/presentation/pages/login_screen.dart'
     as _i3;
+import 'package:hcs_driver/features/MyOrders/data/models/appointments_model.dart'
+    as _i13;
 import 'package:hcs_driver/features/MyOrders/presentation/pages/appointment_screen.dart'
     as _i1;
 import 'package:hcs_driver/features/MyOrders/presentation/pages/myorders_content.dart'
@@ -36,12 +38,17 @@ class AppoinmentRoute extends _i11.PageRouteInfo<AppoinmentRouteArgs> {
   AppoinmentRoute({
     _i12.Key? key,
     required String serviceOrderID,
+    required String dateType,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-         AppoinmentRoute.name,
-         args: AppoinmentRouteArgs(key: key, serviceOrderID: serviceOrderID),
-         initialChildren: children,
-       );
+          AppoinmentRoute.name,
+          args: AppoinmentRouteArgs(
+            key: key,
+            serviceOrderID: serviceOrderID,
+            dateType: dateType,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'AppoinmentRoute';
 
@@ -52,39 +59,49 @@ class AppoinmentRoute extends _i11.PageRouteInfo<AppoinmentRouteArgs> {
       return _i1.AppoinmentScreen(
         key: args.key,
         serviceOrderID: args.serviceOrderID,
+        dateType: args.dateType,
       );
     },
   );
 }
 
 class AppoinmentRouteArgs {
-  const AppoinmentRouteArgs({this.key, required this.serviceOrderID});
+  const AppoinmentRouteArgs({
+    this.key,
+    required this.serviceOrderID,
+    required this.dateType,
+  });
 
   final _i12.Key? key;
 
   final String serviceOrderID;
 
+  final String dateType;
+
   @override
   String toString() {
-    return 'AppoinmentRouteArgs{key: $key, serviceOrderID: $serviceOrderID}';
+    return 'AppoinmentRouteArgs{key: $key, serviceOrderID: $serviceOrderID, dateType: $dateType}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! AppoinmentRouteArgs) return false;
-    return key == other.key && serviceOrderID == other.serviceOrderID;
+    return key == other.key &&
+        serviceOrderID == other.serviceOrderID &&
+        dateType == other.dateType;
   }
 
   @override
-  int get hashCode => key.hashCode ^ serviceOrderID.hashCode;
+  int get hashCode =>
+      key.hashCode ^ serviceOrderID.hashCode ^ dateType.hashCode;
 }
 
 /// generated route for
 /// [_i2.IntroScreen]
 class IntroRoute extends _i11.PageRouteInfo<void> {
   const IntroRoute({List<_i11.PageRouteInfo>? children})
-    : super(IntroRoute.name, initialChildren: children);
+      : super(IntroRoute.name, initialChildren: children);
 
   static const String name = 'IntroRoute';
 
@@ -100,7 +117,7 @@ class IntroRoute extends _i11.PageRouteInfo<void> {
 /// [_i3.LoginScreen]
 class LoginRoute extends _i11.PageRouteInfo<void> {
   const LoginRoute({List<_i11.PageRouteInfo>? children})
-    : super(LoginRoute.name, initialChildren: children);
+      : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
@@ -116,7 +133,7 @@ class LoginRoute extends _i11.PageRouteInfo<void> {
 /// [_i4.MainScreen]
 class MainRoute extends _i11.PageRouteInfo<void> {
   const MainRoute({List<_i11.PageRouteInfo>? children})
-    : super(MainRoute.name, initialChildren: children);
+      : super(MainRoute.name, initialChildren: children);
 
   static const String name = 'MainRoute';
 
@@ -132,7 +149,7 @@ class MainRoute extends _i11.PageRouteInfo<void> {
 /// [_i5.MyOrdersContentScreen]
 class MyOrdersContentRoute extends _i11.PageRouteInfo<void> {
   const MyOrdersContentRoute({List<_i11.PageRouteInfo>? children})
-    : super(MyOrdersContentRoute.name, initialChildren: children);
+      : super(MyOrdersContentRoute.name, initialChildren: children);
 
   static const String name = 'MyOrdersContentRoute';
 
@@ -148,7 +165,7 @@ class MyOrdersContentRoute extends _i11.PageRouteInfo<void> {
 /// [_i6.MyOrdersScreen]
 class MyOrdersRoute extends _i11.PageRouteInfo<void> {
   const MyOrdersRoute({List<_i11.PageRouteInfo>? children})
-    : super(MyOrdersRoute.name, initialChildren: children);
+      : super(MyOrdersRoute.name, initialChildren: children);
 
   static const String name = 'MyOrdersRoute';
 
@@ -165,18 +182,16 @@ class MyOrdersRoute extends _i11.PageRouteInfo<void> {
 class OrderDetailsRoute extends _i11.PageRouteInfo<OrderDetailsRouteArgs> {
   OrderDetailsRoute({
     _i12.Key? key,
-    required String serviceOrderID,
-    required String appointmentID,
+    required _i13.StaffAppointments staffAppointments,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-         OrderDetailsRoute.name,
-         args: OrderDetailsRouteArgs(
-           key: key,
-           serviceOrderID: serviceOrderID,
-           appointmentID: appointmentID,
-         ),
-         initialChildren: children,
-       );
+          OrderDetailsRoute.name,
+          args: OrderDetailsRouteArgs(
+            key: key,
+            staffAppointments: staffAppointments,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'OrderDetailsRoute';
 
@@ -186,43 +201,33 @@ class OrderDetailsRoute extends _i11.PageRouteInfo<OrderDetailsRouteArgs> {
       final args = data.argsAs<OrderDetailsRouteArgs>();
       return _i7.OrderDetailsScreen(
         key: args.key,
-        serviceOrderID: args.serviceOrderID,
-        appointmentID: args.appointmentID,
+        staffAppointments: args.staffAppointments,
       );
     },
   );
 }
 
 class OrderDetailsRouteArgs {
-  const OrderDetailsRouteArgs({
-    this.key,
-    required this.serviceOrderID,
-    required this.appointmentID,
-  });
+  const OrderDetailsRouteArgs({this.key, required this.staffAppointments});
 
   final _i12.Key? key;
 
-  final String serviceOrderID;
-
-  final String appointmentID;
+  final _i13.StaffAppointments staffAppointments;
 
   @override
   String toString() {
-    return 'OrderDetailsRouteArgs{key: $key, serviceOrderID: $serviceOrderID, appointmentID: $appointmentID}';
+    return 'OrderDetailsRouteArgs{key: $key, staffAppointments: $staffAppointments}';
   }
 
   @override
   bool operator ==(Object other) {
     if (identical(this, other)) return true;
     if (other is! OrderDetailsRouteArgs) return false;
-    return key == other.key &&
-        serviceOrderID == other.serviceOrderID &&
-        appointmentID == other.appointmentID;
+    return key == other.key && staffAppointments == other.staffAppointments;
   }
 
   @override
-  int get hashCode =>
-      key.hashCode ^ serviceOrderID.hashCode ^ appointmentID.hashCode;
+  int get hashCode => key.hashCode ^ staffAppointments.hashCode;
 }
 
 /// generated route for
@@ -234,14 +239,14 @@ class OrderStatusRoute extends _i11.PageRouteInfo<OrderStatusRouteArgs> {
     required String appointmentID,
     List<_i11.PageRouteInfo>? children,
   }) : super(
-         OrderStatusRoute.name,
-         args: OrderStatusRouteArgs(
-           key: key,
-           statusOrderType: statusOrderType,
-           appointmentID: appointmentID,
-         ),
-         initialChildren: children,
-       );
+          OrderStatusRoute.name,
+          args: OrderStatusRouteArgs(
+            key: key,
+            statusOrderType: statusOrderType,
+            appointmentID: appointmentID,
+          ),
+          initialChildren: children,
+        );
 
   static const String name = 'OrderStatusRoute';
 
@@ -294,7 +299,7 @@ class OrderStatusRouteArgs {
 /// [_i9.PaymentSummaryScreen]
 class PaymentSummaryRoute extends _i11.PageRouteInfo<void> {
   const PaymentSummaryRoute({List<_i11.PageRouteInfo>? children})
-    : super(PaymentSummaryRoute.name, initialChildren: children);
+      : super(PaymentSummaryRoute.name, initialChildren: children);
 
   static const String name = 'PaymentSummaryRoute';
 
@@ -310,7 +315,7 @@ class PaymentSummaryRoute extends _i11.PageRouteInfo<void> {
 /// [_i10.SettingsScreen]
 class SettingsRoute extends _i11.PageRouteInfo<void> {
   const SettingsRoute({List<_i11.PageRouteInfo>? children})
-    : super(SettingsRoute.name, initialChildren: children);
+      : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
