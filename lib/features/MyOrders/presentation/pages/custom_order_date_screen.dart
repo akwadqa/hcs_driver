@@ -43,7 +43,10 @@ class _CustomDateOrdersScreenState
     final state = ref.read(myOrdersControllerProvider);
 
     // Only try to load more if you’ve implemented paging for custom date.
-    final hasMore = state.currentCustomOrdersPage != null; // <- optional
+    final hasMore = state.currentCustomOrdersPage != null &&
+        state.currentCustomOrdersPage != -1;
+    print(
+        'Pixels: ${_scrollController.position.pixels}, Max: ${_scrollController.position.maxScrollExtent}, hasMore: $hasMore');
 
     if (_scrollController.position.pixels >
             _scrollController.position.maxScrollExtent - 100 &&
@@ -51,7 +54,9 @@ class _CustomDateOrdersScreenState
       _loadMoreTimer?.cancel();
       _loadMoreTimer = Timer(const Duration(milliseconds: 500), () async {
         // Implement this in your controller if you want paging for custom:
-        // await ref.read(myOrdersControllerProvider.notifier).onLoadMoreCustomDate();
+        await ref
+            .read(myOrdersControllerProvider.notifier)
+            .onLoadMoreCustomDate();
       });
     }
   }
@@ -96,13 +101,20 @@ class _CustomDateOrdersScreenState
       },
       child: ListView.builder(
         controller: _scrollController,
-        shrinkWrap: true,
-        itemCount: ordersState.customOrders.length + 1, // +1 for footer
+
+        // 1. إضافة الفيزياء لضمان استمرار التمرير حتى لو كانت القائمة قصيرة
+        physics: const AlwaysScrollableScrollPhysics(),
+
+        // 2. جعل shrinkWrap تساوي false (مهم جداً للأداء ولضمان عمل الـ ScrollController)
+        // ملاحظة: إذا ظهر لك خطأ في الواجهة بعد جعلها false، فهذا يعني أن القائمة بحاجة
+        // لأن توضع داخل Expanded إذا كانت بداخل Column في الأب (Parent).
+        shrinkWrap: false,
+
+        itemCount: ordersState.customOrders.length + 1,
         itemBuilder: (context, index) {
-          // footer
           if (index >= ordersState.customOrders.length) {
-            // If you don't implement pagination for custom dates, show "No more"
-            if (ordersState.currentCustomOrdersPage == null) {
+            if (ordersState.currentCustomOrdersPage == null ||
+                ordersState.currentCustomOrdersPage == -1) {
               return Center(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 12),
@@ -113,7 +125,6 @@ class _CustomDateOrdersScreenState
                 ),
               );
             } else {
-              // Loading next page (if you implement it)
               return const Padding(
                 padding: EdgeInsets.all(8),
                 child: Center(child: FadeCircleLoadingIndicator()),

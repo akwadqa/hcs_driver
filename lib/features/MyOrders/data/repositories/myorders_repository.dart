@@ -158,6 +158,9 @@ class MyOrdersRepository {
     String? date,
     List<ShiftTypeEnum>? shiftType,
   }) async {
+    print('----------------');
+    print(date);
+    print('----------------');
     final response = await _networkService.get(
       ApiConstance.appontmentsLogs(),
       data: {
@@ -169,6 +172,7 @@ class MyOrdersRepository {
         'page': page,
         if (dateType != null) 'date_type': dateType,
         if (date != null) 'date': date,
+        // if (date != null) 'date': '07-08-2026',
         // "action": "driver",
       },
 

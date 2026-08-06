@@ -128,9 +128,9 @@ class MyOrdersController extends _$MyOrdersController {
             : null,
       );
 
-      // final next = resp.pagination.totalPages > 1 ? 2 : null;
+      int next = resp.pagination.totalPages > 1 ? 2 : -1;
       state = state.copyWith(
-        // currentCustomOrdersPage: next,
+        currentCustomOrdersPage: next,
         customOrders: resp.data.staffAppointments,
         customOrdersState: RequestStates.loaded,
       );
@@ -151,7 +151,7 @@ class MyOrdersController extends _$MyOrdersController {
 
   Future<void> onLoadMoreCustomDate() async {
     final nextPage = state.currentCustomOrdersPage;
-    if (nextPage == null) return;
+    if (nextPage == null || nextPage == -1) return;
     try {
       final repo = ref.read(myOrdersRepositoryProvider);
       final resp = await repo.getAppontments(
@@ -165,7 +165,7 @@ class MyOrdersController extends _$MyOrdersController {
       );
       final next = resp.pagination.totalPages > resp.pagination.page
           ? resp.pagination.page + 1
-          : null;
+          : -1;
       state = state.copyWith(
         currentCustomOrdersPage: next,
         customOrders: [...state.customOrders, ...resp.data.staffAppointments],
@@ -216,7 +216,6 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: 1,
         dateType: 'today',
-        //TODO : Add list here:
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
@@ -249,7 +248,6 @@ class MyOrdersController extends _$MyOrdersController {
       final ordersData = await myOrdersRepo.getAppontments(
         page: state.currentTodayOrdersPage!,
         dateType: 'today',
-        //TODO : Add list here:
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,

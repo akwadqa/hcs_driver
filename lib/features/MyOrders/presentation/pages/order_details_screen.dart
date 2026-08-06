@@ -404,7 +404,10 @@ class OrderCard extends StatelessWidget {
                           nextDriverStatus == null
                               ? 10.verticalSpace
                               : 0.verticalSpace,
-                          currentDriverStatus != "Completed"
+                          (currentDriverStatus != "Completed" &&
+                                  !(details?.serviceType == "Flexible" &&
+                                      currentDriverStatus ==
+                                          "Payment Received"))
                               ? nextDriverStatus != null
                                   ? InfoRow(
                                       "nextStatus".tr(),
