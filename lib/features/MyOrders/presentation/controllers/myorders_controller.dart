@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:hcs_driver/features/MyOrders/data/models/orders_details_model.dart';
 import 'package:hcs_driver/features/MyOrders/data/repositories/myorders_repository.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
-import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/core/enums/shift_type_enum.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,11 +11,10 @@ part 'myorders_controller.g.dart';
 class MyOrdersController extends _$MyOrdersController {
   @override
   MyOrdersState build() => const MyOrdersState();
-  // inside MyOrdersController
 
   Future<void> fetchCompletedOrders({String? searchKey}) async {
     state = state.copyWith(
-      completedOrdersStates: RequestStates.loading,
+      completedOrders: const AsyncLoading(),
       searchKey: searchKey ?? '',
     );
 
@@ -24,28 +22,18 @@ class MyOrdersController extends _$MyOrdersController {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getServicesOrders(
         page: 1,
-        status: 'completed', // 👈 أهم حاجة
-        search: searchKey, // 👈 دعم البحث بالاسم أو الموبايل
+        status: 'completed',
+        search: searchKey,
       );
 
-      int? nextPage;
-      if (ordersData.pagination.totalPages > 1) {
-        nextPage = 2;
-      } else {
-        nextPage = null;
-      }
+      int? nextPage = ordersData.pagination.totalPages > 1 ? 2 : null;
 
       state = state.copyWith(
         currentCompletedOrdersPage: nextPage,
-        completedOrders: ordersData.data.orders,
-        completedOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
+        completedOrders: AsyncData(ordersData.data.orders),
       );
-    } catch (e) {
-      state = state.copyWith(
-        completedOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(completedOrders: AsyncError(e, st));
     }
   }
 
@@ -58,29 +46,28 @@ class MyOrdersController extends _$MyOrdersController {
       final resp = await repo.getServicesOrders(
         page: nextPage,
         status: 'completed',
-        search: state.searchKey, // 👈 يحافظ على الفلترة
+        search: state.searchKey,
       );
 
       final next = resp.pagination.totalPages > resp.pagination.page
           ? resp.pagination.page + 1
           : null;
 
+      // نحافظ على البيانات السابقة ونضيف عليها
+      final currentList = state.completedOrders.value ?? [];
+
       state = state.copyWith(
         currentCompletedOrdersPage: next,
-        completedOrders: [...state.completedOrders, ...resp.data.orders],
-        completedOrdersStates: RequestStates.loaded,
+        completedOrders: AsyncData([...currentList, ...resp.data.orders]),
       );
-    } catch (e) {
-      state = state.copyWith(
-        completedOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(completedOrders: AsyncError(e, st));
     }
   }
 
   // ? Yesterday
   Future<void> fetchYesterdayOrders() async {
-    state = state.copyWith(approvedOrdersStates: RequestStates.loading);
+    state = state.copyWith(approvedOrders: const AsyncLoading());
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
@@ -89,65 +76,74 @@ class MyOrdersController extends _$MyOrdersController {
         dateType: 'yesterday',
       );
 
-      int? nextPage;
-      //if there is a second page ?
-      if (ordersData.pagination.totalPages > 1) {
-        nextPage = 2;
-      } else {
-        nextPage = null;
-      }
+      int? nextPage = ordersData.pagination.totalPages > 1 ? 2 : null;
+
       state = state.copyWith(
         currentApprovedOrdersPage: nextPage,
-        approvedOrders: ordersData.data.orders,
-        approvedOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
+        approvedOrders: AsyncData(ordersData.data.orders),
       );
-    } catch (e) {
+    } catch (e, st) {
+      state = state.copyWith(approvedOrders: AsyncError(e, st));
+    }
+  }
+
+  Future<void> onLoadMoreYesterdayOrders() async {
+    final nextPage = state.currentApprovedOrdersPage;
+    if (nextPage == null) return;
+
+    try {
+      final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
+      final ordersData = await myOrdersRepo.getServicesOrders(
+        page: nextPage,
+        dateType: 'yesterday',
+      );
+
+      final next = ordersData.pagination.totalPages > ordersData.pagination.page
+          ? ordersData.pagination.page + 1
+          : null;
+
+      final currentList = state.approvedOrders.value ?? [];
+
       state = state.copyWith(
-        approvedOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
+        currentApprovedOrdersPage: next,
+        approvedOrders: AsyncData([...currentList, ...ordersData.data.orders]),
       );
+    } catch (e, st) {
+      state = state.copyWith(approvedOrders: AsyncError(e, st));
     }
   }
 
   // ? Custom Data
   Future<void> fetchOrdersForDate(String yyyymmdd) async {
     state = state.copyWith(
-      customOrdersState: RequestStates.loading,
+      customOrders: const AsyncLoading(),
       lastCustomDate: yyyymmdd,
     );
     try {
       final repo = ref.read(myOrdersRepositoryProvider);
       final resp = await repo.getAppontments(
         page: 1,
-        // dateType: '',
-        date: yyyymmdd, // <— pass the specific date
-        //TODO : Add list here:
+        date: yyyymmdd,
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
       );
 
       int next = resp.pagination.totalPages > 1 ? 2 : -1;
+      
       state = state.copyWith(
         currentCustomOrdersPage: next,
-        customOrders: resp.data.staffAppointments,
-        customOrdersState: RequestStates.loaded,
+        customOrders: AsyncData(resp.data.staffAppointments),
       );
-    } catch (e) {
-      state = state.copyWith(
-        customOrdersState: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(customOrders: AsyncError(e, st));
     }
   }
 
   Future<void> refetchCustomDate() async {
     final d = state.lastCustomDate;
-    if (d != null) await fetchOrdersForDate(d);
+    if (d != null && d.isNotEmpty) await fetchOrdersForDate(d);
   }
-
-  // Optional if you need infinite scroll for custom date
 
   Future<void> onLoadMoreCustomDate() async {
     final nextPage = state.currentCustomOrdersPage;
@@ -156,9 +152,7 @@ class MyOrdersController extends _$MyOrdersController {
       final repo = ref.read(myOrdersRepositoryProvider);
       final resp = await repo.getAppontments(
         page: nextPage,
-        // dateType: '',
         date: state.lastCustomDate,
-        //TODO : Add list here:
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
@@ -166,50 +160,21 @@ class MyOrdersController extends _$MyOrdersController {
       final next = resp.pagination.totalPages > resp.pagination.page
           ? resp.pagination.page + 1
           : -1;
+
+      final currentList = state.customOrders.value ?? [];
+
       state = state.copyWith(
         currentCustomOrdersPage: next,
-        customOrders: [...state.customOrders, ...resp.data.staffAppointments],
-        customOrdersState: RequestStates.loaded,
+        customOrders: AsyncData([...currentList, ...resp.data.staffAppointments]),
       );
-    } catch (e) {
-      state = state.copyWith(
-        customOrdersState: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(customOrders: AsyncError(e, st));
     }
   }
 
-  Future<void> onLoadMoreYesterdayOrders() async {
-    try {
-      final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      final ordersData = await myOrdersRepo.getServicesOrders(
-        page: state.currentApprovedOrdersPage!,
-        dateType: 'yesterday',
-      );
-
-      int? nextPage;
-      //if we reach the limit or not ?
-      if (ordersData.pagination.totalPages > ordersData.pagination.page) {
-        nextPage = ordersData.pagination.page + 1;
-      } else {
-        nextPage = null;
-      }
-      state = state.copyWith(
-        currentApprovedOrdersPage: nextPage,
-        approvedOrders: [...state.approvedOrders, ...ordersData.data.orders],
-        approvedOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
-      );
-    } catch (e) {
-      state = state.copyWith(
-        approvedOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
-    }
-  }
-
+  // ? Today
   Future<void> fetchTodayOrders() async {
-    state = state.copyWith(todayOrdersStates: RequestStates.loading);
+    state = state.copyWith(todayOrders: const AsyncLoading());
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
@@ -221,64 +186,49 @@ class MyOrdersController extends _$MyOrdersController {
             : null,
       );
 
-      int? nextPage;
-      //if there is a second page ?
-      if (ordersData.pagination.totalPages > 1) {
-        nextPage = 2;
-      } else {
-        nextPage = -1;
-      }
+      int? nextPage = ordersData.pagination.totalPages > 1 ? 2 : -1;
+      
       state = state.copyWith(
         currentTodayOrdersPage: nextPage,
-        todayOrders: ordersData.data.staffAppointments,
-        todayOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
+        todayOrders: AsyncData(ordersData.data.staffAppointments),
       );
-    } catch (e) {
-      state = state.copyWith(
-        todayOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(todayOrders: AsyncError(e, st));
     }
   }
 
   Future<void> onLoadMoreTodayOrders() async {
+    final nextPage = state.currentTodayOrdersPage;
+    if (nextPage == null || nextPage == -1) return;
+
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getAppontments(
-        page: state.currentTodayOrdersPage!,
+        page: nextPage,
         dateType: 'today',
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
       );
 
-      int? nextPage;
-      //if we reach the limit or not ?
-      if (ordersData.pagination.totalPages > ordersData.pagination.page) {
-        nextPage = ordersData.pagination.page + 1;
-      } else {
-        nextPage = -1;
-      }
+      final next = ordersData.pagination.totalPages > ordersData.pagination.page
+          ? ordersData.pagination.page + 1
+          : -1;
+
+      final currentList = state.todayOrders.value ?? [];
+
       state = state.copyWith(
-        currentTodayOrdersPage: nextPage,
-        todayOrders: [
-          ...state.todayOrders,
-          ...ordersData.data.staffAppointments,
-        ],
-        todayOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
+        currentTodayOrdersPage: next,
+        todayOrders: AsyncData([...currentList, ...ordersData.data.staffAppointments]),
       );
-    } catch (e) {
-      state = state.copyWith(
-        todayOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(todayOrders: AsyncError(e, st));
     }
   }
 
+  // ? Tomorrow
   Future<void> fetchTomorrowOrders() async {
-    state = state.copyWith(tomorrowOrdersStates: RequestStates.loading);
+    state = state.copyWith(tomorrowOrders: const AsyncLoading());
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
@@ -290,183 +240,123 @@ class MyOrdersController extends _$MyOrdersController {
             : null,
       );
 
-      int? nextPage;
-      //if there is a second page ?
-      if (ordersData.pagination.totalPages > 1) {
-        nextPage = 2;
-      } else {
-        nextPage = -1;
-      }
+      int? nextPage = ordersData.pagination.totalPages > 1 ? 2 : -1;
+      
       state = state.copyWith(
         currentTomorrowOrdersPage: nextPage,
-        tomorrowOrders: ordersData.data.staffAppointments,
-        tomorrowOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
+        tomorrowOrders: AsyncData(ordersData.data.staffAppointments),
       );
-    } catch (e) {
-      state = state.copyWith(
-        tomorrowOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(tomorrowOrders: AsyncError(e, st));
     }
   }
 
   Future<void> onLoadMoreTomorrowOrders() async {
+    final nextPage = state.currentTomorrowOrdersPage;
+    if (nextPage == null || nextPage == -1) return;
+
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersData = await myOrdersRepo.getAppontments(
-        page: state.currentTomorrowOrdersPage!,
+        page: nextPage,
         dateType: 'tomorrow',
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
       );
 
-      int? nextPage;
-      //if we reach the limit or not ?
-      if (ordersData.pagination.totalPages > ordersData.pagination.page) {
-        nextPage = ordersData.pagination.page + 1;
-      } else {
-        nextPage = -1;
-      }
+      final next = ordersData.pagination.totalPages > ordersData.pagination.page
+          ? ordersData.pagination.page + 1
+          : -1;
+
+      final currentList = state.tomorrowOrders.value ?? [];
+
       state = state.copyWith(
-        currentTomorrowOrdersPage: nextPage,
-        tomorrowOrders: [
-          ...state.tomorrowOrders,
-          ...ordersData.data.staffAppointments
-        ],
-        tomorrowOrdersStates: RequestStates.loaded,
-        ordersMessage: '',
+        currentTomorrowOrdersPage: next,
+        tomorrowOrders: AsyncData([...currentList, ...ordersData.data.staffAppointments]),
       );
-    } catch (e) {
-      state = state.copyWith(
-        tomorrowOrdersStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(tomorrowOrders: AsyncError(e, st));
     }
   }
 
-  // Future<void> getOrderDetails({required String serviceOrderId}) async {
-  //   state = state.copyWith(ordersDetailsStates: RequestStates.loading);
-
-  //   try {
-  //     final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-  //     final orderDetails = await myOrdersRepo.getOrderDetails(
-  //       serviceOrderId: serviceOrderId,
-  //     );
-  //     // DriverStatus? nextStatusElement = orderDetails.details.driver.driverStatus
-  //     //     .where((element) => element.active == false)
-  //     //     // .cast<DriverStatus?>()
-  //     //     .firstOrNull;
-
-  //     state = state.copyWith(
-  //       orderShare:  orderDetails,
-  //       // ordersDetails: orderDetails.,
-  //       // currentDriverStatus: orderDetails.details.driver.currentDriverStatus,
-  //       // nextDriverStatus: state.currentDriverStatus != "Completed"
-  //       //     ? nextStatusElement?.status
-  //       //     : null,
-  //       // statusOrders: orderDetails.details.driver.driverStatus,
-  //       ordersDetailsStates: RequestStates.loaded,
-  //       ordersDetailsMessage: '',
-  //       orderCancelltionStates: RequestStates.init,
-  //     );
-  //   } catch (e) {
-  //     state = state.copyWith(
-  //       ordersDetailsStates: RequestStates.error,
-  //       ordersDetailsMessage: e.toString(),
-  //     );
-  //   }
-  // }
-
-  Future<void> fetchOrdersDetails(
-      {required String staffAppointmentLog,
-      required String date,
-      required String shift}) async {
+  // ? Details
+  Future<void> fetchOrdersDetails({
+    required String staffAppointmentLog,
+    required String date,
+    required String shift,
+  }) async {
     state = state.copyWith(
-      ordersDetailsStates: RequestStates.loading,
-      orderCancelltionStates: RequestStates.init,
+      ordersDetails: const AsyncLoading(),
+      orderCancellationState: const AsyncData(null), // إعادة تعيين حالة الإلغاء إن لزم الأمر
     );
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final ordersDetails = await myOrdersRepo.getServicesOrderDetails(
-        // serviceOrderId: serviceOrderID,
         staffAppointmentLog: staffAppointmentLog,
         date: date,
         shift: shift,
       );
 
-      DriverStatus? nextStatusElement = ordersDetails
-          .details.driver.driverStatus
+      DriverStatus? nextStatusElement = ordersDetails.details.driver.driverStatus
           .where((element) => element.active == false)
           .cast<DriverStatus?>()
           .firstOrNull;
 
+      final isCompleted = ordersDetails.details.driver.currentDriverStatus == "Completed";
+
       state = state.copyWith(
-        ordersDetails: ordersDetails.details,
+        ordersDetails: AsyncData(ordersDetails.details),
         currentDriverStatus: ordersDetails.details.driver.currentDriverStatus,
-        nextDriverStatus: state.currentDriverStatus != "Completed"
-            ? nextStatusElement?.status
-            : '',
-        statusOrders: ordersDetails.details.driver.driverStatus,
-        ordersDetailsStates: RequestStates.loaded,
-        ordersDetailsMessage: '',
-        orderCancelltionStates: RequestStates.init,
+        nextDriverStatus: AsyncData(!isCompleted ? nextStatusElement?.status : ''),
+        statusOrders: AsyncData(ordersDetails.details.driver.driverStatus),
       );
-    } catch (e) {
-      state = state.copyWith(
-        ordersDetailsStates: RequestStates.error,
-        ordersDetailsMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(ordersDetails: AsyncError(e, st));
     }
   }
 
+  // ? Update Status
   Future<void> updateStatusOrder({
     required String appointmentID,
     String? amount,
     String? paymentMethod,
   }) async {
-    state = state.copyWith(statusOrderStates: RequestStates.loading);
+    state = state.copyWith(
+      statusOrders: const AsyncLoading(),
+      // currentDriverStatus: const AsyncLoading(),
+      nextDriverStatus: const AsyncLoading(),
+    );
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
-      final statusOrders = await myOrdersRepo.updateStatusOrder(
+      final statusOrdersData = await myOrdersRepo.updateStatusOrder(
         appointmentID: appointmentID,
         paymentMethod: paymentMethod,
         amount: amount,
       );
 
-      String currentDriverStatus = statusOrders.data
+      String currentDriverStatus = statusOrdersData.data
           .lastWhere((element) => element.active == true)
           .status;
 
-      DriverStatus? nextStatusElement = statusOrders.data
+      DriverStatus? nextStatusElement = statusOrdersData.data
           .where((element) => element.active == false)
           .cast<DriverStatus?>()
           .firstOrNull;
 
-      print('currentDriverStatus: $currentDriverStatus');
-      print('------------------------------------');
-      print('nextStatusElement: ${nextStatusElement?.status}');
-
       state = state.copyWith(
-        // ordersDetails: state.ordersDetails?.copyWith(
-        //   driver: state.ordersDetails?.driver.copyWith(
-        //     currentDriverStatus: currentDriverStatus,
-        //     driverStatus: statusOrders.data,
-        //   ),
-        // ),
-        statusOrders: statusOrders.data,
+        statusOrders: AsyncData(statusOrdersData.data),
         currentDriverStatus: currentDriverStatus,
-        nextDriverStatus: nextStatusElement?.status,
-        statusOrderStates: RequestStates.loaded,
-        statusOrderMessage: '',
+        nextDriverStatus: AsyncData(nextStatusElement?.status),
       );
+      
       refreshAllOrdersList();
-    } catch (e) {
+    } catch (e, st) {
       state = state.copyWith(
-        statusOrderStates: RequestStates.error,
-        statusOrderMessage: e.toString(),
+        statusOrders: AsyncError(e, st),
+        // currentDriverStatus: AsyncError(e, st),
+        nextDriverStatus: AsyncError(e, st),
       );
     }
   }
@@ -477,39 +367,28 @@ class MyOrdersController extends _$MyOrdersController {
     refetchCustomDate();
   }
 
+  // ? Appointments
   Future<void> fetchAppontments({
     required String serviceOrderID,
     String? dateType,
   }) async {
-    state = state.copyWith(appointmentsStates: RequestStates.loading);
+    state = state.copyWith(ordersAppointments: const AsyncLoading());
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final appointmentsData = await myOrdersRepo.getAppontments(
         dateType: dateType,
         page: 1,
-        // orderId: serviceOrderID,
       );
 
-      int? nextPage;
-      //if there is a second page ?
-      if (appointmentsData.pagination.totalPages > 1) {
-        nextPage = 2;
-      } else {
-        nextPage = null;
-      }
+      int? nextPage = appointmentsData.pagination.totalPages > 1 ? 2 : null;
+      
       state = state.copyWith(
         currentAppointmentsPage: nextPage,
-        // ordersAppointments: appointmentsData.data,
-
-        // ordersAppointments: appointmentsData.data,
-        appointmentsStates: RequestStates.loaded,
+        ordersAppointments: AsyncData(appointmentsData.data.staffAppointments ?? []), // حسب نوع المودل لديك
       );
-    } catch (e) {
-      state = state.copyWith(
-        appointmentsStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(ordersAppointments: AsyncError(e, st));
     }
   }
 
@@ -517,49 +396,41 @@ class MyOrdersController extends _$MyOrdersController {
     required String serviceOrderID,
     String? dateType,
   }) async {
+    final nextPage = state.currentAppointmentsPage;
+    if (nextPage == null) return;
+
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
       final appointmentsData = await myOrdersRepo.getAppontments(
-        page: state.currentAppointmentsPage!,
-        // orderId: serviceOrderID,
+        page: nextPage,
         dateType: dateType,
-        //TODO : Add list here:
         shiftType: state.selectedShiftTypes.isNotEmpty
             ? state.selectedShiftTypes
             : null,
       );
 
-      int? nextPage;
-      //if we reach the limit or not ?
-      if (appointmentsData.pagination.totalPages >
-          appointmentsData.pagination.page) {
-        nextPage = appointmentsData.pagination.page + 1;
-      } else {
-        nextPage = null;
-      }
+      final next = appointmentsData.pagination.totalPages > appointmentsData.pagination.page
+          ? appointmentsData.pagination.page + 1
+          : null;
+
+      final currentList = state.ordersAppointments.value ?? [];
+
       state = state.copyWith(
-        currentAppointmentsPage: nextPage,
-        ordersAppointments: [
-          ...state.ordersAppointments,
-          // ...appointmentsData.data,
-        ],
-        appointmentsStates: RequestStates.loaded,
-        ordersMessage: '',
+        currentAppointmentsPage: next,
+        ordersAppointments: AsyncData([...currentList, ...(appointmentsData.data.staffAppointments ?? [])]),
       );
-    } catch (e) {
-      state = state.copyWith(
-        appointmentsStates: RequestStates.error,
-        ordersMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(ordersAppointments: AsyncError(e, st));
     }
   }
 
+  // ? Cancellations
   Future<void> orderCancelltion({
     required String serviceOrderID,
     required String cancelMsg,
     required int orderDate,
   }) async {
-    state = state.copyWith(orderCancelltionStates: RequestStates.loading);
+    state = state.copyWith(orderCancellationState: const AsyncLoading());
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
@@ -568,18 +439,11 @@ class MyOrdersController extends _$MyOrdersController {
         cancelMsg: cancelMsg,
       );
 
-      state = state.copyWith(
-        orderCancelltionStates: RequestStates.loaded,
-        orderCancelltionMessage: '',
-      );
+      state = state.copyWith(orderCancellationState: const AsyncData(null));
+      
       orderDate == 0 ? fetchTodayOrders() : fetchTomorrowOrders();
-      // ref.invalidate(myOrdersControllerProvider);
-      // fetchOrdersDetails(staffAppointmentLog: serviceOrderID);
-    } catch (e) {
-      state = state.copyWith(
-        orderCancelltionStates: RequestStates.error,
-        orderCancelltionMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(orderCancellationState: AsyncError(e, st));
     }
   }
 
@@ -589,7 +453,7 @@ class MyOrdersController extends _$MyOrdersController {
     required String cancelMsg,
     required BuildContext context,
   }) async {
-    state = state.copyWith(orderCancelltionStates: RequestStates.loading);
+    state = state.copyWith(orderCancellationState: const AsyncLoading());
 
     try {
       final myOrdersRepo = ref.read(myOrdersRepositoryProvider);
@@ -598,32 +462,24 @@ class MyOrdersController extends _$MyOrdersController {
         cancelMsg: cancelMsg,
       );
       debugPrint('staffAppointmentLogCancelltion: $staffAppointmentLog');
-      // context.pop();
-      // fetchAppontments(serviceOrderID: staffAppointmentLog);
-      // fetchOrdersDetails(staffAppointmentLog: staffAppointmentLog);
-      state = state.copyWith(
-        orderCancelltionStates: RequestStates.loaded,
-        orderCancelltionMessage: '',
-      );
-      //TODO
+      
+      state = state.copyWith(orderCancellationState: const AsyncData(null));
+      
       await fetchAppontments(serviceOrderID: orderId, dateType: '');
-      // ref.invalidate(myOrdersControllerProvider);
-      // fetchOrdersDetails(staffAppointmentLog: serviceOrderID);
-    } catch (e) {
-      state = state.copyWith(
-        orderCancelltionStates: RequestStates.error,
-        orderCancelltionMessage: e.toString(),
-      );
+    } catch (e, st) {
+      state = state.copyWith(orderCancellationState: AsyncError(e, st));
     }
   }
+
+  // --- UI Modification Methods (بقيت كما هي لأنها لا تتلاعب ببيانات الـ Server) ---
 
   void toggleShiftType(ShiftTypeEnum shiftType) {
     final currentList = List<ShiftTypeEnum>.from(state.selectedShiftTypes);
 
     if (currentList.contains(shiftType)) {
-      currentList.remove(shiftType); // إذا كان موجوداً يتم حذفه
+      currentList.remove(shiftType);
     } else {
-      currentList.add(shiftType); // إذا لم يكن موجوداً يتم إضافته
+      currentList.add(shiftType);
     }
 
     state = state.copyWith(selectedShiftTypes: currentList);

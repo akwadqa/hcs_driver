@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_controller.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/timeline_tile.dart';
-import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/shared_widgets/app_error_widget.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
@@ -25,25 +24,20 @@ class OrderStatusScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final statusOrders = ref.watch(
+    // أصبحنا نراقب statusOrders فقط لأنه يحمل بداخله حالات (loading, data, error)
+    final statusOrdersAsync = ref.watch(
       myOrdersControllerProvider.select((value) => value.statusOrders),
     );
-    final statusOrderStates = ref.watch(
-      myOrdersControllerProvider.select((value) => value.statusOrderStates),
-    );
 
-    switch (statusOrderStates) {
-      case RequestStates.loading:
-        return const FadeCircleLoadingIndicator();
-
-      case RequestStates.error:
-        return AppErrorWidget(
-          onTap: () => ref
-              .read(myOrdersControllerProvider.notifier)
-              .updateStatusOrder(appointmentID: appointmentID),
-        );
-      case RequestStates.init:
-      case RequestStates.loaded:
+    // استخدام .when بدلاً من switch (statusOrderStates)
+    return statusOrdersAsync.when(
+      loading: () => const FadeCircleLoadingIndicator(),
+      error: (error, stack) => AppErrorWidget(
+        onTap: () => ref
+            .read(myOrdersControllerProvider.notifier)
+            .updateStatusOrder(appointmentID: appointmentID),
+      ),
+      data: (statusOrders) {
         return Scaffold(
           appBar: CustomAppbar(
             hasBackArrow: true,
@@ -65,8 +59,8 @@ class OrderStatusScreen extends ConsumerWidget {
 
                 final lastStepStatus = isLast && isActive
                     ? (statusOrderType == "Cancellation Request"
-                          ? "cancelled"
-                          : "done")
+                        ? "cancelled"
+                        : "done")
                     : null;
 
                 return CustomTimelineTile(
@@ -87,6 +81,7 @@ class OrderStatusScreen extends ConsumerWidget {
             ),
           ),
         );
-    }
+      },
+    );
   }
 }

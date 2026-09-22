@@ -102,11 +102,11 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
   }
 
   Widget buildBody(BuildContext context, MyOrdersState ordersState) {
-    if (ordersState.appointmentsStates == RequestStates.init ||
-        ordersState.appointmentsStates == RequestStates.loading) {
+    // if (ordersState.appointmentsStates == RequestStates.init ||
+        if(ordersState.ordersAppointments is AsyncLoading) {
       return Center(child: FadeCircleLoadingIndicator());
-    } else if (ordersState.appointmentsStates == RequestStates.loaded) {
-      if (ordersState.ordersAppointments.isEmpty) {
+    } else if (ordersState.ordersAppointments is AsyncData) {
+      if (ordersState.ordersAppointments.value!.isEmpty) {
         return SingleChildScrollView(
           child: RefreshIndicator(
             onRefresh: () async {
@@ -141,9 +141,9 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: ordersState.ordersAppointments.length + 1,
+          itemCount: ordersState.ordersAppointments.value!.length + 1,
           itemBuilder: (context, index) {
-            if (index >= ordersState.ordersAppointments.length) {
+            if (index >= ordersState.ordersAppointments.value!.length) {
               if (ordersState.currentAppointmentsPage == null) {
                 return Center(
                   child: Text(
@@ -166,7 +166,7 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                     builder: (m) => OrderDetailsScreen(
                       // serviceOrderID: widget.serviceOrderID,
                       staffAppointments:
-                          ordersState.ordersAppointments[index],
+                          ordersState.ordersAppointments.value![index],
                     ),
                   ),
                 );
@@ -179,7 +179,7 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                 // }
               },
               child: AppointmentCard(
-                appointmentData: ordersState.ordersAppointments[index],
+                appointmentData: ordersState.ordersAppointments.value![index],
                 // orderDetailstData: ordersState.ordersDetails,
 
                 // logStatus: ordersState.ordersAppointments[index].logStatus,
@@ -195,7 +195,7 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
           },
         ),
       );
-    } else if (ordersState.appointmentsStates == RequestStates.error) {
+    } else if (ordersState.ordersAppointments is AsyncError) {
       return AppErrorWidget(
         onTap: () => Future(
           () => ref

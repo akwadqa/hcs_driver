@@ -107,18 +107,17 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
           Expanded(
             child: Builder(
               builder: (context) {
-                if (ordersState.completedOrdersStates ==
-                    RequestStates.loading) {
+                if (ordersState.completedOrders is AsyncLoading) {
                   return const Center(child: FadeCircleLoadingIndicator());
                 }
-                if (ordersState.completedOrdersStates == RequestStates.error) {
+                if (ordersState.completedOrders is AsyncError) {
                   return Center(
                     child: Text(
-                      "Error: ${ordersState.ordersMessage ?? "Unknown"}",
+                      "Error: ${ordersState.completedOrders.error ?? "Unknown"}",
                     ),
                   );
                 }
-                if (ordersState.completedOrders.isEmpty) {
+                if (ordersState.completedOrders.value!.isEmpty) {
                   return const Center(child: Text("No completed orders"));
                 }
 
@@ -134,10 +133,10 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
                     controller: _scrollController,
                     shrinkWrap: true,
                     itemCount:
-                        ordersState.completedOrders.length + 1, // +1 for footer
+                        ordersState.completedOrders.value!.length + 1, // +1 for footer
                     itemBuilder: (context, index) {
                       // Footer (load-more / no more)
-                      if (index >= ordersState.completedOrders.length) {
+                      if (index >= ordersState.completedOrders.value!.length) {
                         if (ordersState.currentCompletedOrdersPage == null) {
                           return Center(
                             child: Padding(
@@ -156,7 +155,7 @@ class _PaymentSummaryScreenState extends ConsumerState<PaymentSummaryScreen> {
                         }
                       }
 
-                      final order = ordersState.completedOrders[index];
+                      final order = ordersState.completedOrders.value![index];
 
                       return GestureDetector(
                         onTap: () {

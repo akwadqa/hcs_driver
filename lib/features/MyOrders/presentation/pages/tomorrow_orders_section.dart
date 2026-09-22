@@ -64,11 +64,11 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
     var ordersState = ref.watch(myOrdersControllerProvider);
     final notifier = ref.read(myOrdersControllerProvider.notifier);
 
-    if (ordersState.tomorrowOrdersStates == RequestStates.init ||
-        ordersState.tomorrowOrdersStates == RequestStates.loading) {
+    // if (ordersState.tomorrowOrdersStates == RequestStates.init ||
+      if (  ordersState.tomorrowOrders is AsyncLoading) {
       return Center(child: FadeCircleLoadingIndicator());
-    } else if (ordersState.tomorrowOrdersStates == RequestStates.loaded) {
-      if (ordersState.tomorrowOrders.isEmpty) {
+    } else if (ordersState.tomorrowOrders is AsyncData) {
+      if (ordersState.tomorrowOrders.value!.isEmpty) {
         return RefreshIndicator(
           onRefresh: () async {
             await ref
@@ -94,9 +94,9 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
           physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           shrinkWrap: true,
-          itemCount: ordersState.tomorrowOrders.length + 1,
+          itemCount: ordersState.tomorrowOrders.value!.length + 1,
           itemBuilder: (context, index) {
-            if (index >= ordersState.tomorrowOrders.length) {
+            if (index >= ordersState.tomorrowOrders.value!.length) {
               if (ordersState.currentTomorrowOrdersPage == null ||
                   ordersState.currentTomorrowOrdersPage == -1) {
                 return Center(
@@ -113,7 +113,7 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
               }
             }
 
-            final order = ordersState.tomorrowOrders[index];
+            final order = ordersState.tomorrowOrders.value![index];
 
             return OrderCard(
               order: order,
@@ -135,7 +135,7 @@ class _TomorrowOrdersScreenState extends ConsumerState<TomorrowOrdersScreen> {
           },
         ),
       );
-    } else if (ordersState.tomorrowOrdersStates == RequestStates.error) {
+    } else if (ordersState.tomorrowOrders is AsyncError) {
       return AppErrorWidget(
         onTap: () => Future(
           () => ref

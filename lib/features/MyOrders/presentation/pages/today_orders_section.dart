@@ -61,11 +61,10 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
   Widget build(BuildContext context) {
     var ordersState = ref.watch(myOrdersControllerProvider);
 
-    if (ordersState.todayOrdersStates == RequestStates.init ||
-        ordersState.todayOrdersStates == RequestStates.loading) {
+    if (ordersState.todayOrders is AsyncLoading) {
       return Center(child: FadeCircleLoadingIndicator());
-    } else if (ordersState.todayOrdersStates == RequestStates.loaded) {
-      if (ordersState.todayOrders.isEmpty) {
+    } else if (ordersState.todayOrders is AsyncData) {
+      if (ordersState.todayOrders.value!.isEmpty) {
         return RefreshIndicator(
           onRefresh: () async {
             await ref
@@ -92,9 +91,9 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
             physics: const AlwaysScrollableScrollPhysics(),
             controller: _scrollController,
             shrinkWrap: true,
-            itemCount: ordersState.todayOrders.length + 1,
+            itemCount: ordersState.todayOrders.value!.length + 1,
             itemBuilder: (context, index) {
-              if (index >= ordersState.todayOrders.length) {
+              if (index >= ordersState.todayOrders.value!.length) {
                 return ordersState.currentTodayOrdersPage == -1
                     ? Center(child: Text('No More Orders'))
                     : const Padding(
@@ -103,7 +102,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
                       );
               }
 
-              final order = ordersState.todayOrders[index];
+              final order = ordersState.todayOrders.value![index];
 
               return OrderCard(
                 order: order,
@@ -125,7 +124,7 @@ class _TodayOrdersScreenState extends ConsumerState<TodayOrdersScreen> {
               );
             }),
       );
-    } else if (ordersState.todayOrdersStates == RequestStates.error) {
+    } else if (ordersState.todayOrders is AsyncError) {
       return AppErrorWidget(
         onTap: () => Future(
           () =>

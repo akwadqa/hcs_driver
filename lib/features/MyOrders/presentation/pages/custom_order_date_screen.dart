@@ -72,19 +72,19 @@ class _CustomDateOrdersScreenState
   Widget build(BuildContext context) {
     final ordersState = ref.watch(myOrdersControllerProvider);
 
-    if (ordersState.customOrdersState == RequestStates.init ||
-        ordersState.customOrdersState == RequestStates.loading) {
+    // if (ordersState.customOrdersState == RequestStates.init ||
+     if (   ordersState.customOrders is AsyncLoading) {
       return const Center(child: FadeCircleLoadingIndicator());
     }
 
-    if (ordersState.customOrdersState == RequestStates.error) {
+    if (ordersState.customOrders is AsyncError) {
       return AppErrorWidget(
         onTap: () =>
             ref.read(myOrdersControllerProvider.notifier).refetchCustomDate(),
       );
     }
 
-    if (ordersState.customOrders.isEmpty) {
+    if (ordersState.customOrders.value!.isEmpty) {
       return RefreshIndicator(
         onRefresh: () async {
           await ref
@@ -110,9 +110,9 @@ class _CustomDateOrdersScreenState
         // لأن توضع داخل Expanded إذا كانت بداخل Column في الأب (Parent).
         shrinkWrap: false,
 
-        itemCount: ordersState.customOrders.length + 1,
+        itemCount: ordersState.customOrders.value!.length + 1,
         itemBuilder: (context, index) {
-          if (index >= ordersState.customOrders.length) {
+          if (index >= ordersState.customOrders.value!.length) {
             if (ordersState.currentCustomOrdersPage == null ||
                 ordersState.currentCustomOrdersPage == -1) {
               return Center(
@@ -132,7 +132,7 @@ class _CustomDateOrdersScreenState
             }
           }
 
-          final order = ordersState.customOrders[index];
+          final order = ordersState.customOrders.value![index];
 
           return OrderCard(
             order: order,
