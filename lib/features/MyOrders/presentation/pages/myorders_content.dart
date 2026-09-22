@@ -7,7 +7,7 @@ import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_c
 import 'package:hcs_driver/features/MyOrders/presentation/pages/today_orders_section.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/pages/tomorrow_orders_section.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/pages/yesterday_orders_section.dart';
-import 'package:hcs_driver/features/MyOrders/presentation/widgets/custom_order_date_widget.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/pages/custom_order_date_screen.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
 import 'package:hcs_driver/src/shared_widgets/custom_appbar.dart';
 import 'package:riverpod/src/framework.dart';
@@ -29,11 +29,13 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
   void initState() {
     super.initState();
     _tabController = TabController(
-
       length: 3,
       vsync: this,
       initialIndex: 1,
     ); // Today
+    _tabController.addListener(() {
+      setState(() {});
+    });
   }
 
   @override
@@ -83,16 +85,19 @@ class _MyOrdersContentState extends ConsumerState<MyOrdersContentScreen>
       appBar: CustomAppbar(
         hasBackArrow: false,
         isHome: true,
+        withFilter: true,
+
         title: context.tr(AppStrings.myOrders),
         withTabs: true,
         onTabTap: _handleTabTap,
         tabController: _tabController,
+        currentTabIndex: _tabController.index,
       ),
       body: TabBarView(
         controller: _tabController,
         children: [
           CustomDateOrdersScreen(),
-          //? commint for now 
+          //? commint for now
           // YesterdayOrdersScreen(),
           TodayOrdersScreen(),
           TomorrowOrdersScreen(),

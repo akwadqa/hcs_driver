@@ -15,7 +15,16 @@ extension CardNumberFormatter on String {
     return buffer.toString();
   }
 }
-
+extension StatusHandler on String{
+  String get statusHandler{
+    switch (this){
+      case "Pending for Outstanding Balance":
+      return "POB";
+       default:
+        return this;
+    }
+  }
+}
 extension TextAlignmentExtension on String {
   /// Determines `TextAlign` based on the language of the string
   TextAlign get textAlignment {

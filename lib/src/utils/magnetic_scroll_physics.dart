@@ -8,7 +8,9 @@ class MagneticScrollPhysics extends ScrollPhysics {
   @override
   MagneticScrollPhysics applyTo(ScrollPhysics? ancestor) {
     return MagneticScrollPhysics(
-        itemSize: itemSize, parent: buildParent(ancestor));
+      itemSize: itemSize,
+      parent: buildParent(ancestor),
+    );
   }
 
   double _getPage(ScrollMetrics position, double portion) {
@@ -20,7 +22,10 @@ class MagneticScrollPhysics extends ScrollPhysics {
   }
 
   double _getTargetPixels(
-      ScrollMetrics position, Tolerance tolerance, double velocity) {
+    ScrollMetrics position,
+    Tolerance tolerance,
+    double velocity,
+  ) {
     double page = _getPage(position, itemSize / 2);
     if (velocity < -tolerance.velocity) {
       page -= 0.5;
@@ -32,7 +37,9 @@ class MagneticScrollPhysics extends ScrollPhysics {
 
   @override
   Simulation? createBallisticSimulation(
-      ScrollMetrics position, double velocity) {
+    ScrollMetrics position,
+    double velocity,
+  ) {
     final Tolerance tolerance = toleranceFor(position);
     final double target = _getTargetPixels(position, tolerance, velocity);
     if (target != position.pixels) {

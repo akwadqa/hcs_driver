@@ -1,7 +1,10 @@
-allprojects {
-    repositories {
-        google()
-        mavenCentral()
+subprojects {
+    configurations.all {
+        resolutionStrategy.eachDependency {
+            if (requested.group == "androidx.datastore") {
+                useVersion("1.0.0") // ✅ stable version
+            }
+        }
     }
 }
 

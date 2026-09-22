@@ -7,15 +7,18 @@ class AppResponse<T> {
   // final Pagination? pagination;
   final T data;
 
-  AppResponse(
-      {required this.statusCode,
-      required this.error,
-      required this.message,
-      // required this.pagination,
-      required this.data});
+  AppResponse({
+    required this.statusCode,
+    required this.error,
+    required this.message,
+    // required this.pagination,
+    required this.data,
+  });
 
   factory AppResponse.fromJson(
-      Map<String, dynamic> json, Function(dynamic) create) {
+    Map<String, dynamic> json,
+    Function(dynamic) create,
+  ) {
     return AppResponse<T>(
       statusCode: json['status_code'],
       error: json['error'],

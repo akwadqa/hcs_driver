@@ -48,11 +48,7 @@ class NotificationsService {
     );
 
     // Request permissions for iOS
-    await _messaging.requestPermission(
-      alert: true,
-      badge: true,
-      sound: true,
-    );
+    await _messaging.requestPermission(alert: true, badge: true, sound: true);
 
     // Initialize local notifications
     await _initializeLocalNotifications();
@@ -61,7 +57,9 @@ class NotificationsService {
     final userId = _prefs.getString(Keys.userId.toString());
     if (userId != null) {
       _messaging.onTokenRefresh.listen((token) {
-        _ref.read(deviceTokenControllerProvider.notifier).sendFCMToken(token, userId);
+        _ref
+            .read(deviceTokenControllerProvider.notifier)
+            .sendFCMToken(token, userId);
       });
       // Also send the current token
       sendDeviceToken(userId);
@@ -72,11 +70,13 @@ class NotificationsService {
   Future<void> setupInteractedMessage(AppRouter appRouter) async {
     // App opened from terminated state
     final initialMessage = await _messaging.getInitialMessage();
-    if (initialMessage != null) _handleNotification(message: initialMessage, appRouter: appRouter);
+    if (initialMessage != null)
+      _handleNotification(message: initialMessage, appRouter: appRouter);
 
     // App opened from background
     FirebaseMessaging.onMessageOpenedApp.listen(
-      (remoteMessage) => _handleNotification(message: remoteMessage, appRouter: appRouter),
+      (remoteMessage) =>
+          _handleNotification(message: remoteMessage, appRouter: appRouter),
     );
 
     // App in foreground
@@ -89,7 +89,9 @@ class NotificationsService {
     try {
       final token = await _messaging.getToken();
       if (token != null) {
-        await _ref.read(deviceTokenControllerProvider.notifier).sendFCMToken(token, userId);
+        await _ref
+            .read(deviceTokenControllerProvider.notifier)
+            .sendFCMToken(token, userId);
       }
     } catch (e, st) {
       debugPrint('Error sending device token: $e\n$st');
@@ -99,7 +101,9 @@ class NotificationsService {
   /// Subscribe to common FCM topics
   Future<void> subscribeFCMTopics() async {
     try {
-      await _messaging.subscribeToTopic(Platform.isIOS ? Keys.ios : Keys.android);
+      await _messaging.subscribeToTopic(
+        Platform.isIOS ? Keys.ios : Keys.android,
+      );
       await _messaging.subscribeToTopic(_ref.watch(currentLanguageProvider));
       // _subscribeMarketingNotifications();
     } catch (e) {
@@ -108,10 +112,12 @@ class NotificationsService {
   }
 
   /// Subscribe to orders notifications
-  Future<void> subscribeOrdersTopic() async => _messaging.subscribeToTopic(Keys.orders);
+  Future<void> subscribeOrdersTopic() async =>
+      _messaging.subscribeToTopic(Keys.orders);
 
   /// Unsubscribe from orders notifications
-  Future<void> unsubscribeOrdersTopic() async => _messaging.unsubscribeFromTopic(Keys.orders);
+  Future<void> unsubscribeOrdersTopic() async =>
+      _messaging.unsubscribeFromTopic(Keys.orders);
 
   /// Private: Handle marketing notifications
   // void _subscribeMarketingNotifications() {
@@ -124,7 +130,9 @@ class NotificationsService {
 
   /// Private: Initialize local notifications
   Future<void> _initializeLocalNotifications() async {
-    const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
+    const androidSettings = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
+    );
     const iosSettings = DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -136,7 +144,9 @@ class NotificationsService {
     );
 
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin
+        >()
         ?.createNotificationChannel(
           const AndroidNotificationChannel(
             'high_importance_channel',
@@ -175,7 +185,10 @@ class NotificationsService {
   }
 
   /// Private: Handle notification tap
-  void _handleNotification({required RemoteMessage message, required AppRouter appRouter}) {
+  void _handleNotification({
+    required RemoteMessage message,
+    required AppRouter appRouter,
+  }) {
     debugPrint('Notification tapped: ${message.messageId}');
     final type = _getNotificationType(message.data['type'] ?? 'general');
 
@@ -205,11 +218,15 @@ class NotificationsService {
   }
 
   /// Background handler for FCM
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(
+    RemoteMessage message,
+  ) async {
     debugPrint('Handling background message: ${message.messageId}');
     if (message.notification != null) {
       final notification = NotificationModel(
-        id: message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
+        id:
+            message.messageId ??
+            DateTime.now().millisecondsSinceEpoch.toString(),
         title: message.notification!.title!,
         body: message.notification!.body!,
         type: message.data['type'] ?? 'general',
@@ -244,8 +261,8 @@ class DeviceTokenController extends _$DeviceTokenController {
     final repo = ref.watch(notificationsRepositoryProvider);
 
     // try {
-      await repo.sendFCMToken(token, userId);
-      state = const AsyncValue.data(null);
+    await repo.sendFCMToken(token, userId);
+    state = const AsyncValue.data(null);
     // } catch (e, st) {
     //   state = AsyncValue.error(e, st);
     // }

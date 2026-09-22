@@ -4,14 +4,14 @@ PODS:
   - Firebase/Messaging (12.2.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 12.2.0)
-  - firebase_analytics (12.0.1):
+  - firebase_analytics (12.0.2):
     - firebase_core
     - FirebaseAnalytics (= 12.2.0)
     - Flutter
-  - firebase_core (4.1.0):
+  - firebase_core (4.1.1):
     - Firebase/CoreOnly (= 12.2.0)
     - Flutter
-  - firebase_messaging (16.0.1):
+  - firebase_messaging (16.0.2):
     - Firebase/Messaging (= 12.2.0)
     - firebase_core
     - Flutter
@@ -183,15 +183,15 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Firebase: 26f6f8d460603af3df970ad505b16b15f5e2e9a1
-  firebase_analytics: cad607594fc56b3743691f37000d81cde0a86237
-  firebase_core: 3b9065a1037f7f2e360077d2aa5fb6ec9adb3005
-  firebase_messaging: bd5fd047fb48ca5b8010c35e9ac85fe436d363f2
+  firebase_analytics: 9c18d3099ede6fd5a64f01d663aea7c1912b2307
+  firebase_core: c92b2e526c46f625784f19c07121cd533536d0e7
+  firebase_messaging: ef6c722ea333105264ee17cf7df9ed5ee28d8485
   FirebaseAnalytics: e04e23bc070e3014aa5cf4980f9df7ce5cd79ec8
   FirebaseCore: 311c48a147ad4a0ab7febbaed89e8025c67510cd
   FirebaseCoreInternal: 56ea29f3dad2894f81b060f706f9d53509b6ed3b
   FirebaseInstallations: 3e884b01feabdf67582a80f3250425a00979b4ed
   FirebaseMessaging: 43ec73bbfedd0c385a849bb91593ab4ad4b9e48e
-  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
+  Flutter: cabc95a1d2626b1b06e7179b784ebcf0c0cde467
   flutter_local_notifications: ff50f8405aaa0ccdc7dcfb9022ca192e8ad9688f
   flutter_native_splash: df59bb2e1421aa0282cb2e95618af4dcb0c56c29
   GoogleAdsOnDeviceConversion: 9090c435cde08903e8dd1ba2c77fbec9e46d9afe

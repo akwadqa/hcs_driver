@@ -9,6 +9,7 @@ import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_c
 import 'package:hcs_driver/features/MyOrders/presentation/controllers/myorders_state.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/pages/order_details_screen.dart';
 import 'package:hcs_driver/features/MyOrders/presentation/widgets/appointment_card.dart';
+import 'package:hcs_driver/features/MyOrders/presentation/widgets/share_to_whatsapp.dart';
 import 'package:hcs_driver/gen/assets.gen.dart';
 import 'package:hcs_driver/src/core/enums/request_state.dart';
 import 'package:hcs_driver/src/manager/app_strings.dart';
@@ -20,8 +21,13 @@ import 'package:hcs_driver/src/shared_widgets/fade_circle_loading_indicator.dart
 @RoutePage()
 class AppoinmentScreen extends ConsumerStatefulWidget {
   final String serviceOrderID;
+  final String dateType;
 
-  const AppoinmentScreen({super.key, required this.serviceOrderID});
+  const AppoinmentScreen({
+    super.key,
+    required this.serviceOrderID,
+    required this.dateType,
+  });
 
   @override
   ConsumerState<AppoinmentScreen> createState() => _MyOrdersContentState();
@@ -38,8 +44,12 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
     Future(
       () => ref
           .read(myOrdersControllerProvider.notifier)
-          .fetchAppontments(serviceOrderID: widget.serviceOrderID),
+          .fetchAppontments(
+            serviceOrderID: widget.serviceOrderID,
+            dateType: widget.dateType,
+          ),
     );
+    
 
     _scrollController = ScrollController()..addListener(_onScroll);
   }
@@ -55,7 +65,10 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
       _loadMoreTimer = Timer(const Duration(milliseconds: 500), () {
         ref
             .read(myOrdersControllerProvider.notifier)
-            .onLoadMoreAppontments(serviceOrderID: widget.serviceOrderID);
+            .onLoadMoreAppontments(
+              serviceOrderID: widget.serviceOrderID,
+              dateType: widget.dateType,
+            );
       });
     }
   }
@@ -75,24 +88,34 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
       appBar: CustomAppbar(
         hasBackArrow: true,
         title: AppStrings.appointmentDetails,
-        
+        actions: [
+          ShareToWhatsApp(
+            serviceOrderId: widget.serviceOrderID,
+            staffAppointments: null,
+            orderDetails: null,
+            isOrderShare: true,
+          ),
+        ],
       ),
       body: buildBody(context, ordersState),
     );
   }
 
   Widget buildBody(BuildContext context, MyOrdersState ordersState) {
-    if (ordersState.appointmentsStates == RequestStates.init ||
-        ordersState.appointmentsStates == RequestStates.loading) {
+    // if (ordersState.appointmentsStates == RequestStates.init ||
+        if(ordersState.ordersAppointments is AsyncLoading) {
       return Center(child: FadeCircleLoadingIndicator());
-    } else if (ordersState.appointmentsStates == RequestStates.loaded) {
-      if (ordersState.ordersAppointments.isEmpty) {
+    } else if (ordersState.ordersAppointments is AsyncData) {
+      if (ordersState.ordersAppointments.value!.isEmpty) {
         return SingleChildScrollView(
           child: RefreshIndicator(
             onRefresh: () async {
               await ref
                   .read(myOrdersControllerProvider.notifier)
-                  .fetchAppontments(serviceOrderID: widget.serviceOrderID);
+                  .fetchAppontments(
+                    serviceOrderID: widget.serviceOrderID,
+                    dateType: widget.dateType,
+                  );
             },
             child: ListView(
               physics: const AlwaysScrollableScrollPhysics(),
@@ -109,15 +132,18 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
         onRefresh: () async {
           await ref
               .read(myOrdersControllerProvider.notifier)
-              .fetchAppontments(serviceOrderID: widget.serviceOrderID);
+              .fetchAppontments(
+                serviceOrderID: widget.serviceOrderID,
+                dateType: widget.dateType,
+              );
         },
         child: ListView.builder(
           controller: _scrollController,
           physics: const AlwaysScrollableScrollPhysics(),
           shrinkWrap: true,
-          itemCount: ordersState.ordersAppointments.length + 1,
+          itemCount: ordersState.ordersAppointments.value!.length + 1,
           itemBuilder: (context, index) {
-            if (index >= ordersState.ordersAppointments.length) {
+            if (index >= ordersState.ordersAppointments.value!.length) {
               if (ordersState.currentAppointmentsPage == null) {
                 return Center(
                   child: Text(
@@ -138,9 +164,9 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (m) => OrderDetailsScreen(
-                      serviceOrderID: widget.serviceOrderID,
-                      appointmentID:
-                          ordersState.ordersAppointments[index].logId,
+                      // serviceOrderID: widget.serviceOrderID,
+                      staffAppointments:
+                          ordersState.ordersAppointments.value![index],
                     ),
                   ),
                 );
@@ -153,7 +179,7 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
                 // }
               },
               child: AppointmentCard(
-                appointmentData: ordersState.ordersAppointments[index],
+                appointmentData: ordersState.ordersAppointments.value![index],
                 // orderDetailstData: ordersState.ordersDetails,
 
                 // logStatus: ordersState.ordersAppointments[index].logStatus,
@@ -169,12 +195,15 @@ class _MyOrdersContentState extends ConsumerState<AppoinmentScreen>
           },
         ),
       );
-    } else if (ordersState.appointmentsStates == RequestStates.error) {
+    } else if (ordersState.ordersAppointments is AsyncError) {
       return AppErrorWidget(
         onTap: () => Future(
           () => ref
               .read(myOrdersControllerProvider.notifier)
-              .fetchAppontments(serviceOrderID: widget.serviceOrderID),
+              .fetchAppontments(
+                serviceOrderID: widget.serviceOrderID,
+                dateType: widget.dateType,
+              ),
         ),
       );
     }

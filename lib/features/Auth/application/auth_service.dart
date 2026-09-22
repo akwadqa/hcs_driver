@@ -13,7 +13,7 @@ Future<SharedPreferences> sharedPreferences(Ref ref) async =>
 @Riverpod(keepAlive: true)
 class UserData extends _$UserData {
   @override
-  (String, String,String)? build() {
+  (String, String, String)? build() {
     final sharedPrefs = ref.watch(sharedPreferencesProvider).requireValue;
     final token = sharedPrefs.getString(Keys.token);
     final fullName = sharedPrefs.getString(Keys.userName);
@@ -23,19 +23,18 @@ class UserData extends _$UserData {
         sharedPrefs.getString(Keys.token)!,
         sharedPrefs.getString(Keys.userName)!,
         sharedPrefs.getString(Keys.userId)!,
-
       );
     }
     return null;
   }
 
-  Future<void> setData(String token,String userName, String userId,) async {
+  Future<void> setData(String token, String userName, String userId) async {
     final sharedPrefs = ref.read(sharedPreferencesProvider).requireValue;
     await sharedPrefs.setString(Keys.token, token);
     await sharedPrefs.setString(Keys.userName, userName);
     await sharedPrefs.setString(Keys.userId, userId);
 
-    state = (token, userName,userId);
+    state = (token, userName, userId);
   }
 
   Future<void> removeData() async {

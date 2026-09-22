@@ -12,14 +12,14 @@ String _$currentLanguageHash() => r'b5009987ccc7791189c9654fa79d067c8e49e309';
 @ProviderFor(CurrentLanguage)
 final currentLanguageProvider =
     NotifierProvider<CurrentLanguage, String>.internal(
-      CurrentLanguage.new,
-      name: r'currentLanguageProvider',
-      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-          ? null
-          : _$currentLanguageHash,
-      dependencies: null,
-      allTransitiveDependencies: null,
-    );
+  CurrentLanguage.new,
+  name: r'currentLanguageProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentLanguageHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
 
 typedef _$CurrentLanguage = Notifier<String>;
 // ignore_for_file: type=lint

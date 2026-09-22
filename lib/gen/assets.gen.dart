@@ -1,3 +1,5 @@
+// dart format width=80
+
 /// GENERATED CODE - DO NOT MODIFY BY HAND
 /// *****************************************************
 ///  FlutterGen
@@ -5,7 +7,7 @@
 
 // coverage:ignore-file
 // ignore_for_file: type=lint
-// ignore_for_file: directives_ordering,unnecessary_import,implicit_dynamic_list_literal,deprecated_member_use
+// ignore_for_file: deprecated_member_use,directives_ordering,implicit_dynamic_list_literal,unnecessary_import
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -28,6 +30,9 @@ class $AssetsFontsGen {
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/1.jpg
+  AssetGenImage get a1 => const AssetGenImage('assets/images/1.jpg');
+
   /// File path: assets/images/background.png
   AssetGenImage get background =>
       const AssetGenImage('assets/images/background.png');
@@ -47,6 +52,14 @@ class $AssetsImagesGen {
   /// File path: assets/images/credit_card.svg
   SvgGenImage get creditCard =>
       const SvgGenImage('assets/images/credit_card.svg');
+
+  /// File path: assets/images/customer_call_ic.svg
+  SvgGenImage get customerCallIc =>
+      const SvgGenImage('assets/images/customer_call_ic.svg');
+
+  /// File path: assets/images/customer_ic.svg
+  SvgGenImage get customerIc =>
+      const SvgGenImage('assets/images/customer_ic.svg');
 
   /// File path: assets/images/date.svg
   SvgGenImage get date => const SvgGenImage('assets/images/date.svg');
@@ -100,12 +113,51 @@ class $AssetsImagesGen {
   AssetGenImage get noDataMin =>
       const AssetGenImage('assets/images/no_data_min.png');
 
+  /// File path: assets/images/number_of_cleaner_ic.svg
+  SvgGenImage get numberOfCleanerIc =>
+      const SvgGenImage('assets/images/number_of_cleaner_ic.svg');
+
   /// File path: assets/images/number_vector.svg
   SvgGenImage get numberVector =>
       const SvgGenImage('assets/images/number_vector.svg');
 
+  /// File path: assets/images/order_card_loaction_ic.svg
+  SvgGenImage get orderCardLoactionIc =>
+      const SvgGenImage('assets/images/order_card_loaction_ic.svg');
+
+  /// File path: assets/images/order_cleaning_supply_ic.svg
+  SvgGenImage get orderCleaningSupplyIc =>
+      const SvgGenImage('assets/images/order_cleaning_supply_ic.svg');
+
+  /// File path: assets/images/order_discount_percintage_ic.svg
+  SvgGenImage get orderDiscountPercintageIc =>
+      const SvgGenImage('assets/images/order_discount_percintage_ic.svg');
+
+  /// File path: assets/images/order_driver_ic.svg
+  SvgGenImage get orderDriverIc =>
+      const SvgGenImage('assets/images/order_driver_ic.svg');
+
+  /// File path: assets/images/order_employees_ic.svg
+  SvgGenImage get orderEmployeesIc =>
+      const SvgGenImage('assets/images/order_employees_ic.svg');
+
+  /// File path: assets/images/order_location_blue_ic.svg
+  SvgGenImage get orderLocationBlueIc =>
+      const SvgGenImage('assets/images/order_location_blue_ic.svg');
+
+  /// File path: assets/images/order_payment_method_ic.svg
+  SvgGenImage get orderPaymentMethodIc =>
+      const SvgGenImage('assets/images/order_payment_method_ic.svg');
+
+  /// File path: assets/images/order_total_price_ic.svg
+  SvgGenImage get orderTotalPriceIc =>
+      const SvgGenImage('assets/images/order_total_price_ic.svg');
+
   /// File path: assets/images/pending.svg
   SvgGenImage get pending => const SvgGenImage('assets/images/pending.svg');
+
+  /// File path: assets/images/phone_ic.svg
+  SvgGenImage get phoneIc => const SvgGenImage('assets/images/phone_ic.svg');
 
   /// File path: assets/images/red_successful.svg
   SvgGenImage get redSuccessful =>
@@ -130,51 +182,69 @@ class $AssetsImagesGen {
   SvgGenImage get settingsUnselected =>
       const SvgGenImage('assets/images/settings_unselected.svg');
 
-  /// File path: assets/images/splash_logo.png
-  AssetGenImage get splashLogo =>
-      const AssetGenImage('assets/images/splash_logo.png');
+  /// File path: assets/images/splash_logo2.jpg
+  AssetGenImage get splashLogo2 =>
+      const AssetGenImage('assets/images/splash_logo2.jpg');
 
   /// File path: assets/images/successful.svg
   SvgGenImage get successful =>
       const SvgGenImage('assets/images/successful.svg');
+
+  /// File path: assets/images/supervisor_ic.svg
+  SvgGenImage get supervisorIc =>
+      const SvgGenImage('assets/images/supervisor_ic.svg');
 
   /// File path: assets/images/user_icon.svg
   SvgGenImage get userIcon => const SvgGenImage('assets/images/user_icon.svg');
 
   /// List of all assets
   List<dynamic> get values => [
-    background,
-    byebye,
-    calendar,
-    cash,
-    check,
-    creditCard,
-    date,
-    driverStatus,
-    dummycard,
-    employeeName,
-    emptyCheck,
-    error404Min,
-    errorX,
-    greenSuccessful,
-    homeSelected,
-    homeUnselected,
-    logo,
-    luckIcon,
-    myordersSelected,
-    noDataMin,
-    numberVector,
-    pending,
-    redSuccessful,
-    rightArrow,
-    search,
-    serviceType,
-    settingsSelected,
-    settingsUnselected,
-    splashLogo,
-    successful,
-    userIcon,
-  ];
+        a1,
+        background,
+        byebye,
+        calendar,
+        cash,
+        check,
+        creditCard,
+        customerCallIc,
+        customerIc,
+        date,
+        driverStatus,
+        dummycard,
+        employeeName,
+        emptyCheck,
+        error404Min,
+        errorX,
+        greenSuccessful,
+        homeSelected,
+        homeUnselected,
+        logo,
+        luckIcon,
+        myordersSelected,
+        noDataMin,
+        numberOfCleanerIc,
+        numberVector,
+        orderCardLoactionIc,
+        orderCleaningSupplyIc,
+        orderDiscountPercintageIc,
+        orderDriverIc,
+        orderEmployeesIc,
+        orderLocationBlueIc,
+        orderPaymentMethodIc,
+        orderTotalPriceIc,
+        pending,
+        phoneIc,
+        redSuccessful,
+        rightArrow,
+        search,
+        serviceType,
+        settingsSelected,
+        settingsUnselected,
+        splashLogo2,
+        successful,
+        supervisorIc,
+        userIcon
+      ];
 }
 
 class $AssetsTranslationsGen {
@@ -199,12 +269,18 @@ class Assets {
 }
 
 class AssetGenImage {
-  const AssetGenImage(this._assetName, {this.size, this.flavors = const {}});
+  const AssetGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+    this.animation,
+  });
 
   final String _assetName;
 
   final Size? size;
   final Set<String> flavors;
+  final AssetGenImageAnimation? animation;
 
   Image image({
     Key? key,
@@ -259,8 +335,15 @@ class AssetGenImage {
     );
   }
 
-  ImageProvider provider({AssetBundle? bundle, String? package}) {
-    return AssetImage(_assetName, bundle: bundle, package: package);
+  ImageProvider provider({
+    AssetBundle? bundle,
+    String? package,
+  }) {
+    return AssetImage(
+      _assetName,
+      bundle: bundle,
+      package: package,
+    );
   }
 
   String get path => _assetName;
@@ -268,12 +351,30 @@ class AssetGenImage {
   String get keyName => _assetName;
 }
 
-class SvgGenImage {
-  const SvgGenImage(this._assetName, {this.size, this.flavors = const {}})
-    : _isVecFormat = false;
+class AssetGenImageAnimation {
+  const AssetGenImageAnimation({
+    required this.isAnimation,
+    required this.duration,
+    required this.frames,
+  });
 
-  const SvgGenImage.vec(this._assetName, {this.size, this.flavors = const {}})
-    : _isVecFormat = true;
+  final bool isAnimation;
+  final Duration duration;
+  final int frames;
+}
+
+class SvgGenImage {
+  const SvgGenImage(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  }) : _isVecFormat = false;
+
+  const SvgGenImage.vec(
+    this._assetName, {
+    this.size,
+    this.flavors = const {},
+  }) : _isVecFormat = true;
 
   final String _assetName;
   final Size? size;
@@ -294,6 +395,7 @@ class SvgGenImage {
     String? semanticsLabel,
     bool excludeFromSemantics = false,
     _svg.SvgTheme? theme,
+    _svg.ColorMapper? colorMapper,
     ColorFilter? colorFilter,
     Clip clipBehavior = Clip.hardEdge,
     @deprecated Color? color,
@@ -313,6 +415,7 @@ class SvgGenImage {
         assetBundle: bundle,
         packageName: package,
         theme: theme,
+        colorMapper: colorMapper,
       );
     }
     return _svg.SvgPicture(
@@ -327,8 +430,7 @@ class SvgGenImage {
       placeholderBuilder: placeholderBuilder,
       semanticsLabel: semanticsLabel,
       excludeFromSemantics: excludeFromSemantics,
-      colorFilter:
-          colorFilter ??
+      colorFilter: colorFilter ??
           (color == null ? null : ColorFilter.mode(color, colorBlendMode)),
       clipBehavior: clipBehavior,
       cacheColorFilter: cacheColorFilter,

@@ -92,7 +92,7 @@ Future<bool> _launchWhatsApp(String phone) async {
   }
   final web = Uri.parse('https://wa.me/$phone'); // works if browser available
   // if (await canLaunchUrl(web)) {
-    return launchUrl(web, mode: LaunchMode.externalApplication);
+  return launchUrl(web, mode: LaunchMode.externalApplication);
   // }
   // return false;
 }

@@ -92,6 +92,17 @@ String serviceCategoryToString(ServiceCategory serviceCategory) {
 
 //Payment Enums
 enum PaymentMethod { skipCash, cash }
+enum JobStatus {
+  newJob,
+  accepted,
+  onTheWay,
+  arrived,
+  inProgress,
+  completed,
+  awaitingPayment,
+  paymentReceived,
+  closed,
+}
 
 String paymentMethodToString(PaymentMethod paymentMethod) {
   switch (paymentMethod) {

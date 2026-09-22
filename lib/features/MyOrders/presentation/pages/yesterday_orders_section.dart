@@ -61,12 +61,12 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
   Widget build(BuildContext context) {
     var ordersState = ref.watch(myOrdersControllerProvider);
 
-    if (ordersState.approvedOrdersStates == RequestStates.init ||
-        ordersState.approvedOrdersStates == RequestStates.loading) {
+    // if (ordersState.approvedOrdersStates == RequestStates.init ||
+    if (    ordersState.approvedOrders is AsyncLoading) {
       // return Center(child: FadeCircleLoadingIndicator());
       return Center(child: FadeCircleLoadingIndicator());
-    } else if (ordersState.approvedOrdersStates == RequestStates.loaded) {
-      if (ordersState.approvedOrders.isEmpty) {
+    } else if (ordersState.approvedOrders is AsyncData) {
+      if (ordersState.approvedOrders.value!.isEmpty) {
         return RefreshIndicator(
           onRefresh: () async {
             await ref
@@ -85,9 +85,9 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
         child: ListView.builder(
           controller: _scrollController,
           shrinkWrap: true,
-          itemCount: ordersState.approvedOrders.length + 1,
+          itemCount: ordersState.approvedOrders.value!.length + 1,
           itemBuilder: (context, index) {
-            if (index >= ordersState.approvedOrders.length) {
+            if (index >= ordersState.approvedOrders.value!.length) {
               if (ordersState.currentApprovedOrdersPage == null) {
                 return Center(
                   child: Text(
@@ -106,8 +106,9 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
               onTap: () {
                 context.pushRoute(
                   AppoinmentRoute(
+                    dateType: 'yesterday',
                     serviceOrderID:
-                        ordersState.pendingOrders[index].serviceOrderId,
+                        ordersState.todayOrders.value![index].serviceOrderId,
                   ),
                   // OrderDetailsRoute(
                   //   serviceOrderID:
@@ -131,7 +132,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          ordersState.approvedOrders[index].serviceOrderId,
+                          ordersState.approvedOrders.value![index].serviceOrderId,
                           style: Theme.of(context).textTheme.displaySmall!
                               .copyWith(
                                 fontSize: 14.sp,
@@ -143,7 +144,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
                             Assets.images.pending.svg(),
                             9.horizontalSpace,
                             Text(
-                              ordersState.approvedOrders[index].status
+                              ordersState.approvedOrders.value![index].status
                                   .toString(),
                               style: Theme.of(context).textTheme.displayMedium!
                                   .copyWith(fontSize: 14.sp),
@@ -154,7 +155,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
                     ),
                     8.verticalSpace,
                     Text(
-                      ordersState.approvedOrders[index].serviceType,
+                      ordersState.approvedOrders.value![index].serviceType,
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 12.sp,
                         color: AppColors.greyText,
@@ -166,7 +167,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          ordersState.approvedOrders[index].postingDate,
+                          ordersState.approvedOrders.value![index].postingDate,
                           style: Theme.of(context).textTheme.bodyMedium!
                               .copyWith(
                                 fontSize: 12.sp,
@@ -175,7 +176,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
                               ),
                         ),
                         Text(
-                          "QR ${ordersState.approvedOrders[index].totalNetAmount}",
+                          "QR ${ordersState.approvedOrders.value![index].totalNetAmount}",
                           style: Theme.of(context).textTheme.displaySmall!
                               .copyWith(
                                 fontSize: 12.sp,
@@ -192,7 +193,7 @@ class _YesterdayOrdersScreenState extends ConsumerState<YesterdayOrdersScreen> {
           },
         ),
       );
-    } else if (ordersState.approvedOrdersStates == RequestStates.error) {
+    } else if (ordersState.approvedOrders is AsyncError) {
       return AppErrorWidget(
         onTap: () => Future(
           () => ref

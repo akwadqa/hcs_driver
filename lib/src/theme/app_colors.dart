@@ -7,12 +7,12 @@ abstract class AppColors {
   ];
   static const List<double> splashGradientStops = [0.234, 0.5324];
   static LinearGradient get splashGradient => const LinearGradient(
-    begin: Alignment.bottomCenter,
-    end: Alignment.topCenter,
-    stops: splashGradientStops,
-    transform: GradientRotation(138.65 * 3.14159265359 / 180),
-    colors: splashGradientColors,
-  );
+        begin: Alignment.bottomCenter,
+        end: Alignment.topCenter,
+        stops: splashGradientStops,
+        transform: GradientRotation(138.65 * 3.14159265359 / 180),
+        colors: splashGradientColors,
+      );
 
   static const List<Color> serviceCardGradientColors = [
     Color(0x251E71A3),
@@ -21,11 +21,91 @@ abstract class AppColors {
   static const List<double> serviceCardGradientStops = [0.0, 0.9856];
 
   static LinearGradient get serviceCardGradient => const LinearGradient(
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-    stops: serviceCardGradientStops,
-    colors: serviceCardGradientColors,
-  );
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        stops: serviceCardGradientStops,
+        colors: serviceCardGradientColors,
+      );
+
+  static Color getServiceTypeColor(String type) {
+    switch (type.trim()) {
+      case 'Flexible':
+        return AppColors.serviceTypeBg; // لون بنفسجي فاتح (كما في التصميم)
+      case 'Daily':
+        return const Color(0xFF90CAF9); // لون أزرق فاتح
+      case 'Deep Clean':
+        return const Color(0xFF80CBC4); // لون أخضر مزرق (تيل)
+      case 'Maintenance':
+        return const Color(0xFFFFCC80); // لون برتقالي فاتح
+      default:
+        return const Color(
+            0xFFEEEEEE); // لون رمادي افتراضي في حال لم تتطابق الكلمة
+    }
+  }
+
+  static Color getServiceTypeTextColor(String type) {
+    switch (type.trim()) {
+      case 'Flexible':
+        return const Color(0xFF512DA8); // بنفسجي غامق حاد
+      case 'Daily':
+        return const Color(0xFF1565C0); // أزرق غامق
+      case 'Deep Clean':
+        return const Color(0xFF00695C); // تيل/أخضر غامق
+      case 'Maintenance':
+        return const Color(0xFFE65100); // برتقالي غامق
+      default:
+        return const Color(0xFF424242); // رمادي غامق افتراضي
+    }
+  }
+
+  static Color getDriverStatusTextColor(String status) {
+    switch (status.trim()) {
+      case 'New job':
+        return const Color(0xFF1565C0); // أزرق غامق
+      case 'Job Accepted':
+        return const Color(0xFFF57F17); // أصفر/خردلي غامق
+      case 'On The Way':
+        return const Color(0xFFE65100); // برتقالي غامق
+      case 'Arrived':
+        return const Color(0xFF6A1B9A); // بنفسجي غامق
+      case 'Service in Progress':
+        return const Color(0xFF2E7D32); // أخضر غامق حاد (مثل الصورة)
+      case 'Service Completed':
+      case 'Completed':
+        return const Color(0xFF1B5E20); // أخضر زيتي غامق
+      case 'Awaiting Payment':
+        return const Color(0xFFC62828); // أحمر غامق
+      case 'Payment Received':
+        return const Color(0xFF33691E); // أخضر ليموني غامق
+      default:
+        return const Color(0xFF424242); // رمادي غامق افتراضي
+    }
+  }
+
+  static Color getDriverStatusBgColor(String status) {
+    switch (status.trim()) {
+      case 'New job':
+        return const Color(0xFFE3F2FD); // أزرق فاتح جداً
+      case 'Job Accepted':
+        return const Color(0xFFFFF9C4); // أصفر فاتح
+      case 'On The Way':
+        return const Color(0xFFFFE0B2); // برتقالي فاتح
+      case 'Arrived':
+        return const Color(0xFFE1BEE7); // وردي/بنفسجي فاتح
+      case 'Service in Progress':
+        return const Color(0xFFE8F5E9); // أخضر فاتح (كما في التصميم)
+      case 'Service Completed':
+        return const Color(0xFFC8E6C9); // أخضر
+      case 'Awaiting Payment':
+        return const Color(0xFFFFCDD2); // أحمر فاتح
+      case 'Payment Received':
+        return const Color(0xFFDCEDC8); // أخضر مصفر
+      case 'Completed':
+        return const Color(0xFFA5D6A7); // أخضر غامق قليلاً
+      default:
+        return const Color(0xFFF5F5F5); // رمادي افتراضي
+    }
+  }
 
   static const Color scaffoldColor = Color(0xFFE9EFFE);
   static const Color dialogColor = Color(0xFFF0F4FE);
@@ -48,7 +128,23 @@ abstract class AppColors {
   static const Color backArrow = Color(0xB8034C78);
   static const Color dividerGrey = Color(0xffC2C2C2);
 
+  static const Color statusGreenBg = Color(0xFFEAF6EC);
+  static const Color statusGreenText = Color(0xFF1B9B49);
+  static const Color statusGreenDot = Color(0xFF20A14F);
+  static const Color serviceTypeBg = Color(0xFFE4DAFF);
+  static const Color serviceTypeText = Color(0xFF6F46DB);
+  static const Color labelGrey = Color(0xFF767676);
+  static const Color dividerColor = Color(0xFFD8D8D8);
+  static const Color borderGrey = Color(0xFFA1A1A1);
+  static const Color iconBg = Color(0xFFEEF6FF);
+
+  static const Color darkText = Color(0xFF27272A);
+  static const Color locationBg = Color(0xFFFFEFF3);
+  static const Color locationRed = Color(0xFFCF1515);
+  static const Color shiftBg = Color(0xFFE4F0FF);
+
   //////////////////////////////////*
+
   static const Color primaryLight = Color(0x6E6A43BC);
   static const Color warningPayText = Color(0xFF808285);
   static const Color cardGrey = Color(0xFFDEDEDE);
